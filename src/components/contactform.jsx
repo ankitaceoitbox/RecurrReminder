@@ -195,24 +195,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
         reader.readAsDataURL(selectedFile);
     };
 
-    const handleSendWADateChange = (date) => {
-        if (date) {
-            // Format the date to a string in a desired format (e.g., 'YYYY-MM-DD')
-            const formattedDate = dayjs(date).format('YYYY-MM-DD');
-
-            // Update formData with the formatted date
-            setFormData((prevData) => ({
-                ...prevData,
-                whatsappFields: {
-                    ...prevData.whatsappFields,
-                    sendWADate: formattedDate,
-                },
-            }));
-        } else {
-            // Handle the case where the date is null (if needed)
-        }
-    };
-
     const handleEmailIDToChange = (e) => {
         setFormData({
             ...formData,

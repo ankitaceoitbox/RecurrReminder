@@ -53,6 +53,7 @@ function RegistrationForm() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
+                marginTop: "90px"
             }}
         >
             <Container component="main" maxWidth="sm">

@@ -9,8 +9,8 @@ import LockIcon from '@mui/icons-material/Lock';
 
 export const loginSubject = new Subject();
 function LoginForm() {
+    console.log('working')
     const navigate = useNavigate();
-
     const [formData, setFormData] = React.useState({
         email: '',
         password: '',
@@ -45,6 +45,9 @@ function LoginForm() {
         }
     };
 
+    React.useEffect(() => {
+    }, [])
+
     return (
         <>
             <div
@@ -74,9 +77,9 @@ function LoginForm() {
                                         id="email"
                                         label="Email Address"
                                         name="email"
-                                        autoFocus
                                         value={formData.email}
                                         onChange={handleInputChange}
+                                        autoFocus
                                     />
                                     <TextField
                                         margin="normal"
@@ -85,9 +88,14 @@ function LoginForm() {
                                         name="password"
                                         label="Password"
                                         type="password"
-                                        autoComplete="new-password" // Add this attribute
                                         value={formData.password}
                                         onChange={handleInputChange}
+                                        inputProps={{
+                                            autocomplete: 'new-password',
+                                            form: {
+                                                autocomplete: 'off',
+                                            },
+                                        }}
                                     />
                                     <Button
                                         type="button" // Change to type="submit" if using form submission
