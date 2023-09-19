@@ -30,5 +30,9 @@ export const ContactFormSubmit = (formData) => {
         "endDate": emailFields.endsOnDate
     }
     console.log(finalData);
+<<<<<<< HEAD
     return httpservice.post(api, finalData, { headers });
+=======
+    return httpservice.post(api, finalData, { headers,withCredentials:true });
+>>>>>>> 17fdb9d068f58a7830138b984aa25913980767b4
 }

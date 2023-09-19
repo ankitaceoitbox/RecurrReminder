@@ -4,10 +4,12 @@
     "post": {
       "form": "form",
       "login": "login",
-      "register": "register"
+      "register": "register",
+      "logo":"upload-logo"
     },
     "get": {
-      "forms": "forms"
+      "forms": "forms",
+      "logo":"get-logo"
     },
     "delete": {
       "form": "form"

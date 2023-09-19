@@ -28,6 +28,9 @@ import Tooltip from '@mui/material/Tooltip';
 import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { ExpandLess } from "@mui/icons-material";
 import { ExpandMore } from "@mui/icons-material";
+import { UploadLogo, getLogo } from '../services/logo.service';
+import { toast } from 'react-toastify';
+import { Buffer } from 'buffer'
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -94,19 +97,43 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
-const ImageDialog = ({ open, onClose }) => {
+const ImageDialog = ({ open, onClose, setProfileImage }) => {
     const [imagePreview, setImagePreview] = React.useState(null);
 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setImagePreview(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        const Reader = new FileReader();
+        Reader.onload = () => {
+            if (Reader.readyState === 2) {
+                setImagePreview(Reader.result);
+            }
+        };
+        Reader.readAsDataURL(file);
     };
+
+
+
+    const uploadLogoHandler = async () => {
+
+        const { data } = await UploadLogo(imagePreview)
+        toast.success(data?.message)
+        onClose(imagePreview)
+    }
+
+
+    React.useEffect(() => {
+        (async () => {
+            const { data } = await getLogo()
+
+            setProfileImage(data?.logo?.logo?.data
+                ? `data:image/png;base64,${Buffer.from(
+                    data?.logo?.logo?.data
+                ).toString("base64")}`
+                : "https://drive.google.com/uc?export=view&id=1WEptUger6Bqs1OHLN9znAqtF06x9OJRk")
+        })()
+    }, [])
+
 
     return (
         <Dialog open={open} onClose={() => { onClose(); setImagePreview(null); }}>
@@ -130,7 +157,7 @@ const ImageDialog = ({ open, onClose }) => {
                 <Button onClick={onClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={() => { onClose(imagePreview); }} color="primary">
+                <Button onClick={uploadLogoHandler} color="primary">
                     Upload
                 </Button>
             </DialogActions>
@@ -142,6 +169,7 @@ const ImageDialog = ({ open, onClose }) => {
 export default function SideNavBar() {
     const theme = useTheme();
     const defaultImg = "https://drive.google.com/uc?export=view&id=1WEptUger6Bqs1OHLN9znAqtF06x9OJRk";
+
     const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth] = React.useState('false');
     const [taskMenu, setTaskMenu] = React.useState(false);
@@ -206,7 +234,7 @@ export default function SideNavBar() {
                                 }}
                                 onClick={handleProfileImageClick}
                             />
-                            <ImageDialog open={imageDialogOpen} onClose={handleProfileCloseDialog} />
+                            <ImageDialog open={imageDialogOpen} onClose={handleProfileCloseDialog} setProfileImage={setProfileImage} />
                         </Tooltip>
                     </Typography>
                 </Toolbar>

@@ -11,5 +11,7 @@ export const UserRegister = (registerData) => {
         email: registerData.email,
         password: registerData.password
     }
-    return httpservice.post(api, finalData);
+    return httpservice.post(api, finalData, {
+        withCredentials: true
+    });
 }

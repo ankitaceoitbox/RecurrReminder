@@ -45,9 +45,6 @@ function LoginForm() {
         }
     };
 
-    React.useEffect(() => {
-    }, [])
-
     return (
         <>
             <div
