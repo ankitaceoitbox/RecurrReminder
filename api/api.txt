@@ -1,0 +1,100 @@
+url=https://reminder-0uac.onrender.com/api/v1
+**Endpoints:**
+
+1. **Create a Form**
+   - **Endpoint:** `POST /form`
+   - **Accepts:** JSON data representing a form, including `
+   {
+    "startDate": "2023-09-06",
+    "day": "Monday",
+    "remDay": "3"(no of Days),
+    "sendTime": "10:00 AM",
+    "name": "John Doe",
+    "company": "Acme Corp",
+    "isActiveWA": true,
+    "isActiveEmail": false,
+    "mobile": "9876789876",
+    "waMessage": "Hello, this is a WhatsApp message."(here include only plain text.),
+    "WaAttachement": ""(String data which is provided by FileReader),
+    "sendWADate": "2023-09-07",
+    "email": "john.doe@example.com",
+    "cc": ["cc1@example.com", "cc2@example.com"],
+    "bcc": ["bcc1@example.com", "bcc2@example.com"],
+    "emailSubject": "Email Subject",
+    "emailBody": "<h1>This is the email body.</h1>(May be html or plain text)",
+    "sendMailDate": "2023-09-08",
+    "endDate": "2023-09-10"
+}
+   `
+   - **Returns:** { success: true, message: "Form Created Successfully.", createdForm } if error occured then {  message:error.message,success:false }
+
+2. **Get All Forms**
+   - **Endpoint:** `GET /forms`
+   - **Returns:** {
+                success: true, forms
+            }
+
+3. **Get a Single Form**
+   - **Endpoint:** `GET /form/:id`
+   - **Accepts:** A form id parameter in the URL.
+   - **Returns:** {
+                success: true, form
+            }
+
+4. **Update a Form**
+   - **Endpoint:** `PUT /form/:id`
+   - **Accepts:** A form id parameter in the URL and JSON data for the form, including any of the following: `
+   {
+    "startDate": "2023-09-06",
+    "day": "Monday",
+    "remDay": "3"(no of Days),
+    "sendTime": "10:00 AM",
+    "name": "John Doe",
+    "company": "Acme Corp",
+    "isActiveWA": true,
+    "isActiveEmail": false,
+    "mobile": "9876789876",
+    "waMessage": "Hello, this is a WhatsApp message."(here include only plain text.),
+    "WaAttachement": ""(String data which is provided by FileReader),
+    "sendWADate": "2023-09-07",
+    "email": "john.doe@example.com",
+    "cc": ["cc1@example.com", "cc2@example.com"],
+    "bcc": ["bcc1@example.com", "bcc2@example.com"],
+    "emailSubject": "Email Subject",
+    "emailBody": "<h1>This is the email body.</h1>(May be html or plain text)",
+    "sendMailDate": "2023-09-08",
+    "endDate": "2023-09-10"
+}
+   `
+   - **Returns:** {
+                success: true, message: "Form updated successfully."
+            }
+
+5. **Delete a Form**
+   - **Endpoint:** `DELETE /form/:id`
+   - **Accepts:** A form id parameter in the URL.
+   - **Returns:** {
+                success: true, message: "Form deleted successfully."
+            }
+
+6. *Register*
+   - *Endpoint:* `POST /register`
+   - *Accepts:* name,email,password in the form of json
+   - *Returns:* {
+                success: true, message: "User Registered successfully."
+            }
+
+
+7. *Login*
+   - *Endpoint:* `POST /login`
+   - *Accepts:* email,password in the form of json
+   - *Returns:* {
+                success: true, message: "User Logged in successfully."
+            }
+
+8. *Logout*
+   - *Endpoint:* `get /logout`
+   - *Accepts:* nothing
+   - *Returns:* {
+                success: true, message: "User Logged out successfully."
+            }
