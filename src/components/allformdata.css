@@ -1,0 +1,20 @@
+.header-bg-color .MuiDataGrid-columnHeaders {
+  background: cadetblue;
+  color: white;
+}
+
+.MuiDataGrid-row:nth-child(even) {
+  background: rgb(208, 235, 236);
+}
+
+.view-data {
+  word-break: break-all;
+}
+
+.view-dialog-grid-container:nth-child(odd) {
+  background: rgb(208, 235, 236);
+  color: black;
+}
+.view-dialog-grid-container:nth-child(even) {
+  color: black;
+}

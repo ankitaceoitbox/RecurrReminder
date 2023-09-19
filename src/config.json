@@ -1,0 +1,17 @@
+{
+  "recurring": {
+    "domainUrl": "https://reminder-0uac.onrender.com/api/v1",
+    "post": {
+      "form": "form",
+      "login": "login",
+      "register": "register"
+    },
+    "get": {
+      "forms": "forms"
+    },
+    "delete": {
+      "form": "form"
+    },
+    "update": {}
+  }
+}

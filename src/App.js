@@ -1,24 +1,58 @@
-import logo from './logo.svg';
 import './App.css';
+import ContactPage from './smart_components/Contact';
+import { ToastContainer } from 'react-toastify';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import AllFormDataSmart from './smart_components/AllFormData';
+import LoginForm from './components/login';
+import RegistrationForm from './components/registration';
+import Protected from './components/privateroute';
+import AuthenticateProtected from './components/authenticateprotected';
+import SideNavBar from './components/sidenavbar';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for styling
+import { Grid } from '@mui/material';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Grid container>
+        <Grid item sm={0.3}>
+          <SideNavBar />
+        </Grid>
+        <Grid item sm={11.7}>
+          <Routes>
+            <Route
+              path="/allforms"
+              element={
+                <Protected>
+                  <AllFormDataSmart />
+                </Protected>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <Protected>
+                  <ContactPage />
+                </Protected>
+              }
+            />
+            <Route
+              path="/login"
+              element={<AuthenticateProtected>
+                <LoginForm />
+              </AuthenticateProtected>}
+            />
+            <Route
+              path="/register"
+              element={<AuthenticateProtected>
+                <RegistrationForm />
+              </AuthenticateProtected>}
+            />
+          </Routes>
+        </Grid>
+        <ToastContainer />
+      </Grid>
+    </>
   );
 }
 

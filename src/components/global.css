@@ -1,0 +1,7 @@
+.nav {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid gray;
+}
