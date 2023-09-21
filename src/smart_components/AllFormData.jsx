@@ -3,6 +3,7 @@ import AllFormData from '../components/allformdata'
 import { AllFormsDataService } from '../services/allContactFormData.service';
 import { toast } from 'react-toastify';
 import { DeleteFormData } from '../services/deleteformdata.service';
+import { UpdateSingleUserForm } from '../services/updateForm.service';
 
 function AllFormDataSmart() {
     const [allFormData, setAllFormData] = useState([]);
@@ -12,6 +13,7 @@ function AllFormDataSmart() {
         const { success, forms } = data;
         if (success === true) {
             setAllFormData(forms);
+            console.log(forms);
             toast.success('Data loaded successfully.', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close
@@ -40,6 +42,7 @@ function AllFormDataSmart() {
     useEffect(() => {
         handleContactFormAllData();
     }, []);
+
     return (
         <>
             <AllFormData

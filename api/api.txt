@@ -4,10 +4,13 @@ url=https://reminder-0uac.onrender.com/api/v1
 1. **Create a Form**
    - **Endpoint:** `POST /form`
    - **Accepts:** JSON data representing a form, including `
-   {
+{
     "startDate": "2023-09-06",
     "day": "Monday",
-    "remDay": "3"(no of Days),
+    "every": "week",
+    "frequency":"2",
+    "skipDates": [],
+    "skipDays":[],
     "sendTime": "10:00 AM",
     "name": "John Doe",
     "company": "Acme Corp",
@@ -98,3 +101,13 @@ url=https://reminder-0uac.onrender.com/api/v1
    - *Returns:* {
                 success: true, message: "User Logged out successfully."
             }
+
+9. *Holidays*
+- *Endpoint:* `put /holidays`
+- *Accepts:* {
+skipDates:[],
+skipDays:[]
+}
+- *Returns:* {
+      success: true, message: "Holidays added Successfully."
+}

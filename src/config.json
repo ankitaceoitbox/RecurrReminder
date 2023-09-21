@@ -5,15 +5,19 @@
       "form": "form",
       "login": "login",
       "register": "register",
-      "logo":"upload-logo"
+      "logo": "upload-logo"
     },
     "get": {
       "forms": "forms",
-      "logo":"get-logo"
+      "logo": "get-logo"
     },
     "delete": {
       "form": "form"
     },
-    "update": {}
+    "update": {},
+    "put": {
+      "updateForm": "form",
+      "addholidays": "holidays"
+    }
   }
 }

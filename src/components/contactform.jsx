@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Grid, Paper, Switch, FormControlLabel, InputLabel, FormControl, Select, MenuItem, FormHelperText, Input } from '@mui/material';
+import { TextField, Button, Box, Grid, Paper, Switch, FormControlLabel, InputLabel, FormControl, Select, MenuItem, FormHelperText, Input, Checkbox } from '@mui/material';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -9,24 +9,35 @@ import CircularProgress from '@mui/material/CircularProgress';
 import DateChipsSelector from './multipledateselector';
 import WeekdaySelector from './multipleweekselector';
 import { loginSubject } from './login';
+import setTimeToAMPM from '../utility/converttimetodate';
 
-function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
-    const [isWAChecked, setIsWAChecked] = useState(false);
-    const [isEmailChecked, setIsEmailChecked] = useState(false);
+function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop }) {
+    const [isWAChecked, setIsWAChecked] = useState(() => {
+        if (autoFillData) {
+            return autoFillData.isWAChecked;
+        }
+        return false;
+    });
+    const [isEmailChecked, setIsEmailChecked] = useState(() => {
+        if (autoFillData) {
+            return autoFillData.isEmailChecked;
+        }
+        return false;
+    });
     const [submitClicked, setSubmitClicked] = useState(false);
-
+    const [emailAttachmentLength, setEmailAttachmentLength] = useState(0);
+    const [waAttachmentLength, setWaAttachmentLength] = useState(0);
     const [formData, setFormData] = useState(() => {
         if (autoFillData) {
-            return autoFillData; // Use autoFillData if provided
+            return autoFillData;
         } else {
-            // Default form data when autoFillData is not provided
             return {
                 isWAChecked: false,
                 whatsappFields: {
                     sendWADate: null,
                     mobileOrGroupID: '',
                     waMessage: '',
-                    attachment: '',
+                    attachment: [],
                 },
                 isEmailChecked: false,
                 emailFields: {
@@ -34,17 +45,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                     emailIDCc: [],
                     emailIDBCc: [],
                     subjectLine: '',
-                    attachment: '',
+                    attachment: [],
                     mailBodyHTML: '',
                 },
                 commonFields: {
                     startDate: null,
                     day: '',
+                    every: '',
+                    frequency: '',
                     sendTime: null,
-                    sendDays: '',
                     name: '',
                     company: '',
                     endsOnDate: null,
+                    skipHolidays: false,
                 },
             };
         }
@@ -76,18 +89,27 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
         }
     };
 
-    const handleSendDaysChange = (event) => {
-        const newSendDays = event.target.value;
-
-        // Update formData with the newSendDays value
+    const handleSendEveryChange = (event) => {
+        const every = event.target.value;
         setFormData((prevData) => ({
             ...prevData,
             commonFields: {
                 ...prevData.commonFields,
-                sendDays: newSendDays,
+                every,
             },
         }));
     };
+
+    const handleFrequency = (event) => {
+        const frequency = event.target.value;
+        setFormData((prevData) => ({
+            ...prevData,
+            commonFields: {
+                ...prevData.commonFields,
+                frequency,
+            },
+        }));
+    }
 
     const handleSendTimeChange = (time) => {
         if (time && time.$d instanceof Date) {
@@ -127,6 +149,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
             },
         });
     };
+
+    const handleSkipHolidays = (e) => {
+        console.log(e.target.checked)
+        setFormData({
+            ...formData,
+            commonFields: {
+                ...formData.commonFields,
+                skipHolidays: e.target.checked,
+            },
+        });
+    }
 
     const handleCompanyChange = (e) => {
         setFormData({
@@ -179,20 +212,16 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
     };
 
     const handleWAattachmentChange = (e) => {
-        const selectedFile = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const fileData = event.target.result;
-            setFormData({
-                ...formData,
-                whatsappFields: {
-                    ...formData.whatsappFields,
-                    attachment: fileData,
-                },
-            });
-
-        };
-        reader.readAsDataURL(selectedFile);
+        const files = e.target.files;
+        const attachments = Array.from(files).map(data => data);
+        setWaAttachmentLength(attachments.length);
+        setFormData({
+            ...formData,
+            whatsappFields: {
+                ...formData.whatsappFields,
+                attachment: attachments,
+            },
+        });
     };
 
     const handleEmailIDToChange = (e) => {
@@ -236,19 +265,16 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
     };
 
     const handleEmailAttachmentChange = (e) => {
-        const selectedFile = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const fileData = event.target.result;
-            setFormData({
-                ...formData,
-                emailFields: {
-                    ...formData.emailFields,
-                    attachment: fileData,
-                },
-            });
-        };
-        reader.readAsDataURL(selectedFile);
+        const files = e.target.files;
+        const attachments = Array.from(files).map(data => data);
+        setEmailAttachmentLength(attachments.length);
+        setFormData({
+            ...formData,
+            emailFields: {
+                ...formData.whatsappFields,
+                attachment: attachments,
+            },
+        });
     };
 
     const handleMailBodyHTMLChange = (e) => {
@@ -286,6 +312,25 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
         }
     };
 
+    const handleSelectedHolidays = (holidays) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            commonFields: {
+                ...prevData.commonFields,
+                skipDates: [...holidays],
+            },
+        }));
+    }
+
+    const handleSelectedWeekDay = (days) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            commonFields: {
+                ...prevData.commonFields,
+                skipDays: [...days],
+            },
+        }));
+    }
 
     const handleFormSubmit = async () => {
         setSubmitClicked(true);
@@ -296,7 +341,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
     }
 
     useEffect(() => {
-        console.log(formData, 'formdata');
         loginSubject.next({
             isAuth: true
         });
@@ -309,7 +353,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    mt: '80px'
+                    mt: marginTop ? marginTop : "80px"
                 }}
             >
                 <Paper
@@ -331,6 +375,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                         sx={{ width: "100%" }}
                                         onChange={handleStartDateChange}
                                         slotProps={{ textField: { size: 'small' } }}
+                                        defaultValue={formData.commonFields.startDate && dayjs(formData.commonFields.startDate)}
                                     />
                                 </LocalizationProvider>
                             </Grid>
@@ -350,14 +395,14 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                     <InputLabel>Send Every</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-helper-label"
-                                        value={formData.commonFields.sendDays}
-                                        label="Frequency"
-                                        onChange={handleSendDaysChange}
+                                        value={formData.commonFields.every}
+                                        label="Every"
+                                        onChange={handleSendEveryChange}
                                     >
-                                        <MenuItem value="Day">Day</MenuItem>
-                                        <MenuItem value="Week">Week</MenuItem>
-                                        <MenuItem value="Month">Month</MenuItem>
-                                        <MenuItem value="Year">Year</MenuItem>
+                                        <MenuItem value="day">Day</MenuItem>
+                                        <MenuItem value="week">Week</MenuItem>
+                                        <MenuItem value="month">Month</MenuItem>
+                                        <MenuItem value="year">Year</MenuItem>
                                     </Select>
                                     <FormHelperText></FormHelperText>
                                 </FormControl>
@@ -369,6 +414,8 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                     label="Frequency"
                                     size="small"
                                     type='number'
+                                    onChange={handleFrequency}
+                                    value={formData.commonFields.frequency}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -376,12 +423,12 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                     <TimePicker
                                         sx={{ width: "100%" }}
                                         label="Send Time"
-                                        value={formData.commonFields.sendTime}
+                                        defaultValue={setTimeToAMPM(formData.commonFields.sendTime)}
                                         onChange={(event) => {
                                             handleSendTimeChange(event);
                                         }}
                                         slotProps={{ textField: { size: 'small' } }}
-                                        renderInput={(params) => <TextField {...params} variant="outlined" />}
+                                        textField={(params) => <TextField {...params} variant="outlined" />}
                                     />
                                 </LocalizationProvider>
                             </Grid>
@@ -409,14 +456,36 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker label="Ends On" sx={{ width: "100%" }} onChange={handleEndsOnDateChange} slotProps={{ textField: { size: 'small' } }} />
+                                    <DatePicker
+                                        label="Ends On"
+                                        sx={{ width: "100%" }}
+                                        onChange={handleEndsOnDateChange}
+                                        slotProps={{ textField: { size: 'small' } }}
+                                        defaultValue={formData.commonFields.endsOnDate && dayjs(formData.commonFields.endsOnDate)}
+                                    />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <DateChipsSelector />
+                                {/* <DateChipsSelector
+                                    onHandleSelectedDates={handleSelectedHolidays}
+                                    preSelectedDates={formData.commonFields.skipDates}
+                                /> */}
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={formData.commonFields.skipHolidays ?? false}
+                                            onChange={handleSkipHolidays}
+                                            color="primary" // Customize the color if needed
+                                        />
+                                    }
+                                    label="Skip Holidays"
+                                />
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <WeekdaySelector />
+                                {/* <WeekdaySelector
+                                    onHandleSelectedWeekDay={handleSelectedWeekDay}
+                                    preSelectedDays={formData.commonFields.skipDays}
+                                /> */}
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
@@ -450,21 +519,24 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <Input
+                                        <input
+                                            hidden
+                                            accept="*/*"
+                                            multiple
                                             type="file"
-                                            accept="image/*" // Specify the accepted file types
+                                            id="file-wa-upload-input"
                                             onChange={handleWAattachmentChange}
-                                            style={{ display: 'none' }} // Hide the default file input
-                                            id="file-upload-input"
                                         />
-                                        <label htmlFor="file-upload-input">
+                                        <label htmlFor="file-wa-upload-input">
                                             <Button
                                                 variant="outlined"
                                                 component="span"
                                                 startIcon={<CloudUploadIcon />}
                                                 fullWidth
                                             >
-                                                Upload WA File
+                                                {
+                                                    waAttachmentLength > 0 ? waAttachmentLength + " files selected" : "Upload WA File"
+                                                }
                                             </Button>
                                         </label>
                                     </Grid>
@@ -523,24 +595,26 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <Input
+                                        <input
+                                            hidden
+                                            accept="*/*"
+                                            multiple
                                             type="file"
-                                            accept="image/*" // Specify the accepted file types
+                                            id="file-email-upload-input"
                                             onChange={handleEmailAttachmentChange}
-                                            style={{ display: 'none' }} // Hide the default file input
-                                            id="file-upload-input"
                                         />
-                                        <label htmlFor="file-upload-input">
+                                        <label htmlFor="file-email-upload-input">
                                             <Button
                                                 variant="outlined"
                                                 component="span"
                                                 startIcon={<CloudUploadIcon />}
                                                 fullWidth
                                             >
-                                                Upload Email File
+                                                {
+                                                    emailAttachmentLength > 0 ? emailAttachmentLength + " files selected" : "Upload File"
+                                                }
                                             </Button>
                                         </label>
-
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
@@ -556,22 +630,21 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData }) {
                                 </>
                             )}
                             {
-                                !autoFillData ?
-                                    <Grid item xs={12} sm={12}>
-                                        <div style={{ display: "flex", justifyContent: "center" }}>
-                                            {
-                                                submitClicked ?
-                                                    <CircularProgress color="primary" size={50} thickness={4} />
-                                                    :
-                                                    <Button
-                                                        variant='contained'
-                                                        onClick={handleFormSubmit}
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                            }
-                                        </div>
-                                    </Grid> : ''
+                                <Grid item xs={12} sm={12}>
+                                    <div style={{ display: "flex", justifyContent: "center" }}>
+                                        {
+                                            submitClicked ?
+                                                <CircularProgress color="primary" size={50} thickness={4} />
+                                                :
+                                                <Button
+                                                    variant='contained'
+                                                    onClick={handleFormSubmit}
+                                                >
+                                                    Submit
+                                                </Button>
+                                        }
+                                    </div>
+                                </Grid>
                             }
                         </Grid>
                     </Box>

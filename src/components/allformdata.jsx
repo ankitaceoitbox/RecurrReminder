@@ -10,16 +10,19 @@ import dayjs from 'dayjs';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContactForm from './contactform';
 import './allformdata.css';
+import { UpdateSingleUserForm } from '../services/updateForm.service';
+import { toast } from 'react-toastify';
 
-function AllFormData({ allData, onDeleteFormDataById }) {
+function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
     const [allFormData, setAllFormData] = React.useState([]);
+    const [editRowID, setEditRowID] = React.useState();
     const [formData, setFormData] = React.useState({
         isWAChecked: false,
         whatsappFields: {
             sendWADate: null,
             mobileOrGroupID: '',
             waMessage: '',
-            attachment: '',
+            attachment: [],
         },
         isEmailChecked: false,
         emailFields: {
@@ -27,14 +30,16 @@ function AllFormData({ allData, onDeleteFormDataById }) {
             emailIDCc: [],
             emailIDBCc: [],
             subjectLine: '',
-            attachment: '',
+            attachment: [],
             mailBodyHTML: '',
         },
         commonFields: {
             startDate: null,
             day: '',
+            every: '',
+            frequency: '',
+            skipHolidays: false,
             sendTime: null,
-            sendDays: '',
             name: '',
             company: '',
             endsOnDate: null,
@@ -61,12 +66,27 @@ function AllFormData({ allData, onDeleteFormDataById }) {
         return <div>No data to display.</div>;
     }
 
-    const handleSaveChanges = (index) => {
-        // Save the edited data here (e.g., update it in your state or send it to a server)
-        // After saving, exit edit mode
+    const handleSaveChanges = (formData) => {
         setEditRowIndex(-1);
-        handleFormSubmit();
     };
+
+    const handleContactFormSubmit = async (formData) => {
+        const response = await UpdateSingleUserForm(formData, editRowID);
+        console.log(response);
+        if (response.data.success === true) {
+            toast.success('Form Updated Successfully.', {
+                position: 'top-right',
+                autoClose: 3000, // Time in milliseconds for the notification to automatically close
+            });
+        } else {
+            toast.error('Form not updated.', {
+                position: 'top-right',
+                autoClose: 3000, // Time in milliseconds for the notification to automatically close
+            });
+        }
+        setEditRowIndex(-1);
+        return 1;
+    }
 
     const handleCancelEdit = (index) => {
         // Exit edit mode without saving changes
@@ -110,9 +130,10 @@ function AllFormData({ allData, onDeleteFormDataById }) {
         return utcDate.toLocaleString("en-IN", options);
     }
 
-    const handleEditClick = (index) => {
+    const handleEditClick = (index, _id) => {
         setOpenEditDialog(true);
         setEditRowIndex(index);
+        setEditRowID(_id)
         const editedData = { ...allFormData[index] };
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -120,6 +141,9 @@ function AllFormData({ allData, onDeleteFormDataById }) {
                 ...prevFormData.commonFields,
                 startDate: editedData.startDate,
                 day: editedData.day,
+                every: editedData.every,
+                frequency: editedData.frequency,
+                skipHolidays: editedData.skipHolidays,
                 sendTime: editedData.sendTime,
                 name: editedData.name,
                 company: editedData.company,
@@ -194,7 +218,7 @@ function AllFormData({ allData, onDeleteFormDataById }) {
                         <TableCell>
                             <EditIcon
                                 sx={{ fontSize: "18px" }}
-                                onClick={() => handleEditClick(params.row.id)} />
+                                onClick={() => handleEditClick(params.row.id, params.row._id)} />
                         </TableCell>
                     );
                 }
@@ -222,9 +246,11 @@ function AllFormData({ allData, onDeleteFormDataById }) {
             field: 'id', headerName: 'ID', width: 70, headerClassName: "header-bg-color"
         },
         { field: 'startDate', headerName: 'Start Date', width: 150 },
-        { field: 'day', headerName: 'Day', width: 100 },
-        { field: 'remDay', headerName: 'Repeat After', width: 150 },
-        { field: 'sendTime', headerName: 'Send Time', width: 150 },
+        { field: 'day', headerName: 'Week Day', width: 100 },
+        { field: 'every', headerName: 'Every (day/week/month/year)', width: 200 },
+        { field: 'frequency', headerName: 'Frequency', width: 200 },
+        { field: 'skipholidays', headerName: 'Skipped Holidays', width: 200 },
+        { field: 'sendtime', headerName: 'Send Time', width: 150 },
         { field: 'name', headerName: 'Name', width: 150 },
         { field: 'company', headerName: 'Company', width: 150 },
         { field: 'isActiveWA', headerName: 'WhatsApp Activate', width: 150 },
@@ -244,8 +270,10 @@ function AllFormData({ allData, onDeleteFormDataById }) {
         id: index,
         startDate: formatDateToIndianTime(item.startDate),
         day: item.day,
-        remDay: item.remDay,
-        sendTime: item.sendTime,
+        every: item.every,
+        frequency: item.frequency,
+        skipHolidays: item.skipHolidays,
+        sendtime: item.sendTime,
         name: item.name,
         company: item.company,
         isActiveWA: item.isActiveWA.toString(),
@@ -260,246 +288,6 @@ function AllFormData({ allData, onDeleteFormDataById }) {
         endDate: formatDateToIndianTime(item.endDate),
         _id: item._id,
     }));
-
-    /** Edit Dialog Settings and functions */
-    const handleSendDaysChange = (event) => {
-        const newSendDays = event.target.value;
-
-        // Update formData with the newSendDays value
-        setFormData((prevData) => ({
-            ...prevData,
-            commonFields: {
-                ...prevData.commonFields,
-                sendDays: newSendDays,
-            },
-        }));
-    };
-
-    const handleSendTimeChange = (time) => {
-        if (time && time.$d instanceof Date) {
-            const date = time.$d;
-
-            // Extract hours and minutes from the date object
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
-
-            // Determine whether it's AM or PM
-            const period = hours >= 12 ? 'PM' : 'AM';
-
-            // Adjust hours for 12:00 AM/PM
-            const adjustedHours = hours % 12 === 0 ? 12 : hours % 12;
-
-            const formattedHours = adjustedHours.toString().padStart(2, '0');
-            const formattedMinutes = minutes.toString().padStart(2, '0');
-
-            const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
-
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    sendTime: formattedTime,
-                },
-            }));
-        }
-    }
-    const handleStartDateChange = (date) => {
-        if (date) {
-            const formattedDate = dayjs(date).format('YYYY-MM-DD');
-            const day = dayjs(date).format('dddd');
-            // Update formData with formatted startDate and dayOfWeek
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    startDate: formattedDate,
-                    day: day,
-                },
-            }));
-        } else {
-            // Update formData with null values for startDate and dayOfWeek
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    startDate: null,
-                    day: '',
-                },
-            }));
-        }
-    };
-
-    const handleNameChange = (e) => {
-        setFormData({
-            ...formData,
-            commonFields: {
-                ...formData.commonFields,
-                name: e.target.value,
-            },
-        });
-    };
-
-    const handleCompanyChange = (e) => {
-        setFormData({
-            ...formData,
-            commonFields: {
-                ...formData.commonFields,
-                company: e.target.value,
-            },
-        });
-    };
-
-    const handleMobileOrGroupIDChange = (e) => {
-        setFormData({
-            ...formData,
-            whatsappFields: {
-                ...formData.whatsappFields,
-                mobileOrGroupID: e.target.value,
-            },
-        });
-    };
-
-    const handleWAActivationChange = () => {
-        setIsWAChecked(!isWAChecked);
-
-        // Update formData with the new value
-        setFormData((prevData) => ({
-            ...prevData,
-            isWAChecked: !isWAChecked,
-        }));
-    };
-
-    const handleEmailActivationChange = () => {
-        setIsEmailChecked(!isEmailChecked);
-
-        // Update formData with the new value
-        setFormData((prevData) => ({
-            ...prevData,
-            isEmailChecked: !isEmailChecked,
-        }));
-    };
-
-    const handleWAMessageChange = (e) => {
-        setFormData({
-            ...formData,
-            whatsappFields: {
-                ...formData.whatsappFields,
-                waMessage: e.target.value,
-            },
-        });
-    };
-
-    const handleWAattachmentChange = (e) => {
-        const selectedFile = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const fileData = event.target.result;
-            setFormData({
-                ...formData,
-                whatsappFields: {
-                    ...formData.whatsappFields,
-                    attachment: fileData,
-                },
-            });
-
-        };
-        reader.readAsDataURL(selectedFile);
-    };
-
-    const handleEndsOnDateChange = (date) => {
-        if (date) {
-            // Format the date to a string in a desired format (e.g., 'YYYY-MM-DD')
-            const formattedDate = dayjs(date).format('YYYY-MM-DD');
-
-            // Update formData with the formatted date
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    endsOnDate: formattedDate,
-                },
-            }));
-        } else {
-            // Update formData with null value for endsOnDate
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    endsOnDate: null,
-                },
-            }));
-        }
-    };
-
-
-    const handleEmailIDToChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDTo: e.target.value,
-            },
-        });
-    };
-
-    const handleEmailIDCcChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDCc: e.target.value.split(','),
-            },
-        });
-    };
-
-    const handleEmailIDBCcChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDBCc: e.target.value.split(','),
-            },
-        });
-    };
-
-    const handleSubjectLineChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                subjectLine: e.target.value,
-            },
-        });
-    };
-
-    const handleEmailAttachmentChange = (e) => {
-        const selectedFile = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const fileData = event.target.result;
-            setFormData({
-                ...formData,
-                emailFields: {
-                    ...formData.emailFields,
-                    attachment: fileData,
-                },
-            });
-        };
-        reader.readAsDataURL(selectedFile);
-    };
-
-    const handleMailBodyHTMLChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                mailBodyHTML: e.target.value,
-            },
-        });
-    };
-
-    const handleFormSubmit = () => {
-    }
 
     const handleDelete = async (_id) => {
         onDeleteFormDataById(_id);
@@ -527,6 +315,7 @@ function AllFormData({ allData, onDeleteFormDataById }) {
                                 columns: {
                                     columnVisibilityModel: {
                                         id: false,
+                                        _id: false,
                                     },
                                 },
                             }}
@@ -697,261 +486,12 @@ function AllFormData({ allData, onDeleteFormDataById }) {
                     <ContactForm
                         width="100%"
                         autoFillData={formData}
+                        onHandleContactFormSubmit={handleContactFormSubmit}
+                        marginTop="0px"
                     />
-                    {/* <Box
-                    >
-                        <Paper
-                            elevation={3}
-                            sx={{
-                                padding: '1rem',
-                            }}
-                        >
-                            <Box component="form" noValidate>
-                                <h1 style={{ textAlign: "center", marginTop: 0 }}>Recurring Reminder</h1>
-                            </Box>
-                            <Box component="form" noValidate>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                                label="Start Date"
-                                                sx={{ width: "100%" }}
-                                                onChange={handleStartDateChange}
-                                                slotProps={{ textField: { size: 'small' } }}
-                                                defaultValue={dayjs(formData.commonFields.startDate)}
-                                            />
-                                        </LocalizationProvider>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            variant="outlined"
-                                            label="Day"
-                                            value={formData.commonFields.day}
-                                            disabled
-                                            size="small"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth size="small"
-                                        >
-                                            <InputLabel>Send Every</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-helper-label"
-                                                value={formData.commonFields.sendDays}
-                                                label="Frequency"
-                                                onChange={handleSendDaysChange}
-                                            >
-                                                <MenuItem value="Day">Day</MenuItem>
-                                                <MenuItem value="Week">Week</MenuItem>
-                                                <MenuItem value="Month">Month</MenuItem>
-                                                <MenuItem value="Year">Year</MenuItem>
-                                            </Select>
-                                            <FormHelperText></FormHelperText>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            variant="outlined"
-                                            label="Frequency"
-                                            size="small"
-                                            type='number'
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <TimePicker
-                                                sx={{ width: "100%" }}
-                                                label="Send Time"
-                                                value={dayjs(formData.commonFields.sendTime)}
-                                                onChange={(event) => {
-                                                    handleSendTimeChange(event);
-                                                }}
-                                                // defaultValue={dayjs('2022-04-17T15:30')}
-                                                slotProps={{ textField: { size: 'small' } }}
-                                                renderInput={(params) => <TextField {...params} variant="outlined" />}
-                                            />
-                                        </LocalizationProvider>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            variant="outlined"
-                                            label="Name"
-                                            value={formData.commonFields.name}
-                                            onChange={handleNameChange}
-                                            size="small"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            variant="outlined"
-                                            label="Company"
-                                            value={formData.commonFields.company}
-                                            onChange={handleCompanyChange}
-                                            size="small"
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                                label="Ends On"
-                                                sx={{ width: "100%" }}
-                                                onChange={handleEndsOnDateChange}
-                                                slotProps={{ textField: { size: 'small' } }}
-                                                defaultValue={dayjs(formData.commonFields.endsOnDate)}
-                                            />
-                                        </LocalizationProvider>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12}>
-                                        <FormControlLabel
-                                            control={<Switch checked={isWAChecked}
-                                                onChange={handleWAActivationChange} />}
-                                            label="Activate WA"
-                                        />
-                                    </Grid>
-                                    {isWAChecked && (
-                                        <>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Mobile/Group ID"
-                                                    value={formData.whatsappFields.mobileOrGroupID}
-                                                    onChange={handleMobileOrGroupIDChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="WA Message"
-                                                    value={formData.whatsappFields.waMessage}
-                                                    onChange={handleWAMessageChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <Input
-                                                    type="file"
-                                                    accept="image/*" // Specify the accepted file types
-                                                    onChange={handleWAattachmentChange}
-                                                    style={{ display: 'none' }} // Hide the default file input
-                                                    id="file-upload-input"
-                                                />
-                                                <label htmlFor="file-upload-input">
-                                                    <Button
-                                                        variant="outlined"
-                                                        component="span"
-                                                        startIcon={<CloudUploadIcon />}
-                                                        fullWidth
-                                                    >
-                                                        Upload WA File
-                                                    </Button>
-                                                </label>
-                                            </Grid>
-                                        </>
-                                    )}
-                                    <Grid item xs={12} sm={12}>
-                                        <FormControlLabel
-                                            control={<Switch checked={isEmailChecked} onChange={handleEmailActivationChange} />}
-                                            label="Activate Email"
-                                        />
-                                    </Grid>
-                                    {isEmailChecked && (
-                                        <>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Email ID: To"
-                                                    value={formData.emailFields.emailIDTo}
-                                                    onChange={handleEmailIDToChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Email ID: Cc"
-                                                    value={formData.emailFields.emailIDCc}
-                                                    onChange={handleEmailIDCcChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Email ID: BCc"
-                                                    value={formData.emailFields.emailIDBCc}
-                                                    onChange={handleEmailIDBCcChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Subject line"
-                                                    value={formData.emailFields.subjectLine}
-                                                    onChange={handleSubjectLineChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <Input
-                                                    type="file"
-                                                    accept="image/*" // Specify the accepted file types
-                                                    onChange={handleEmailAttachmentChange}
-                                                    style={{ display: 'none' }} // Hide the default file input
-                                                    id="file-upload-input"
-                                                />
-                                                <label htmlFor="file-upload-input">
-                                                    <Button
-                                                        variant="outlined"
-                                                        component="span"
-                                                        startIcon={<CloudUploadIcon />}
-                                                        fullWidth
-                                                    >
-                                                        Upload Email File
-                                                    </Button>
-                                                </label>
-
-                                            </Grid>
-                                            <Grid item xs={12} sm={6}>
-                                                <TextField
-                                                    required
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    label="Mail body(HTML)"
-                                                    value={formData.emailFields.mailBodyHTML}
-                                                    onChange={handleMailBodyHTMLChange}
-                                                    size="small"
-                                                />
-                                            </Grid>
-                                        </>
-                                    )}
-                                </Grid>
-                            </Box>
-                        </Paper>
-                    </Box> */}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
-                    <Button onClick={handleSaveChanges}>Save</Button>
+                    <Button onClick={() => setOpenEditDialog(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
             {/* End of edit the data inside dialog. */}

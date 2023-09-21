@@ -8,7 +8,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function WeekdaySelector() {
+export default function WeekdaySelector({ onHandleSelectedWeekDay, preSelectedDays }) {
     const [selectedDays, setSelectedDays] = React.useState([]);
 
     const daysOfWeek = [
@@ -23,7 +23,14 @@ export default function WeekdaySelector() {
 
     const handleDayChange = (_, value) => {
         setSelectedDays(value);
+        onHandleSelectedWeekDay(value);
     };
+
+    React.useEffect(() => {
+        if (preSelectedDays) {
+            setSelectedDays([...preSelectedDays]);
+        }
+    }, [])
 
     return (
         <Autocomplete

@@ -10,29 +10,25 @@ const headers = {
 };
 export const ContactFormSubmit = (formData) => {
     const { commonFields, emailFields, whatsappFields, isEmailChecked, isWAChecked } = formData;
-    const finalData = {
-        "startDate": commonFields.startDate,
-        "day": commonFields.day,
-        "remDay": commonFields.sendDays,
-        "sendTime": commonFields.sendTime,
-        "name": commonFields.name,
-        "company": commonFields.company,
-        "isActiveWA": isWAChecked,
-        "isActiveEmail": isEmailChecked,
-        "mobile": whatsappFields.mobileOrGroupID,
-        "waMessage": whatsappFields.waMessage,
-        "WaAttachement": whatsappFields.attachment,
-        "email": emailFields.emailIDTo,
-        "cc": emailFields.emailIDCc,
-        "bcc": emailFields.emailIDBCc,
-        "emailSubject": emailFields.subjectLine,
-        "emailBody": emailFields.mailBodyHTML,
-        "endDate": emailFields.endsOnDate
-    }
-    console.log(finalData);
-<<<<<<< HEAD
-    return httpservice.post(api, finalData, { headers });
-=======
-    return httpservice.post(api, finalData, { headers,withCredentials:true });
->>>>>>> 17fdb9d068f58a7830138b984aa25913980767b4
+    const finalData = new FormData();
+    finalData.append("startDate", commonFields.startDate);
+    finalData.append("day", commonFields.day);
+    finalData.append("every", commonFields.every);
+    finalData.append("frequency", commonFields.frequency);
+    finalData.append("skipHolidays", commonFields.skipHolidays);
+    finalData.append("sendTime", commonFields.sendTime);
+    finalData.append("name", commonFields.name);
+    finalData.append("company", commonFields.company);
+    finalData.append("endDate", commonFields.endsOnDate);
+    finalData.append("isActiveWA", isWAChecked);
+    finalData.append("isActiveEmail", isEmailChecked);
+    finalData.append("mobile", whatsappFields.mobileOrGroupID);
+    finalData.append("waMessage", whatsappFields.waMessage);
+    finalData.append("WaAttachement", whatsappFields.attachment);
+    finalData.append("email", emailFields.emailIDTo);
+    finalData.append("cc", emailFields.emailIDCc,);
+    finalData.append("bcc", emailFields.emailIDBCc);
+    finalData.append("emailSubject", emailFields.subjectLine);
+    finalData.append("emailBody", emailFields.mailBodyHTML);
+    return httpservice.post(api, finalData, { headers, withCredentials: true });
 }

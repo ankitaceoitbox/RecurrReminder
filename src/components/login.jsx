@@ -1,4 +1,4 @@
-import { Avatar, Button, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Avatar, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import * as React from 'react';
 import { UserLogin } from '../services/login.service';
@@ -9,8 +9,8 @@ import LockIcon from '@mui/icons-material/Lock';
 
 export const loginSubject = new Subject();
 function LoginForm() {
-    console.log('working')
     const navigate = useNavigate();
+    const [showLoader, setShowLoader] = React.useState(false);
     const [formData, setFormData] = React.useState({
         email: '',
         password: '',
@@ -28,6 +28,7 @@ function LoginForm() {
 
     const userLogin = async () => {
         try {
+            setShowLoader(true);
             const response = await UserLogin(formData);
             toast.success('Logged In', {
                 position: 'top-right',
@@ -37,6 +38,7 @@ function LoginForm() {
             loginSubject.next({ isAuth: true });
             navigate('/');
         } catch (error) {
+            setShowLoader(false);
             toast.error('Invalid email or password', {
                 position: 'top-right',
                 autoClose: 2000, // Time in milliseconds for the notification to automatically close
@@ -44,6 +46,10 @@ function LoginForm() {
             setError('Invalid email or password'); // Handle authentication error
         }
     };
+
+    React.useEffect(() => {
+        console.log(showLoader)
+    }, [])
 
     return (
         <>
@@ -88,21 +94,30 @@ function LoginForm() {
                                         value={formData.password}
                                         onChange={handleInputChange}
                                         inputProps={{
-                                            autocomplete: 'new-password',
+                                            autoComplete: 'new-password',
                                             form: {
-                                                autocomplete: 'off',
+                                                autoComplete: 'off',
                                             },
                                         }}
                                     />
-                                    <Button
-                                        type="button" // Change to type="submit" if using form submission
-                                        fullWidth
-                                        variant="contained"
-                                        sx={{ mt: 3, mb: 2 }}
-                                        onClick={userLogin}
-                                    >
-                                        Log In
-                                    </Button>
+                                    {
+                                        showLoader === true ?
+                                            <>
+                                                <div style={{ display: "flex", justifyContent: "center" }}>
+                                                    <CircularProgress color="primary" size={50} thickness={4} />
+                                                </div>
+                                            </>
+                                            :
+                                            <Button
+                                                type="button" // Change to type="submit" if using form submission
+                                                fullWidth
+                                                variant="contained"
+                                                sx={{ mt: 3, mb: 2 }}
+                                                onClick={userLogin}
+                                            >
+                                                Log In
+                                            </Button>
+                                    }
                                 </Box>
                             </Paper>
                         </Grid>
