@@ -1,9 +1,9 @@
 import { Avatar, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, Container } from '@mui/system';
 import * as React from 'react';
 import { UserLogin } from '../services/login.service';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Subject } from 'rxjs';
 import LockIcon from '@mui/icons-material/Lock';
 
@@ -57,72 +57,75 @@ function LoginForm() {
                 style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    marginTop: "90px"
+                    marginTop: "80px"
                 }}
             >
-                <Box>
-                    <Grid container>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <Paper elevation={6} style={{ padding: '20px' }}>
-                                <div style={{ display: 'flex', alignItems: "center", flexDirection: "column" }}>
-                                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                                        <LockIcon />
-                                    </Avatar>
-                                    <Typography component="h1" variant="h5" >
-                                        Sign in
-                                    </Typography>
-                                </div>
-                                <Box component="form">
-                                    <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email Address"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        autoFocus
-                                    />
-                                    <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        inputProps={{
-                                            autoComplete: 'new-password',
-                                            form: {
-                                                autoComplete: 'off',
-                                            },
-                                        }}
-                                    />
-                                    {
-                                        showLoader === true ?
-                                            <>
-                                                <div style={{ display: "flex", justifyContent: "center" }}>
-                                                    <CircularProgress color="primary" size={50} thickness={4} />
-                                                </div>
-                                            </>
-                                            :
-                                            <Button
-                                                type="button" // Change to type="submit" if using form submission
-                                                fullWidth
-                                                variant="contained"
-                                                sx={{ mt: 3, mb: 2 }}
-                                                onClick={userLogin}
-                                            >
-                                                Log In
-                                            </Button>
-                                    }
-                                </Box>
-                            </Paper>
+                <Container component="main" maxWidth="sm">
+                    <Box>
+                        <Grid container>
+                            <Grid item xs={12} sm={12} md={12}>
+                                <Paper elevation={5} style={{ padding: '20px' }}>
+                                    <div style={{ display: 'flex', alignItems: "center", flexDirection: "column" }}>
+                                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                                            <LockIcon />
+                                        </Avatar>
+                                        <Typography component="h1" variant="h5" >
+                                            Sign in
+                                        </Typography>
+                                    </div>
+                                    <Box component="form">
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            autoFocus
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            inputProps={{
+                                                autoComplete: 'new-password',
+                                                form: {
+                                                    autoComplete: 'off',
+                                                },
+                                            }}
+                                        />
+                                        {
+                                            showLoader === true ?
+                                                <>
+                                                    <div style={{ display: "flex", justifyContent: "center" }}>
+                                                        <CircularProgress color="primary" size={50} thickness={4} />
+                                                    </div>
+                                                </>
+                                                :
+                                                <Button
+                                                    type="button" // Change to type="submit" if using form submission
+                                                    fullWidth
+                                                    variant="contained"
+                                                    sx={{ mt: 3, mb: 2 }}
+                                                    onClick={userLogin}
+                                                >
+                                                    Log In
+                                                </Button>
+                                        }
+                                        <Link style={{ color: "#444" }} to="/forgetpassword">Forget Password</Link>
+                                    </Box>
+                                </Paper>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Box>
+                    </Box>
+                </Container>
             </div>
         </>
     );

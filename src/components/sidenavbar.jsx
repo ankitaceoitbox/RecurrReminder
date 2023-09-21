@@ -82,6 +82,7 @@ const AppBar = styled(MuiAppBar, {
             duration: theme.transitions.duration.enteringScreen,
         }),
     }),
+
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -90,6 +91,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
+        display: open ? 'block' : 'none',  // Hide when closed
+        [theme.breakpoints.down('sm')]: {
+            width: '80%',  // Adjust width for smaller screens
+        },
         ...(open && {
             ...openedMixin(theme),
             '& .MuiDrawer-paper': openedMixin(theme),
@@ -98,8 +103,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
             ...closedMixin(theme),
             '& .MuiDrawer-paper': closedMixin(theme),
         }),
+        [theme.breakpoints.down('sm')]: {
+            width: 0,
+            '& .MuiDrawer-paper': {
+                width: 0,
+            },
+        },
     }),
 );
+
 
 const ImageDialog = ({ open, onClose, setProfileImage }) => {
     const [imagePreview, setImagePreview] = React.useState(null);
@@ -285,6 +297,11 @@ export default function SideNavBar() {
         setTaskMenu(false);
     };
 
+    const handleDrawerButtonClick = () => {
+        setOpen(!open);
+        setTaskMenu(false);
+    };
+
     React.useEffect(() => {
         const subscription = loginSubject.subscribe((data) => {
             setIsAuth(data.isAuth);
@@ -465,7 +482,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="All Form"
+                                                        primary="All Reminder"
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }} />
                                                 </ListItemButton>
                                             </ListItem>

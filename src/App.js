@@ -10,6 +10,7 @@ import AuthenticateProtected from './components/authenticateprotected';
 import SideNavBar from './components/sidenavbar';
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for styling
 import { Grid } from '@mui/material';
+import ForgetPassword from './components/forgetpassword';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
         <Grid item sm={0.3}>
           <SideNavBar />
         </Grid>
-        <Grid item sm={11.7}>
+        <Grid item sm={11.7} xs={11}>
           <Routes>
             <Route
               path="/allforms"
@@ -46,6 +47,12 @@ function App() {
               path="/register"
               element={<AuthenticateProtected>
                 <RegistrationForm />
+              </AuthenticateProtected>}
+            />
+            <Route
+              path="/forgetpassword"
+              element={<AuthenticateProtected>
+                <ForgetPassword />
               </AuthenticateProtected>}
             />
           </Routes>

@@ -3,7 +3,7 @@ import { Box, Container } from '@mui/system';
 import * as React from 'react';
 import { UserRegister } from '../services/register.service';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 function RegistrationForm() {
@@ -52,8 +52,7 @@ function RegistrationForm() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                minHeight: '100vh',
-                marginTop: "90px"
+                marginTop: "80px"
             }}
         >
             <Container component="main" maxWidth="sm">

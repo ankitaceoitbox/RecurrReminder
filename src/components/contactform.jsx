@@ -353,14 +353,15 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    mt: marginTop ? marginTop : "80px"
+                    mt: marginTop ? marginTop : "80px",
+                    width: '100%', // Set width to 100%
                 }}
             >
                 <Paper
                     elevation={3}
                     sx={{
                         padding: '1rem',
-                        width: width != undefined ? width : '50%',
+                        width: { xs: '90%', sm: width != undefined ? width : '50%' },
                     }}
                 >
                     <Box component="form" noValidate>

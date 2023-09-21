@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell, ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -12,8 +12,11 @@ import ContactForm from './contactform';
 import './allformdata.css';
 import { UpdateSingleUserForm } from '../services/updateForm.service';
 import { toast } from 'react-toastify';
+const theme = createTheme(); // Create a theme
 
 function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
+    // Check if the screen size is small (mobile)
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Use the theme here
     const [allFormData, setAllFormData] = React.useState([]);
     const [editRowID, setEditRowID] = React.useState();
     const [formData, setFormData] = React.useState({
@@ -52,6 +55,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
     const [isEmailChecked, setIsEmailChecked] = React.useState(false);
     const [viewData, setViewData] = React.useState({});
     const [editedData, setEditedData] = React.useState({});
+
     useEffect(() => {
         loginSubject.next({
             isAuth: true
@@ -104,8 +108,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
     const containerStyle = {
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px', // Adjust the gap between each grid item
-        padding: '20px', // Adjust the padding inside the Paper component
+        gap: '2px', // Adjust the gap between each grid item
+        padding: '5px', // Adjust the padding inside the Paper component
     };
 
     const itemStyle = {
@@ -272,7 +276,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
         day: item.day,
         every: item.every,
         frequency: item.frequency,
-        skipHolidays: item.skipHolidays,
+        skipholidays: item.skipHolidays,
         sendtime: item.sendTime,
         name: item.name,
         company: item.company,
@@ -297,7 +301,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
         <>
             <Grid
                 container
-                spacing={2}
+                spacing={1}
                 sx={{ mt: 8, ml: 3, textAlign: 'center', justifyContent: 'center', alignItems: 'center', width: "98%" }}
             >
                 <Grid item xs={12} sm={11.5}>
