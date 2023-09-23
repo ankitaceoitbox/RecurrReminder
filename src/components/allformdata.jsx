@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell, ThemeProvider, createTheme, useMediaQuery } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell, createTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { loginSubject } from './login';
 import { useEffect } from 'react';
-import dayjs from 'dayjs';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContactForm from './contactform';
 import './allformdata.css';
@@ -14,9 +13,8 @@ import { UpdateSingleUserForm } from '../services/updateForm.service';
 import { toast } from 'react-toastify';
 const theme = createTheme(); // Create a theme
 
-function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
+function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoadFormDataAgain }) {
     // Check if the screen size is small (mobile)
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Use the theme here
     const [allFormData, setAllFormData] = React.useState([]);
     const [editRowID, setEditRowID] = React.useState();
     const [formData, setFormData] = React.useState({
@@ -51,10 +49,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
     const [editRowIndex, setEditRowIndex] = React.useState(-1);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
     const [openViewDialog, setOpenViewDialog] = React.useState(false);
-    const [isWAChecked, setIsWAChecked] = React.useState(false);
-    const [isEmailChecked, setIsEmailChecked] = React.useState(false);
     const [viewData, setViewData] = React.useState({});
-    const [editedData, setEditedData] = React.useState({});
 
     useEffect(() => {
         loginSubject.next({
@@ -76,12 +71,12 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
 
     const handleContactFormSubmit = async (formData) => {
         const response = await UpdateSingleUserForm(formData, editRowID);
-        console.log(response);
         if (response.data.success === true) {
             toast.success('Form Updated Successfully.', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close
             });
+            onLoadFormDataAgain();
         } else {
             toast.error('Form not updated.', {
                 position: 'top-right',
@@ -91,19 +86,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
         setEditRowIndex(-1);
         return 1;
     }
-
-    const handleCancelEdit = (index) => {
-        // Exit edit mode without saving changes
-        setEditRowIndex(-1);
-    };
-
-    const handleEditDataChange = (field, value) => {
-        // Update the edited data while in edit mode
-        setEditedData((prevState) => ({
-            ...prevState,
-            [field]: value,
-        }));
-    };
 
     const containerStyle = {
         display: 'flex',
@@ -137,7 +119,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
     const handleEditClick = (index, _id) => {
         setOpenEditDialog(true);
         setEditRowIndex(index);
-        setEditRowID(_id)
+        setEditRowID(_id);
         const editedData = { ...allFormData[index] };
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -280,13 +262,13 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm }) {
         sendtime: item.sendTime,
         name: item.name,
         company: item.company,
-        isActiveWA: item.isActiveWA.toString(),
+        isActiveWA: String(item.isActiveWA),
         waMessage: item.waMessage,
         mobile: item.mobile,
         isActiveEmail: item.isActiveEmail,
         email: item.email,
-        cc: item.cc.join(','),
-        bcc: item.bcc.join(','),
+        cc: item.cc?.join(','),
+        bcc: item.bcc?.join(','),
         emailSubject: item.emailSubject,
         emailBody: item.emailBody,
         endDate: formatDateToIndianTime(item.endDate),

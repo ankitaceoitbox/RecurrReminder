@@ -154,6 +154,13 @@ function RegistrationForm() {
                         >
                             Sign Up
                         </Button>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Link href="#" variant="body2" to="/login">
+                                    Already have an account? Sign in
+                                </Link>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Paper>
             </Container>

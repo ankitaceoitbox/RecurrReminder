@@ -50,7 +50,7 @@ function App() {
               </AuthenticateProtected>}
             />
             <Route
-              path="/forgetpassword"
+              path="/reset-password/:token?"
               element={<AuthenticateProtected>
                 <ForgetPassword />
               </AuthenticateProtected>}

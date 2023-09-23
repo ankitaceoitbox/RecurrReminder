@@ -1,4 +1,4 @@
-import { Avatar, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Avatar, Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import * as React from 'react';
 import { UserLogin } from '../services/login.service';
@@ -73,6 +73,16 @@ function LoginForm() {
                                             Sign in
                                         </Typography>
                                     </div>
+                                    <FormControl component="fieldset">
+                                        <RadioGroup
+                                            aria-label="login"
+                                            name="login"
+                                            sx={{ display: 'flex', flexDirection: 'row' }} // Apply styles using sx prop
+                                        >
+                                            <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+                                            <FormControlLabel value="user" control={<Radio />} label="User" />
+                                        </RadioGroup>
+                                    </FormControl>
                                     <Box component="form">
                                         <TextField
                                             margin="normal"
@@ -119,7 +129,19 @@ function LoginForm() {
                                                     Log In
                                                 </Button>
                                         }
-                                        <Link style={{ color: "#444" }} to="/forgetpassword">Forget Password</Link>
+
+                                        <Grid container>
+                                            <Grid item xs>
+                                                <Link href="#" variant="body2" to="/reset-password/">
+                                                    Forgot password?
+                                                </Link>
+                                            </Grid>
+                                            <Grid item>
+                                                <Link href="#" variant="body2" to="/register">
+                                                    {"Don't have an account? Sign Up"}
+                                                </Link>
+                                            </Grid>
+                                        </Grid>
                                     </Box>
                                 </Paper>
                             </Grid>

@@ -5,7 +5,8 @@
       "form": "form",
       "login": "login",
       "register": "register",
-      "logo": "upload-logo"
+      "logo": "upload-logo",
+      "forgetPassword": "forget-password"
     },
     "get": {
       "forms": "forms",
@@ -17,7 +18,8 @@
     "update": {},
     "put": {
       "updateForm": "form",
-      "addholidays": "holidays"
+      "addholidays": "holidays",
+      "verifyPassword": "verify-password"
     }
   }
 }
