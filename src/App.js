@@ -11,6 +11,8 @@ import SideNavBar from './components/sidenavbar';
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for styling
 import { Grid } from '@mui/material';
 import ForgetPassword from './components/forgetpassword';
+import AdminProtected from './components/adminprotectedroute';
+import AdminUsersData from './components/admin.userdata';
 
 function App() {
   return (
@@ -54,6 +56,12 @@ function App() {
               element={<AuthenticateProtected>
                 <ForgetPassword />
               </AuthenticateProtected>}
+            />
+            <Route
+              path="/admin/userdata"
+              element={<Protected admin={true}>
+                <AdminUsersData />
+              </Protected>}
             />
           </Routes>
         </Grid>

@@ -111,3 +111,47 @@ skipDays:[]
 - *Returns:* {
       success: true, message: "Holidays added Successfully."
 }
+
+[17:38, 9/22/2023] +91 73514 37357: 12. *Admin Login*
+   - *Endpoint:* `POST /admin/login`
+   - *Accepts:* email,password in the form of json
+   - *Returns:* {
+                success: true, message: "Admin Logged in successfully."
+            }
+
+
+
+13. *Users Data*
+   - *Endpoint:* `get /admin/users?name=${name}&email=${email}`
+   - *Returns:* {
+  success: true,
+  users: [
+    {
+      "_id": "64fea53a4c1682a449546500",
+      "name": "suneel",
+      "email": "sunraz1666@gmail.com",
+      "reminderCount": 0
+    },
+    {
+      "_id": "64fefb7358131118431ef1b2",
+      "name": "ankita",
+      "email": "ankita@ceoitbox.in",
+      "reminderCount": 10
+    },
+    {
+      "_id": "65019fab0fb99aa8d1e1023a",
+      "name": "ankita",
+      "email": "ankita1@ceoitbox.in",
+      "reminderCount": 0
+    }
+  ]
+}
+
+ 14. *Admin Logout*
+   - *Endpoint:* `get /admin/logout`
+   - *Accepts:* nothing
+   - *Returns:* {
+                success: true, message: "Admin Logged out successfully."
+            }
+
+// admin credentials - email:rsuneel47@gmail.com,password:suneel

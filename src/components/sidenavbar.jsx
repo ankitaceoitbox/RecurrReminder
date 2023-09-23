@@ -35,6 +35,7 @@ import { DateRangeIcon } from '@mui/x-date-pickers';
 import DateChipsSelector from './multipledateselector';
 import WeekdaySelector from './multipleweekselector';
 import { AddHolidays } from '../services/addholidays.service';
+import TableChartIcon from '@mui/icons-material/TableChart';
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -264,6 +265,7 @@ export default function SideNavBar() {
 
     const [open, setOpen] = React.useState(false);
     const [isAuth, setIsAuth] = React.useState('false');
+    const [isAdminAuth, setIsAdminAuth] = React.useState('false');
     const [taskMenu, setTaskMenu] = React.useState(false);
     const [holidays, setHolidays] = React.useState(false);
     const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
@@ -304,7 +306,11 @@ export default function SideNavBar() {
 
     React.useEffect(() => {
         const subscription = loginSubject.subscribe((data) => {
-            setIsAuth(data.isAuth);
+            if (data.isAuth) {
+                setIsAuth(data.isAuth);
+            } else if (data.isAdminAuth) {
+                setIsAdminAuth(data.isAdminAuth);
+            }
         });
         return () => {
             subscription.unsubscribe();
@@ -589,68 +595,103 @@ export default function SideNavBar() {
                                     </ListItem>
                                 </>
                                 :
-                                <>
-                                    <ListItem
-                                        disablePadding
-                                        sx={{ display: 'block' }}
-                                        component={RouterLink}
-                                        to={'/login'}
-                                    >
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
+                                isAdminAuth == true ?
+                                    <>
+                                        <List component="div" disablePadding>
+                                            <ListItem
+                                                disablePadding sx={{ display: 'block' }}
+                                                component={RouterLink} to={'/admin/userdata'}
+                                            >
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Users Data" arrow placement="right">
+                                                            <TableChartIcon />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary="Users Data"
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
+                                                </ListItemButton>
+                                            </ListItem>
+
+                                        </List>
+                                    </>
+                                    :
+                                    <>
+                                        <ListItem
+                                            disablePadding
+                                            sx={{ display: 'block' }}
+                                            component={RouterLink}
+                                            to={'/login'}
                                         >
-                                            <ListItemIcon
+                                            <ListItemButton
                                                 sx={{
-                                                    minWidth: 0,
-                                                    mr: open ? 3 : 'auto',
-                                                    justifyContent: 'center',
+                                                    minHeight: 48,
+                                                    justifyContent: open ? 'initial' : 'center',
+                                                    px: 2.5,
                                                 }}
                                             >
-                                                <Tooltip title="Login" arrow placement="right">
-                                                    <LoginIcon />
-                                                </Tooltip>
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary="Login"
-                                                sx={{ opacity: open ? 1 : 0, color: "#333" }}
-                                            />
-                                        </ListItemButton>
-                                    </ListItem>
-                                    <ListItem
-                                        disablePadding
-                                        sx={{ display: 'block' }}
-                                        component={RouterLink}
-                                        to={'/register'}
-                                    >
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
+                                                <ListItemIcon
+                                                    sx={{
+                                                        minWidth: 0,
+                                                        mr: open ? 3 : 'auto',
+                                                        justifyContent: 'center',
+                                                    }}
+                                                >
+                                                    <Tooltip title="Login" arrow placement="right">
+                                                        <LoginIcon />
+                                                    </Tooltip>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary="Login"
+                                                    sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                />
+                                            </ListItemButton>
+                                        </ListItem>
+                                        <ListItem
+                                            disablePadding
+                                            sx={{ display: 'block' }}
+                                            component={RouterLink}
+                                            to={'/register'}
                                         >
-                                            <ListItemIcon
+                                            <ListItemButton
                                                 sx={{
-                                                    minWidth: 0,
-                                                    mr: open ? 3 : 'auto',
-                                                    justifyContent: 'center',
+                                                    minHeight: 48,
+                                                    justifyContent: open ? 'initial' : 'center',
+                                                    px: 2.5,
                                                 }}
                                             >
-                                                <Tooltip title="Sign Up" arrow placement="right">
-                                                    <SignUpIcon />
-                                                </Tooltip>
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary="Sign Up"
-                                                sx={{ opacity: open ? 1 : 0, color: "#333" }}
-                                            />
-                                        </ListItemButton>
-                                    </ListItem>
-                                </>
+                                                <ListItemIcon
+                                                    sx={{
+                                                        minWidth: 0,
+                                                        mr: open ? 3 : 'auto',
+                                                        justifyContent: 'center',
+                                                    }}
+                                                >
+                                                    <Tooltip title="Sign Up" arrow placement="right">
+                                                        <SignUpIcon />
+                                                    </Tooltip>
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary="Sign Up"
+                                                    sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                />
+                                            </ListItemButton>
+                                        </ListItem>
+                                    </>
                         }
                     </List>
                     <Divider />

@@ -6,11 +6,13 @@
       "login": "login",
       "register": "register",
       "logo": "upload-logo",
-      "forgetPassword": "forget-password"
+      "forgetPassword": "forget-password",
+      "adminLogin": "admin/login"
     },
     "get": {
       "forms": "forms",
-      "logo": "get-logo"
+      "logo": "get-logo",
+      "userdata": "admin/users"
     },
     "delete": {
       "form": "form"

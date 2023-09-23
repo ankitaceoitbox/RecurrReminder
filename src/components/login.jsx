@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { Subject } from 'rxjs';
 import LockIcon from '@mui/icons-material/Lock';
+import { AdminLogin } from '../services/adminlogin.service';
 
 export const loginSubject = new Subject();
 function LoginForm() {
@@ -15,6 +16,7 @@ function LoginForm() {
         email: '',
         password: '',
     });
+    const [selectAdminOrUser, setSelectOrAdminUser] = React.useState("");
 
     const [error, setError] = React.useState('');
 
@@ -27,16 +29,30 @@ function LoginForm() {
     };
 
     const userLogin = async () => {
+        setShowLoader(true);
         try {
-            setShowLoader(true);
-            const response = await UserLogin(formData);
-            toast.success('Logged In', {
-                position: 'top-right',
-                autoClose: 3000, // Time in milliseconds for the notification to automatically close
-            });
-            localStorage.setItem('isAuth', true);
-            loginSubject.next({ isAuth: true });
-            navigate('/');
+            if (selectAdminOrUser == 'admin') {
+                const response = await AdminLogin(formData);
+                toast.success('Logged In', {
+                    position: 'top-right',
+                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                });
+                localStorage.setItem('isAdminAuth', true);
+                loginSubject.next({ isAdminAuth: true });
+                navigate('/admin/userdata');
+            } else if (selectAdminOrUser == 'user') {
+                const response = await UserLogin(formData);
+                toast.success('Logged In', {
+                    position: 'top-right',
+                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                });
+                localStorage.setItem('isAuth', true);
+                loginSubject.next({ isAuth: true });
+                navigate('/');
+            } else {
+                setShowLoader(false);
+                toast.error("Please select user or admin.");
+            }
         } catch (error) {
             setShowLoader(false);
             toast.error('Invalid email or password', {
@@ -46,10 +62,6 @@ function LoginForm() {
             setError('Invalid email or password'); // Handle authentication error
         }
     };
-
-    React.useEffect(() => {
-        console.log(showLoader)
-    }, [])
 
     return (
         <>
@@ -78,6 +90,9 @@ function LoginForm() {
                                             aria-label="login"
                                             name="login"
                                             sx={{ display: 'flex', flexDirection: 'row' }} // Apply styles using sx prop
+                                            onChange={(e) => {
+                                                setSelectOrAdminUser(e.target.value);
+                                            }}
                                         >
                                             <FormControlLabel value="admin" control={<Radio />} label="Admin" />
                                             <FormControlLabel value="user" control={<Radio />} label="User" />
