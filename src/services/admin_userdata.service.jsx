@@ -6,7 +6,7 @@ const endPoints = config.recurring.get.userdata;
 
 export const AdminUsersDataService = (name, email) => {
     let api = `${URL}/${endPoints}`;
-    if (name && admin) {
+    if (name && email) {
         api += `?name=${name}&email=${email}`;
     }
     return httpservice.get(api, {
