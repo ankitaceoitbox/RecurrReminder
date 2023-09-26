@@ -211,15 +211,16 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         });
     };
 
-    const handleWAattachmentChange = (e) => {
+    const handleWAattachmentChange = async (e) => {
         const files = e.target.files;
         const attachments = Array.from(files).map(data => data);
         setWaAttachmentLength(attachments.length);
+        const attachmentsArrayObject = await handleFileUpload(files);
         setFormData({
             ...formData,
             whatsappFields: {
                 ...formData.whatsappFields,
-                attachment: attachments,
+                attachment: attachmentsArrayObject,
             },
         });
     };
@@ -235,21 +236,30 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     };
 
     const handleEmailIDCcChange = (e) => {
+        let cc = [];
+        if (e.target.value !== '') {
+            cc = [...e.target.value.split(",")];
+        }
         setFormData({
             ...formData,
             emailFields: {
                 ...formData.emailFields,
-                emailIDCc: e.target.value.split(','),
+                emailIDCc: cc,
             },
         });
     };
 
     const handleEmailIDBCcChange = (e) => {
+        let bcc = [];
+        console.log(e.target.value)
+        if (e.target.value !== '') {
+            bcc = [...e.target.value.split(",")];
+        }
         setFormData({
             ...formData,
             emailFields: {
                 ...formData.emailFields,
-                emailIDBCc: e.target.value.split(','),
+                emailIDBCc: bcc,
             },
         });
     };
@@ -264,15 +274,16 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         });
     };
 
-    const handleEmailAttachmentChange = (e) => {
+    const handleEmailAttachmentChange = async (e) => {
         const files = e.target.files;
         const attachments = Array.from(files).map(data => data);
         setEmailAttachmentLength(attachments.length);
+        const attachmentsArrayObject = await handleFileUpload(files);
         setFormData({
             ...formData,
             emailFields: {
-                ...formData.whatsappFields,
-                attachment: attachments,
+                ...formData.emailFields,
+                attachment: attachmentsArrayObject,
             },
         });
     };
@@ -312,32 +323,41 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         }
     };
 
-    const handleSelectedHolidays = (holidays) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            commonFields: {
-                ...prevData.commonFields,
-                skipDates: [...holidays],
-            },
-        }));
-    }
-
-    const handleSelectedWeekDay = (days) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            commonFields: {
-                ...prevData.commonFields,
-                skipDays: [...days],
-            },
-        }));
-    }
-
     const handleFormSubmit = async () => {
         setSubmitClicked(true);
         const res = await onHandleContactFormSubmit(formData);
         if (res) {
             setSubmitClicked(false);
         }
+    }
+
+    function handleFileUpload(files) {
+        return new Promise((resolve, reject) => {
+            const fileDetailsArray = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const filename = file.name;
+                const contentType = file.type;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const content = e.target.result; // Content as a Buffer (or ArrayBuffer)
+                    // const contentBase64 = Buffer.from(content).toString('base64');
+                    const fileDetails = {
+                        filename: filename,
+                        contentType: contentType,
+                        content: content
+                    };
+                    fileDetailsArray.push(fileDetails);
+                    if (fileDetailsArray.length === files.length) {
+                        resolve(fileDetailsArray);
+                    }
+                };
+                reader.onerror = function (error) {
+                    reject(error);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
     }
 
     useEffect(() => {
@@ -601,7 +621,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             accept="*/*"
                                             multiple
                                             type="file"
-                                            id="file-email-upload-input"
                                             onChange={handleEmailAttachmentChange}
                                         />
                                         <label htmlFor="file-email-upload-input">

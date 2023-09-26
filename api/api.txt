@@ -154,4 +154,15 @@ skipDays:[]
                 success: true, message: "Admin Logged out successfully."
             }
 
+15. *Email Setup*
+   - *Endpoint:* `post /setup/email`
+   - *Accepts:* {email,password}
+   - *Returns:* { success: false, message: "Email and password are valid for sending emails." }
+
+
+16. *WA Setup*
+   - *Endpoint:* `post /setup/wa`
+   - *Accepts:* {username,password}
+   - *Returns:* {success:true,message:"Whatsapp credentails saved."}
+
 // admin credentials - email:rsuneel47@gmail.com,password:suneel

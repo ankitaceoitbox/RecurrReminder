@@ -7,12 +7,15 @@
       "register": "register",
       "logo": "upload-logo",
       "forgetPassword": "forget-password",
-      "adminLogin": "admin/login"
+      "adminLogin": "admin/login",
+      "setupemail": "setup/email",
+      "setupwhatsapp": "setup/wa"
     },
     "get": {
       "forms": "forms",
       "logo": "get-logo",
-      "userdata": "admin/users"
+      "userdata": "admin/users",
+      "adminlogout": "admin/logout"
     },
     "delete": {
       "form": "form"

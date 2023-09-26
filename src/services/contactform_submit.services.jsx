@@ -30,5 +30,6 @@ export const ContactFormSubmit = (formData) => {
     finalData.append("bcc", emailFields.emailIDBCc);
     finalData.append("emailSubject", emailFields.subjectLine);
     finalData.append("emailBody", emailFields.mailBodyHTML);
+    finalData.append("emailAttachments", emailFields.attachment);
     return httpservice.post(api, finalData, { headers, withCredentials: true });
 }

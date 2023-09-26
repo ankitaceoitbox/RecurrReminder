@@ -25,7 +25,7 @@ import LogoutIcon from '@mui/icons-material/ExitToApp';
 import { loginSubject } from './login';
 import { Link as RouterLink } from 'react-router-dom'; // If you're using React Router
 import Tooltip from '@mui/material/Tooltip';
-import { Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
 import { ExpandLess } from "@mui/icons-material";
 import { ExpandMore } from "@mui/icons-material";
 import { UploadLogo, getLogo } from '../services/logo.service';
@@ -36,7 +36,12 @@ import DateChipsSelector from './multipledateselector';
 import WeekdaySelector from './multipleweekselector';
 import { AddHolidays } from '../services/addholidays.service';
 import TableChartIcon from '@mui/icons-material/TableChart';
-const drawerWidth = 240;
+import { AdminLogoutService } from '../services/adminlogout.service';
+import { useNavigate } from "react-router-dom"
+import { SetUpEmailService } from '../services/emailsetup.service';
+import { SetUpWhatsappService } from '../services/whatsappsetup.service';
+
+const drawerWidth = 250;
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -258,7 +263,152 @@ const HolidaysDialog = ({ open, onClose }) => {
         </Dialog>
     </>
 }
+const EmailWhatsAppDialog = ({ open, onClose }) => {
+    const [email, setEmail] = React.useState('');
+    const [emailPassword, setEmailPassword] = React.useState('');
+    const [emailLoader, setEmailLoader] = React.useState(false);
+    const [whatsapp, setWhatsapp] = React.useState('');
+    const [whatsappPassword, setWhatsappPassword] = React.useState('');
+    const [whatsappLoader, setWhatsappLoader] = React.useState(false);
 
+    const emailSetup = async () => {
+        setEmailLoader(true);
+        try {
+            const response = await SetUpEmailService({ email, password: emailPassword });
+            if (response.data.success) {
+                toast.success("Email Setup is successfull");
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (e) {
+            toast.error('Email and password are not valid for sending emails,please enter correct credentials.');
+        }
+        setEmailLoader(false);
+    }
+
+    const whatsappSetup = async () => {
+        setWhatsappLoader(true);
+        try {
+            const response = await SetUpWhatsappService({ username: whatsapp, password: whatsappPassword });
+            if (response.data.success) {
+                toast.success("Whatsapp Setup is successfull");
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (e) {
+        }
+        setWhatsappLoader(false);
+    }
+    return <>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="xs"
+            fullWidth
+        >
+            <DialogTitle>Email & Whatsapp Settings</DialogTitle>
+            <DialogContent>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Email Address"
+                            autoFocus
+                            size={"small"}
+                            value={email}
+                            onChange={(e) => { setEmail(e.target.value) }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="WhatsApp Api"
+                            size={"small"}
+                            value={whatsapp}
+                            onChange={(e) => { setWhatsapp(e.target.value) }}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            margin="normal"
+                            type='password'
+                            required
+                            fullWidth
+                            label="Email Password"
+                            size={"small"}
+                            value={emailPassword}
+                            onChange={(e) => { setEmailPassword(e.target.value) }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            margin="normal"
+                            type='password'
+                            required
+                            fullWidth
+                            label="WhatsApp Password"
+                            size={"small"}
+                            value={whatsappPassword}
+                            onChange={(e) => { setWhatsappPassword(e.target.value) }}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        {
+                            emailLoader == false ? <>
+                                <Button
+                                    type="button"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2 }}
+                                    onClick={emailSetup}
+                                    disabled={emailSetup == '' || emailPassword == ''}
+                                >
+                                    Email SetUp
+                                </Button>
+                            </> : <div style={{ display: "flex", justifyContent: "center", marginTop: "2px" }}>
+                                <CircularProgress color="primary" size={50} thickness={4} />
+                            </div>
+                        }
+                    </Grid>
+                    <Grid item xs={6}>
+                        {
+                            whatsappLoader == false ? <>
+                                <Button
+                                    type="button" // Change to type="submit" if using form submission
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2 }}
+                                    onClick={whatsappSetup}
+                                    disabled={whatsappPassword == '' || whatsapp == ''}
+                                >
+                                    Whatsapp SetUp
+                                </Button>
+                            </> : <div style={{ display: "flex", justifyContent: "center", marginTop: "2px" }}>
+                                <CircularProgress color="primary" size={50} thickness={4} />
+                            </div>
+                        }
+                    </Grid>
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    onClick={onClose}
+                >
+                    Close
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </>
+}
 export default function SideNavBar() {
     const theme = useTheme();
     const defaultImg = "https://drive.google.com/uc?export=view&id=1WEptUger6Bqs1OHLN9znAqtF06x9OJRk";
@@ -271,6 +421,8 @@ export default function SideNavBar() {
     const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
     const [profileImage, setProfileImage] = React.useState(defaultImg);
     const [isHolidayDialogOpen, setIsHolidayDialogOpen] = React.useState(false);
+    const [isEmailWhatsAppDialogOpen, setIsEmailWhatsAppDialogOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     /** This is for handling Holidays dialog */
     const handleHolidayDialogOpen = () => {
@@ -279,7 +431,13 @@ export default function SideNavBar() {
     const handleHolidayDialogClose = () => {
         setIsHolidayDialogOpen(false);
     };
-
+    /** this is for email whatsapp settings */
+    const handleEmailWatsAppDialogOpen = () => {
+        setIsEmailWhatsAppDialogOpen(true);
+    }
+    const handleEmailWatsAppDialogclose = () => {
+        setIsEmailWhatsAppDialogOpen(false);
+    }
     const handleProfileImageClick = () => {
         setImageDialogOpen(true);
     }
@@ -299,16 +457,22 @@ export default function SideNavBar() {
         setTaskMenu(false);
     };
 
-    const handleDrawerButtonClick = () => {
-        setOpen(!open);
-        setTaskMenu(false);
-    };
+    const adminLogOut = async () => {
+        const response = await AdminLogoutService();
+        if (response.data.success == true) {
+            toast.success("logged out");
+            localStorage.removeItem('isAdminAuth');
+            loginSubject.next({ isAdminAuth: false });
+            navigate("/login");
+        }
+    }
 
     React.useEffect(() => {
         const subscription = loginSubject.subscribe((data) => {
-            if (data.isAuth) {
+            if (data.isAuth == false || data.isAuth == true) {
                 setIsAuth(data.isAuth);
-            } else if (data.isAdminAuth) {
+            }
+            if (data.isAdminAuth == false || data.isAdminAuth == true) {
                 setIsAdminAuth(data.isAdminAuth);
             }
         });
@@ -418,13 +582,13 @@ export default function SideNavBar() {
                                             }}
                                         >
                                             <ListItemIcon>
-                                                <Tooltip title="Task Menu" arrow placement="right">
+                                                <Tooltip title="Recurring Task" arrow placement="right">
                                                     <EventIcon
                                                         sx={{ marginLeft: "3px" }}
                                                     />
                                                 </Tooltip>
                                             </ListItemIcon>
-                                            <ListItemText primary="Task Menu" />
+                                            <ListItemText primary="Recurring Task" />
                                             {taskMenu ? <ExpandLess /> : <ExpandMore />}
                                         </ListItemButton>
                                     </ListItem>
@@ -495,7 +659,7 @@ export default function SideNavBar() {
                                         </List>
                                     </Collapse>
                                     <Divider />
-                                    <ListItem key="Holidays" disablePadding>
+                                    <ListItem key="Common Settings" disablePadding>
                                         <ListItemButton
                                             onClick={() => {
                                                 setHolidays(!holidays);
@@ -505,13 +669,13 @@ export default function SideNavBar() {
                                             }}
                                         >
                                             <ListItemIcon>
-                                                <Tooltip title="Holidays" arrow placement="right">
+                                                <Tooltip title="Common Settings" arrow placement="right">
                                                     <DateRangeIcon
                                                         sx={{ marginLeft: "3px" }}
                                                     />
                                                 </Tooltip>
                                             </ListItemIcon>
-                                            <ListItemText primary="Holidays" />
+                                            <ListItemText primary="Common Settings" />
                                             {holidays ? <ExpandLess /> : <ExpandMore />}
                                         </ListItemButton>
                                     </ListItem>
@@ -547,13 +711,34 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="Dates/Weeks"
+                                                        primary="Holidays"
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
-                                                    {/* <HolidaysDialog
-                                                    open={isHolidayDialogOpen}
-                                                    onClose={handleHolidayDialogClose}
-                                                /> */}
+                                                </ListItemButton>
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                    onClick={handleEmailWatsAppDialogOpen}
+
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
+                                                            <EventIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary="Email/WhatsApp"
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
                                                 </ListItemButton>
                                             </ListItem>
                                         </List>
@@ -626,7 +811,44 @@ export default function SideNavBar() {
                                                     />
                                                 </ListItemButton>
                                             </ListItem>
-
+                                        </List>
+                                        <List >
+                                            <ListItem
+                                                disablePadding sx={{ display: 'block' }}
+                                                component={RouterLink}
+                                            >
+                                                <Typography sx={{ marginLeft: "auto" }}>
+                                                    <ListItem
+                                                        disablePadding
+                                                        sx={{ display: 'block' }}
+                                                        component={RouterLink}
+                                                        onClick={() => {
+                                                            adminLogOut();
+                                                        }}
+                                                    >
+                                                        <ListItemButton
+                                                            sx={{
+                                                                minHeight: 48,
+                                                                justifyContent: open ? 'initial' : 'center',
+                                                                px: 2.5,
+                                                            }}
+                                                        >
+                                                            <ListItemIcon
+                                                                sx={{
+                                                                    minWidth: 0,
+                                                                    justifyContent: 'center',
+                                                                }}
+                                                            >
+                                                                <LogoutIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText
+                                                                primary="LogOut"
+                                                                sx={{ color: "#333", marginLeft: "26px" }}
+                                                            />
+                                                        </ListItemButton>
+                                                    </ListItem>
+                                                </Typography>
+                                            </ListItem>
                                         </List>
                                     </>
                                     :
@@ -702,6 +924,15 @@ export default function SideNavBar() {
                     <HolidaysDialog
                         open={isHolidayDialogOpen}
                         onClose={handleHolidayDialogClose}
+                    />
+                )
+            }
+            {/* this is for email settings */}
+            {
+                isEmailWhatsAppDialogOpen && (
+                    <EmailWhatsAppDialog
+                        open={isEmailWhatsAppDialogOpen}
+                        onClose={handleEmailWatsAppDialogclose}
                     />
                 )
             }

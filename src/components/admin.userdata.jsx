@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
-import { Button, Card, CardContent, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Button, Card, CardContent, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import Loader from './loader';
 
 function AdminUsersData() {
@@ -42,7 +42,7 @@ function AdminUsersData() {
 
     return <>
         <div style={{ marginTop: "60px" }}>
-            <Grid container spacing={1} justifyContent="center">
+            <Grid container spacing={1} >
                 <Grid item xs={12} sm={6} md={2}>
                     <TextField
                         margin="normal"
@@ -89,26 +89,29 @@ function AdminUsersData() {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid container spacing={2} justifyContent="center">
-                {usersData.map(user => (
-                    <Grid item key={user._id} xs={12} sm={6} md={3}>
-                        <Paper elevation={6}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h6" gutterBottom>
-                                        {user.name}
-                                    </Typography>
-                                    <Typography color="textSecondary" gutterBottom>
-                                        {user.email}
-                                    </Typography>
-                                    <Typography>
-                                        Reminder Count: {user.reminderCount}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Paper>
-                    </Grid>
-                ))}
+            <Grid container spacing={1} >
+                <Grid item xs={12} md={11.5} sm={12} >
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>Reminder Count</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {usersData.map(user => (
+                                    <TableRow key={user._id}>
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.reminderCount}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
             </Grid>
         </div>
         {
