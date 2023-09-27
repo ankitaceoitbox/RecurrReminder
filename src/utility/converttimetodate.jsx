@@ -16,7 +16,6 @@ function setTimeToAMPM(time) {
     timeInDateObject.setHours(hours);
     timeInDateObject.setMinutes(minutes);
     timeInDateObject.setSeconds(0); // Optional: Set seconds to 0
-
     return timeInDateObject;
 }
 

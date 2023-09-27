@@ -58,6 +58,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
     }, []);
 
     useEffect(() => {
+        console.log(allData);
         setAllFormData(allData);
     }, [allData]);
 
@@ -241,6 +242,26 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         { field: 'company', headerName: 'Company', width: 150 },
         { field: 'isActiveWA', headerName: 'WhatsApp Activate', width: 150 },
         { field: 'waMessage', headerName: 'WhatsApp Message', width: 150 },
+        {
+            field: 'WaAttachement',
+            headerName: 'Whatsapp Attachments',
+            width: 200,
+            renderCell: (params) => {
+                const attachmentUrls = params.value || [];
+                return (
+                    <TableCell>
+                        {attachmentUrls.map((url, index) => (
+                            <div key={index}>
+                                <a href={url} target="_blank">
+                                    Click Here
+                                </a>
+                                <span>,</span>
+                            </div>
+                        ))}
+                    </TableCell>
+                );
+            }
+        },
         { field: 'mobile', headerName: 'WhatsApp Phone', width: 150 },
         { field: 'isActiveEmail', headerName: 'Email Activate', width: 150 },
         { field: 'email', headerName: 'Email ID', width: 150 },
@@ -248,6 +269,26 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         { field: 'bcc', headerName: 'Email Bcc', width: 150 },
         { field: 'emailSubject', headerName: 'Email Subject', width: 150 },
         { field: 'emailBody', headerName: 'Email Body', width: 150 },
+        {
+            field: 'emailAttachment',
+            headerName: 'Email Attachment',
+            width: 200,
+            renderCell: (params) => {
+                const attachmentUrls = params.value || [];
+                return (
+                    <TableCell>
+                        {attachmentUrls.map((url, index) => (
+                            <div key={index}>
+                                <a href={url} target="_blank" rel="noopener noreferrer">
+                                    Click Here
+                                </a>
+                                <span>,</span>
+                            </div>
+                        ))}
+                    </TableCell>
+                );
+            }
+        },
         { field: 'endDate', headerName: 'End Date', width: 150 },
         { field: '_id', headerName: 'Unique Id', width: 100 },
     ];
@@ -264,6 +305,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         company: item.company,
         isActiveWA: String(item.isActiveWA),
         waMessage: item.waMessage,
+        WaAttachement: item.WaAttachement,
         mobile: item.mobile,
         isActiveEmail: item.isActiveEmail,
         email: item.email,
@@ -271,6 +313,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         bcc: item.bcc?.join(','),
         emailSubject: item.emailSubject,
         emailBody: item.emailBody,
+        emailAttachment: item.emailAttachments,
         endDate: formatDateToIndianTime(item.endDate),
         _id: item._id,
     }));
@@ -305,6 +348,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     },
                                 },
                             }}
+                            stickyHeader
                         />
                     </Paper>
                 </Grid>
