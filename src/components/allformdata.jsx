@@ -58,7 +58,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
     }, []);
 
     useEffect(() => {
-        console.log(allData);
         setAllFormData(allData);
     }, [allData]);
 
@@ -126,15 +125,15 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             ...prevFormData,
             commonFields: {
                 ...prevFormData.commonFields,
-                startDate: editedData.startDate,
+                startDate: null,
                 day: editedData.day,
                 every: editedData.every,
                 frequency: editedData.frequency,
                 skipHolidays: editedData.skipHolidays,
-                sendTime: editedData.sendTime,
+                sendTime: null,
                 name: editedData.name,
                 company: editedData.company,
-                endsOnDate: editedData.endDate,
+                endsOnDate: null,
             },
             isWAChecked: editedData.isActiveWA,
             whatsappFields: {
@@ -192,23 +191,13 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             toolbar: false,
             disableColumnMenu: true,
             renderCell: (params) => {
-                if (params.row.id === editRowIndex) {
-                    return (
-                        <TableCell>
-                            <SaveIcon
-                                sx={{ fontSize: "18px" }}
-                                onClick={() => handleSaveChanges(params.row.id)} />
-                        </TableCell>
-                    );
-                } else {
-                    return (
-                        <TableCell>
-                            <EditIcon
-                                sx={{ fontSize: "18px" }}
-                                onClick={() => handleEditClick(params.row.id, params.row._id)} />
-                        </TableCell>
-                    );
-                }
+                return (
+                    <TableCell>
+                        <EditIcon
+                            sx={{ fontSize: "18px" }}
+                            onClick={() => handleEditClick(params.row.id, params.row._id)} />
+                    </TableCell>
+                );
             },
         },
         {
@@ -255,7 +244,9 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                 <a href={url} target="_blank">
                                     Click Here
                                 </a>
-                                <span>,</span>
+                                {
+                                    index < attachmentUrls.length - 1 ? <span>,</span> : <></>
+                                }
                             </div>
                         ))}
                     </TableCell>
@@ -282,7 +273,9 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                 <a href={url} target="_blank" rel="noopener noreferrer">
                                     Click Here
                                 </a>
-                                <span>,</span>
+                                {
+                                    index < attachmentUrls.length - 1 ? <span>,</span> : <></>
+                                }
                             </div>
                         ))}
                     </TableCell>

@@ -521,44 +521,6 @@ export default function SideNavBar() {
                                 </>
                             </Tooltip>
                         </Typography>
-                        {
-                            isAuth == true ?
-                                <Typography sx={{ marginLeft: "auto" }}>
-                                    <ListItem
-                                        disablePadding
-                                        sx={{ display: 'block' }}
-                                        component={RouterLink}
-                                        to={'/login'}
-                                        onClick={() => {
-                                            localStorage.removeItem('isAuth');
-                                            loginSubject.next({ isAuth: false });
-                                        }}
-                                    >
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
-                                        >
-                                            <ListItemIcon
-                                                sx={{
-                                                    minWidth: 0,
-                                                    justifyContent: 'center',
-                                                }}
-                                            >
-                                                <LogoutIcon />
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary="LogOut"
-                                                sx={{ color: "#333", marginLeft: "6px" }}
-                                            />
-                                        </ListItemButton>
-                                    </ListItem>
-                                </Typography>
-                                :
-                                ''
-                        }
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>

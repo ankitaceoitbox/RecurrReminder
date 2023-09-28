@@ -24,11 +24,10 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         return false;
     });
     const [submitClicked, setSubmitClicked] = useState(false);
-    const [emailAttachmentLength, setEmailAttachmentLength] = useState(0);
-    const [waAttachmentLength, setWaAttachmentLength] = useState(0);
 
     const [formData, setFormData] = useState(() => {
         if (autoFillData) {
+            console.log(autoFillData.commonFields.startDate)
             return autoFillData;
         } else {
             return {
