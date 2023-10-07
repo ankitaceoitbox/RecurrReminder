@@ -5,7 +5,7 @@ import { UserRegister } from '../services/register.service';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
+import './sidenavbar.css';
 function RegistrationForm() {
     const navigate = useNavigate();
     const [formData, setFormData] = React.useState({
@@ -31,7 +31,6 @@ function RegistrationForm() {
         e.preventDefault();
         try {
             const response = await UserRegister(formData);
-            console.log(response);
             toast.success('User registered successfully.', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close
@@ -52,16 +51,20 @@ function RegistrationForm() {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: "80px"
+                marginTop: "29px"
             }}
+            className="registartionForm"
         >
             <Container component="main" maxWidth="sm">
                 <CssBaseline />
-                <Paper elevation={6} sx={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Paper elevation={6} sx={{
+                    padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: "transparent", border: "1px solid rgb(180 180 180)",
+                    boxShadow: "rgb(180 180 180) 1px 1px 14px 1px"
+                }}>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <PersonAddIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)" }}>
                         Sign up
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -77,6 +80,24 @@ function RegistrationForm() {
                                     autoFocus
                                     value={formData.firstName}
                                     onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -89,6 +110,84 @@ function RegistrationForm() {
                                     autoComplete="family-name"
                                     value={formData.lastName}
                                     onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="contactNo"
+                                    label="Contact No."
+                                    name="contactNo"
+                                    autoComplete="tel"
+                                    value={formData.contactNo}
+                                    onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email Address"
+                                    name="email"
+                                    autoComplete="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -101,30 +200,24 @@ function RegistrationForm() {
                                     autoComplete="company-name"
                                     value={formData.companyName}
                                     onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="contactNo"
-                                    label="Contact No."
-                                    name="contactNo"
-                                    autoComplete="tel"
-                                    value={formData.contactNo}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="Email Address"
-                                    name="email"
-                                    autoComplete="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -138,6 +231,24 @@ function RegistrationForm() {
                                     autoComplete="new-password"
                                     value={formData.password}
                                     onChange={handleInputChange}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -151,12 +262,13 @@ function RegistrationForm() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            style={{ background: "rgb(180 180 180)", color: "black" }}
                         >
                             Sign Up
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2" to="/login">
+                                <Link href="#" variant="body2" to="/login" style={{ color: "rgb(180 180 180)" }} >
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

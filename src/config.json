@@ -15,7 +15,8 @@
       "forms": "forms",
       "logo": "get-logo",
       "userdata": "admin/users",
-      "adminlogout": "admin/logout"
+      "adminlogout": "admin/logout",
+      "emailWhatsAppDetails": "me"
     },
     "delete": {
       "form": "form"

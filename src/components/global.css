@@ -5,3 +5,12 @@
   padding: 1rem 1rem;
   border-bottom: 1px solid gray;
 }
+
+.login-form {
+  height: 100vh;
+  background-image: url("../../public/logo1.jpeg");
+  background-size: cover;
+}
+body {
+  background-color: #343434;
+}

@@ -40,6 +40,7 @@ import { AdminLogoutService } from '../services/adminlogout.service';
 import { useNavigate } from "react-router-dom"
 import { SetUpEmailService } from '../services/emailsetup.service';
 import { SetUpWhatsappService } from '../services/whatsappsetup.service';
+import WhatsAppEmailDetails from './WhatsAppEmailDetails';
 
 const drawerWidth = 250;
 
@@ -409,6 +410,32 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
         </Dialog>
     </>
 }
+const EmailWhatsAppDetails = ({ open, onClose }) => {
+    return <>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="xs"
+            fullWidth
+        >
+            <DialogTitle>Email & Whatsapp Settings</DialogTitle>
+            <DialogContent>
+                <WhatsAppEmailDetails />
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    onClick={onClose}
+                >
+                    Close
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </>
+}
+
+
+
 export default function SideNavBar() {
     const theme = useTheme();
     const defaultImg = "https://drive.google.com/uc?export=view&id=1WEptUger6Bqs1OHLN9znAqtF06x9OJRk";
@@ -422,6 +449,7 @@ export default function SideNavBar() {
     const [profileImage, setProfileImage] = React.useState(defaultImg);
     const [isHolidayDialogOpen, setIsHolidayDialogOpen] = React.useState(false);
     const [isEmailWhatsAppDialogOpen, setIsEmailWhatsAppDialogOpen] = React.useState(false);
+    const [isEmailWatsAppDetailsTableOpen, setEmailWatsAppDetailsTableOpen] = React.useState(false);
     const navigate = useNavigate();
 
     /** This is for handling Holidays dialog */
@@ -441,7 +469,12 @@ export default function SideNavBar() {
     const handleProfileImageClick = () => {
         setImageDialogOpen(true);
     }
-
+    const handleEmailWatsAppDetailsTableOpen = () => {
+        setEmailWatsAppDetailsTableOpen(true);
+    }
+    const handleEmailWatsAppDetailsTableClose = () => {
+        setEmailWatsAppDetailsTableOpen(false);
+    }
     const handleProfileCloseDialog = (img) => {
         setImageDialogOpen(false);
         const response = String(img) === "[object Object]" ? defaultImg : img;
@@ -485,8 +518,8 @@ export default function SideNavBar() {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="fixed" open={open} sx={{ background: "#eee" }}>
-                    <Toolbar>
+                <AppBar position="fixed" open={open} sx={{ background: "#bcbc42" }}>
+                    <Toolbar style={{ width: '100%', display: 'flex', zIndex: "1111" }}>
                         <IconButton
                             color="inherit"
                             aria-label="open drawer"
@@ -500,28 +533,50 @@ export default function SideNavBar() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h6" noWrap component="div">
-                            <Tooltip title="Edit" arrow>
+                        {
+                            isAuth == true || isAdminAuth == true ?
                                 <>
-                                    <img
-                                        src={profileImage}
-                                        style={{
-                                            width: "100%",
-                                            objectFit: "contain",
-                                            height: "55px",
-                                            cursor: "pointer"
-                                        }}
-                                        onClick={handleProfileImageClick}
-                                    />
-                                    <ImageDialog
-                                        open={imageDialogOpen}
-                                        onClose={handleProfileCloseDialog}
-                                        setProfileImage={setProfileImage}
-                                    />
+                                    <Typography variant="h6" noWrap component="div">
+                                        <Tooltip title="Edit" arrow>
+                                            <>
+                                                <img
+                                                    src={profileImage}
+                                                    style={{
+                                                        width: "100%",
+                                                        objectFit: "contain",
+                                                        height: "55px",
+                                                        cursor: "pointer"
+                                                    }}
+                                                    onClick={handleProfileImageClick}
+                                                />
+                                                <ImageDialog
+                                                    open={imageDialogOpen}
+                                                    onClose={handleProfileCloseDialog}
+                                                    setProfileImage={setProfileImage}
+                                                />
+                                            </>
+                                        </Tooltip>
+                                    </Typography>
                                 </>
-                            </Tooltip>
-                        </Typography>
+                                : <></>
+                        }
                     </Toolbar>
+                    {isAuth == true ? (
+                        <Typography variant="h4" noWrap component="div" style={{
+                            color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
+                            background: "transparent", zIndex: 0, padding: "5px 5px"
+                        }}>
+                            Task
+                        </Typography>
+                    ) : null}
+                    {isAdminAuth == true ? (
+                        <Typography variant="h4" noWrap component="div" style={{
+                            color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
+                            background: "transparent", zIndex: 0, padding: "5px 5px"
+                        }}>
+                            Company Details
+                        </Typography>
+                    ) : null}
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
                     <DrawerHeader>
@@ -702,6 +757,33 @@ export default function SideNavBar() {
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
+
+                                                {/*  */}
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                    onClick={handleEmailWatsAppDetailsTableOpen}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
+                                                            <EventIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary="User Table"
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
+                                                </ListItemButton>
+                                                {/*  */}
                                             </ListItem>
                                         </List>
                                     </Collapse>
@@ -880,7 +962,7 @@ export default function SideNavBar() {
                     </List>
                     <Divider />
                 </Drawer>
-            </Box>
+            </Box >
             {
                 isHolidayDialogOpen && (
                     <HolidaysDialog
@@ -895,6 +977,15 @@ export default function SideNavBar() {
                     <EmailWhatsAppDialog
                         open={isEmailWhatsAppDialogOpen}
                         onClose={handleEmailWatsAppDialogclose}
+                    />
+                )
+            }
+            {/* this is for email whatsappDetailse */}
+            {
+                isEmailWatsAppDetailsTableOpen && (
+                    <EmailWhatsAppDetails
+                        open={isEmailWatsAppDetailsTableOpen}
+                        onClose={handleEmailWatsAppDetailsTableClose}
                     />
                 )
             }

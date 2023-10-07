@@ -4,12 +4,11 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CircularProgress from '@mui/material/CircularProgress';
 import { loginSubject } from './login';
 import setTimeToAMPM from '../utility/converttimetodate';
 import { areEmailsValid } from '../utility/validations';
-
+import './allformdata.css';
 function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop }) {
     const [isWAChecked, setIsWAChecked] = useState(() => {
         if (autoFillData) {
@@ -27,7 +26,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
 
     const [formData, setFormData] = useState(() => {
         if (autoFillData) {
-            console.log(autoFillData.commonFields.startDate)
             return autoFillData;
         } else {
             return {
@@ -66,6 +64,9 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     const [ccEmailError, setCcEmailError] = useState(false);
     const [startDateError, setStartDateError] = useState(false);
     const [endsOnDateError, setEndsOnDateError] = useState(false);
+    const [wtsappAttachmentError, setWtsappAttachmentError] = useState(false);
+    const [emailAttachmentError, setEmailAttachmentError] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const handleStartDateChange = (date) => {
         if (date && dayjs(date).isBefore(dayjs(), 'day')) {
@@ -223,21 +224,18 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     };
 
     const handleWAattachmentChange = async (e) => {
-        // const files = e.target.files;
-        // const attachments = Array.from(files).map(data => data);
-        // setWaAttachmentLength(attachments.length);
-        // const attachmentsArrayObject = await handleFileUpload(files);
-        // setFormData({
-        //     ...formData,
-        // whatsappFields: {
-        //     ...formData.whatsappFields,
-        //     attachment: attachmentsArrayObject,
-        // },
-        // });
-        let attachment = e.target.value || [];
+        let attachment = e.target.value || "";
         if (attachment) {
             attachment = attachment.split(',');
         }
+        for (let i = 0; i < attachment.length; i++) {
+            const url = attachment[i];
+            if (url.indexOf('https://drive.google.com') == -1) {
+                setWtsappAttachmentError(true);
+                return;
+            }
+        }
+        setWtsappAttachmentError(false);
         setFormData({
             ...formData,
             whatsappFields: {
@@ -315,21 +313,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     };
 
     const handleEmailAttachmentChange = async (e) => {
-        // const files = e.target.files;
-        // const attachments = Array.from(files).map(data => data);
-        // setEmailAttachmentLength(attachments.length);
-        // const attachmentsArrayObject = await handleFileUpload(files);
-        // setFormData({
-        //     ...formData,
-        //     emailFields: {
-        //         ...formData.emailFields,
-        //         attachment: attachmentsArrayObject,
-        //     },
-        // });
-        let attachment = e.target.value || [];
+        let attachment = e.target.value || "";
+        console.log(attachment);
         if (attachment) {
             attachment = attachment.split(',');
         }
+        for (let i = 0; i < attachment.length; i++) {
+            const url = attachment[i];
+            if (url.indexOf("https://drive.google.com") == -1) {
+                setEmailAttachmentError(true);
+                return;
+            }
+        }
+        setEmailAttachmentError(false);
         setFormData({
             ...formData,
             emailFields: {
@@ -399,7 +395,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     const content = e.target.result; // Content as a Buffer (or ArrayBuffer)
-                    // const contentBase64 = Buffer.from(content).toString('base64');
                     const fileDetails = {
                         filename: filename,
                         contentType: contentType,
@@ -413,7 +408,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                 reader.onerror = function (error) {
                     reject(error);
                 };
-                // reader.readAsArrayBuffer(file);
                 reader.readAsDataURL(file);
             }
         });
@@ -463,7 +457,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     }, []);
 
     return (
-        <>
+        <div className='container'>
             <Box
                 sx={{
                     display: 'flex',
@@ -472,16 +466,22 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                     mt: marginTop ? marginTop : "80px",
                     width: '100%', // Set width to 100%
                 }}
+                className="contact-form-container"
             >
                 <Paper
                     elevation={3}
                     sx={{
                         padding: '1rem',
-                        width: { xs: '90%', sm: width != undefined ? width : '50%' },
+                        width: { xs: '90%', sm: width != undefined ? width : '45%' },
+                    }}
+                    style={{
+                        background: "transparent",
+                        border: "1px solid rgb(180 180 180)",
+                        boxShadow: "rgb(180 180 180) 1px 1px 14px 1px"
                     }}
                 >
                     <Box component="form" noValidate>
-                        <h1 style={{ textAlign: "center", marginTop: 0 }}>Recurring Reminder</h1>
+                        <h4 style={{ textAlign: "center", marginTop: 0, color: "rgb(180 180 180)" }}>Recurring Reminder</h4>
                     </Box>
                     <Box component="form" noValidate>
                         <Grid container spacing={2}>
@@ -489,7 +489,34 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         label="Start Date"
-                                        sx={{ width: "100%" }}
+                                        sx={{
+                                            width: "100%",
+                                            "& .MuiInputLabel-root": {
+                                                color: "rgb(180 180 180)", // Color of the label
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input on hover
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input when focused
+                                                },
+                                                "& input": {
+                                                    color: "#fff", // Color of the input text
+                                                },
+                                                "& .MuiIconButton-root": {
+                                                    color: "rgb(180 180 180)", // Color of the icon
+                                                },
+                                            },
+                                            "& .MuiMenu-paper": {
+                                                backgroundColor: "#f2f2f2", // Background color of the dropdown menu
+                                                border: "1px solid #ccc", // Border color for the dropdown menu
+                                                borderRadius: "4px", // Border radius for the dropdown menu
+                                            },
+                                        }}
                                         onChange={handleStartDateChange}
                                         slotProps={{
                                             textField: {
@@ -512,16 +539,69 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     value={formData.commonFields.day}
                                     disabled
                                     size="small"
+                                    sx={{
+                                        '& .MuiInputLabel-root': {
+                                            color: 'rgb(180 180 180) !important', // Override color for disabled state
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: 'rgb(180 180 180) !important', // Override border color for disabled state
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: 'rgb(180 180 180) !important', // Override border color for hover on disabled state
+                                            },
+                                        },
+                                        '&.Mui-disabled': {
+                                            '& .MuiInputLabel-root': {
+                                                color: 'rgb(180 180 180) !important', // Override color for disabled state
+                                            },
+                                        },
+                                        backgroundColor: "#667666"
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth size="small"
                                 >
-                                    <InputLabel>Send Every</InputLabel>
+                                    <InputLabel htmlFor="send-every-select"
+                                        sx={{
+                                            color: 'rgb(180 180 180)',
+                                            '&.Mui-focused': {
+                                                color: 'rgb(180 180 180)', // Change label color on focus
+                                            },
+                                        }}>Send Every</InputLabel>
                                     <Select
+                                        id="send-every-select"
                                         value={formData.commonFields.every}
                                         label="Send Every"
                                         onChange={handleSendEveryChange}
+                                        sx={{
+                                            color: "ghostwhite",
+                                            '& .MuiSelect-icon': {
+                                                color: 'rgb(180 180 180)',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'rgb(180 180 180)',
+                                                },
+                                            },
+                                            '& .MuiMenuItem-root': {
+                                                color: '#000000',
+                                            },
+                                            '& .MuiListItem-root.Mui-selected': {
+                                                backgroundColor: 'rgb(180 180 180)',
+                                                color: '#ffffff',
+                                            },
+                                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'rgb(180 180 180)',
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'rgb(180 180 180)',
+                                            },
+                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'rgb(180 180 180)',
+                                            },
+                                        }}
                                     >
                                         <MenuItem value="day">Day</MenuItem>
                                         <MenuItem value="week">Week</MenuItem>
@@ -541,12 +621,54 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     onChange={handleFrequency}
                                     min={1}
                                     value={formData.commonFields.frequency}
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
-                                        sx={{ width: "100%" }}
+                                        sx={{
+                                            width: '100%',
+                                            '& .MuiSvgIcon-root': {
+                                                color: 'rgb(180 180 180)', // Icon color
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'rgb(180 180 180)', // Label color
+                                            },
+                                            '& .MuiInputLabel-filled': {
+                                                color: 'rgb(180 180 180)', // Change label color when filled
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'rgb(180 180 180)', // Border color
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'rgb(180 180 180)', // Border color on hover
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'rgb(180 180 180)',
+                                                },
+                                                '& .MuiInputBase-input': {
+                                                    color: 'ghostwhite', // Change the selected time color
+                                                },
+                                            },
+                                        }}
                                         label="Send Time"
                                         defaultValue={setTimeToAMPM(formData.commonFields.sendTime)}
                                         value={formData.commonFields.sendTime}
@@ -567,6 +689,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     value={formData.commonFields.name}
                                     onChange={handleNameChange}
                                     size="small"
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -578,13 +717,57 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     value={formData.commonFields.company}
                                     onChange={handleCompanyChange}
                                     size="small"
+                                    sx={{
+                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                        "& .MuiOutlinedInput-root": {
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "rgb(180 180 180)",
+                                            },
+                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                            "& input": {
+                                                color: 'ghostwhite',
+                                            },
+                                        },
+                                        "& label.MuiInputLabel-root": {
+                                            color: 'rgb(180 180 180)', // Specify label color
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         label="Ends On"
-                                        sx={{ width: "100%" }}
+                                        sx={{
+                                            width: "100%",
+                                            "& .MuiInputLabel-root": {
+                                                color: "rgb(180 180 180)", // Color of the label
+                                            },
+                                            "& .MuiOutlinedInput-root": {
+                                                "& fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input
+                                                },
+                                                "&:hover fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input on hover
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                    borderColor: "rgb(180 180 180)", // Border color of the input when focused
+                                                },
+                                                "& input": {
+                                                    color: "#fff", // Color of the input text
+                                                },
+                                                "& .MuiIconButton-root": {
+                                                    color: "rgb(180 180 180)", // Color of the icon
+                                                },
+                                            },
+                                            "& .MuiMenu-paper": {
+                                                backgroundColor: "#f2f2f2", // Background color of the dropdown menu
+                                                border: "1px solid #ccc", // Border color for the dropdown menu
+                                                borderRadius: "4px", // Border radius for the dropdown menu
+                                            },
+                                        }}
                                         onChange={handleEndsOnDateChange}
                                         slotProps={{
                                             textField: {
@@ -604,16 +787,29 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         <Checkbox
                                             checked={formData.commonFields.skipHolidays ?? false}
                                             onChange={handleSkipHolidays}
-                                            color="primary" // Customize the color if needed
+                                            sx={{
+                                                color: "rgb(180 180 180)",
+                                                '&.Mui-checked .MuiIconButton-root': {
+                                                    color: 'rgb(180 180 180)',
+                                                },
+                                            }}
                                         />
                                     }
+                                    style={{ color: "rgb(180 180 180)" }}
                                     label="Skip Holidays"
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
                                     control={<Switch checked={isWAChecked}
-                                        onChange={handleWAActivationChange} />}
+                                        onChange={handleWAActivationChange}
+                                        sx={{
+                                            '& .Mui-checked': {
+                                                color: "rgb(180 180 180)",
+                                            },
+                                        }}
+                                    />}
+                                    style={{ color: "rgb(180 180 180)" }}
                                     label="Activate WA"
                                 />
                             </Grid>
@@ -628,6 +824,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             value={formData.whatsappFields.mobileOrGroupID}
                                             onChange={handleMobileOrGroupIDChange}
                                             size="small"
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -639,29 +852,26 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             value={formData.whatsappFields.waMessage}
                                             onChange={handleWAMessageChange}
                                             size="small"
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        {/* <input
-                                            hidden
-                                            accept="/*"
-                                            multiple
-                                            type="file"
-                                            id="file-wa-upload-input"
-                                            onChange={handleWAattachmentChange}
-                                        /> */}
-                                        {/* <label htmlFor="file-wa-upload-input">
-                                            <Button
-                                                variant="outlined"
-                                                component="span"
-                                                startIcon={<CloudUploadIcon />}
-                                                fullWidth
-                                            >
-                                                {
-                                                    waAttachmentLength > 0 ? waAttachmentLength + " files selected" : "Upload WA File"
-                                                }
-                                            </Button>
-                                        </label> */}
                                         <TextField
                                             required
                                             fullWidth
@@ -669,13 +879,40 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             label="WA Attachments URL"
                                             onChange={handleWAattachmentChange}
                                             size="small"
+                                            error={wtsappAttachmentError}
+                                            helperText={wtsappAttachmentError ? "Only google drive url are valid." : ''}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
+                                        <small style={{ color: "ghostwhite" }}><i>Use drive links only.</i></small>
                                     </Grid>
                                 </>
                             )}
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
-                                    control={<Switch checked={isEmailChecked} onChange={handleEmailActivationChange} />}
+                                    control={<Switch checked={isEmailChecked} onChange={handleEmailActivationChange}
+                                        sx={{
+                                            '& .Mui-checked': {
+                                                color: "rgb(180 180 180)", // 
+                                            },
+                                        }}
+                                    />}
+                                    style={{ color: "rgb(180 180 180)" }}
                                     label="Activate Email"
                                 />
                             </Grid>
@@ -692,6 +929,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             size="small"
                                             error={emailError}
                                             helperText={emailError ? "Invalid Email Id." : ''}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -705,6 +959,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             size="small"
                                             error={ccEmailError}
                                             helperText={ccEmailError ? "Invalid Cc." : ''}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -718,6 +989,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             size="small"
                                             error={bccEmailError}
                                             helperText={bccEmailError ? "Invalid Bcc." : ''}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -729,29 +1017,26 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             value={formData.emailFields.subjectLine}
                                             onChange={handleSubjectLineChange}
                                             size="small"
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        {/* <input
-                                            hidden
-                                            accept="/*"
-                                            multiple
-                                            type="file"
-                                            onChange={handleEmailAttachmentChange}
-                                            id="file-email-upload-input"
-                                        /> */}
-                                        {/* <label htmlFor="file-email-upload-input">
-                                            <Button
-                                                variant="outlined"
-                                                component="span"
-                                                startIcon={<CloudUploadIcon />}
-                                                fullWidth
-                                            >
-                                                {
-                                                    emailAttachmentLength > 0 ? emailAttachmentLength + " files selected" : "Upload File"
-                                                }
-                                            </Button>
-                                        </label> */}
                                         <TextField
                                             required
                                             fullWidth
@@ -759,7 +1044,27 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             label="Email Attachments URL"
                                             onChange={handleEmailAttachmentChange}
                                             size="small"
+                                            error={emailAttachmentError}
+                                            helperText={emailAttachmentError ? "Only google drive url are valid." : ''}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
+                                        <small style={{ color: "ghostwhite" }}><i>Use drive links only.</i></small>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
@@ -770,6 +1075,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             value={formData.emailFields.mailBodyHTML}
                                             onChange={handleMailBodyHTMLChange}
                                             size="small"
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                 </>
@@ -784,25 +1106,20 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 <Button
                                                     variant='contained'
                                                     onClick={handleFormSubmit}
+                                                    disabled={emailError || bccEmailError || ccEmailError || startDateError || endsOnDateError || wtsappAttachmentError || emailAttachmentError}
+                                                    style={{ background: "rgb(180 180 180)", color: "black" }}
                                                 >
                                                     Submit
                                                 </Button>
                                         }
                                     </div>
-                                    {/* <Button
-                                        variant='contained'
-                                        onClick={resetForm}
-                                    >
-                                        Reset
-                                    </Button> */}
-
                                 </Grid>
                             }
                         </Grid>
                     </Box>
                 </Paper>
-            </Box>
-        </>
+            </Box >
+        </div >
     );
 }
 

@@ -13,6 +13,7 @@ import { Grid } from '@mui/material';
 import ForgetPassword from './components/forgetpassword';
 import AdminProtected from './components/adminprotectedroute';
 import AdminUsersData from './components/admin.userdata';
+import './global.css';
 
 function App() {
   return (

@@ -166,3 +166,10 @@ skipDays:[]
    - *Returns:* {success:true,message:"Whatsapp credentails saved."}
 
 // admin credentials - email:rsuneel47@gmail.com,password:suneel
+17.{"success":true,
+"isAuth":true,
+"user":{"emailSetup":{"email":"apps@ceoitbox.com","password":"vzizgwdcxqayuyjk"},
+"waSetup":{"username":"ceoitbox03","password":"cbx123"},"id":"64fefb7358131118431ef1b2",
+"name":"ankita","email":"ankita@ceoitbox.in","_v":5,
+"skipDates":["2023-09-21"],
+"skipDays":["Sunday"]}}

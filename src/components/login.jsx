@@ -5,8 +5,12 @@ import { UserLogin } from '../services/login.service';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { Subject } from 'rxjs';
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from '@mui/icons-material/Lock'
 import { AdminLogin } from '../services/adminlogin.service';
+import './global.css';
+import { ClassNames } from '@emotion/react';
+
+
 
 export const loginSubject = new Subject();
 function LoginForm() {
@@ -69,19 +73,23 @@ function LoginForm() {
                 style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    marginTop: "80px"
                 }}
+                className="login-form"
             >
                 <Container component="main" maxWidth="sm">
                     <Box>
                         <Grid container>
                             <Grid item xs={12} sm={12} md={12}>
-                                <Paper elevation={5} style={{ padding: '20px' }}>
+                                <Paper elevation={5} style={{
+                                    padding: '20px', marginTop: "165px", background: "transparent",
+                                    border: "1px solid rgb(180 180 180)",
+                                    boxShadow: "rgb(180 180 180) 1px 1px 14px 1px"
+                                }}>
                                     <div style={{ display: 'flex', alignItems: "center", flexDirection: "column" }}>
                                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                                             <LockIcon />
                                         </Avatar>
-                                        <Typography component="h1" variant="h5" >
+                                        <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)" }}>
                                             Sign in
                                         </Typography>
                                     </div>
@@ -93,9 +101,14 @@ function LoginForm() {
                                             onChange={(e) => {
                                                 setSelectOrAdminUser(e.target.value);
                                             }}
+
                                         >
-                                            <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-                                            <FormControlLabel value="user" control={<Radio />} label="User" />
+                                            <FormControlLabel value="admin" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />} label="Admin"
+                                                style={{ color: "rgb(180 180 180)" }}
+
+                                            />
+                                            <FormControlLabel value="user" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />}
+                                                label="User" style={{ color: "rgb(180 180 180)" }} />
                                         </RadioGroup>
                                     </FormControl>
                                     <Box component="form">
@@ -108,7 +121,23 @@ function LoginForm() {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleInputChange}
-                                            autoFocus
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
+                                                },
+                                            }}
                                         />
                                         <TextField
                                             margin="normal"
@@ -123,6 +152,23 @@ function LoginForm() {
                                                 autoComplete: 'new-password',
                                                 form: {
                                                     autoComplete: 'off',
+                                                }
+                                            }}
+                                            sx={{
+                                                "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
+                                                "& .MuiOutlinedInput-root": {
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "rgb(180 180 180)",
+                                                    },
+                                                    "& > fieldset": { borderColor: "rgb(180 180 180)" },
+                                                    "& input": {
+                                                        color: 'ghostwhite',
+                                                    },
+                                                },
+                                                "& label.MuiInputLabel-root": {
+                                                    color: 'rgb(180 180 180)', // Specify label color
                                                 },
                                             }}
                                         />
@@ -140,6 +186,7 @@ function LoginForm() {
                                                     variant="contained"
                                                     sx={{ mt: 3, mb: 2 }}
                                                     onClick={userLogin}
+                                                    style={{ background: "rgb(180 180 180)", color: "black" }}
                                                 >
                                                     Log In
                                                 </Button>
@@ -147,12 +194,12 @@ function LoginForm() {
 
                                         <Grid container>
                                             <Grid item xs>
-                                                <Link href="#" variant="body2" to="/reset-password/">
+                                                <Link href="#" variant="body2" to="/reset-password/" style={{ color: "rgb(180 180 180)" }}>
                                                     Forgot password?
                                                 </Link>
                                             </Grid>
                                             <Grid item>
-                                                <Link href="#" variant="body2" to="/register">
+                                                <Link href="#" variant="body2" to="/register" style={{ color: "rgb(180 180 180)" }}>
                                                     {"Don't have an account? Sign Up"}
                                                 </Link>
                                             </Grid>

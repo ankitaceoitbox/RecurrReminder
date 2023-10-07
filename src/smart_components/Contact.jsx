@@ -2,6 +2,7 @@ import React from 'react'
 import ContactForm from '../components/contactform'
 import { ContactFormSubmit } from '../services/contactform_submit.services';
 import { toast } from 'react-toastify';
+import './global.css';
 
 function ContactPage() {
     /** This function will call the api function. */
@@ -21,11 +22,9 @@ function ContactPage() {
         return 1;
     }
     return (
-        <>
-            <ContactForm
-                onHandleContactFormSubmit={handleContactFormSubmit}
-            />
-        </>
+        <ContactForm
+            onHandleContactFormSubmit={handleContactFormSubmit}
+        />
     )
 }
 
