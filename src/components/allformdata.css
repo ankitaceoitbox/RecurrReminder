@@ -23,7 +23,7 @@
 }
 
 .contact-form-container {
-  background-image: url("../../public/img6.jpeg");
+  background-image: url("../../public/bgimg.jpg");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -37,5 +37,5 @@
   box-sizing: border-box;
 }
 body {
-  background-color: #343434 !important;
+  background-color: #e4f5fb !important;
 }

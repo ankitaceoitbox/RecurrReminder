@@ -2,8 +2,6 @@ import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow 
 import React, { useEffect, useState } from 'react'
 import { EmailWhatsAppDetailsService } from '../services/emailWhatsappdetails.service'
 function WhatsAppEmailDetails() {
-    const arr = [["Email", "whatsapp"], ["Email 1", "whatsapp 1"], ["Email 2", "whatsapp 2"], ["Email 3", "whatsapp 3"], ["Email 4", "whatsapp 4"],
-    ];
     const [allDetails, setAllDetails] = useState({
         setUpEmail: {},
         setUpWhatsapp: {},
@@ -13,7 +11,6 @@ function WhatsAppEmailDetails() {
     useEffect(() => {
         (async () => {
             const response = await EmailWhatsAppDetailsService();
-            console.log(response);
             const data = response.data;
             if (data.success == true) {
                 const user = data.user;

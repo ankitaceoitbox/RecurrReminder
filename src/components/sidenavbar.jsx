@@ -41,6 +41,7 @@ import { useNavigate } from "react-router-dom"
 import { SetUpEmailService } from '../services/emailsetup.service';
 import { SetUpWhatsappService } from '../services/whatsappsetup.service';
 import WhatsAppEmailDetails from './WhatsAppEmailDetails';
+import { EmailWhatsAppDetailsService } from '../services/emailWhatsappdetails.service';
 
 const drawerWidth = 250;
 
@@ -185,20 +186,21 @@ const HolidaysDialog = ({ open, onClose }) => {
     const [showLoader, setShowLoader] = React.useState(false);
     const [skipDates, setSkipDates] = React.useState([]);
     const [skipDays, setSkipDays] = React.useState([]);
+    const [skipDatesSave, setSkipDatesSave] = React.useState([]);
+    const [skipDaysSave, setSkipDaysSave] = React.useState([]);
 
     const handleSelectedDates = (dates) => {
-        setSkipDates(dates);
+        setSkipDatesSave(dates);
     }
 
     const handleSelectedWeeks = (weeks) => {
-        setSkipDays(weeks);
+        setSkipDaysSave(weeks);
     }
-
 
     const saveHoldiays = async () => {
         setShowLoader(true);
         try {
-            const response = await AddHolidays(skipDates, skipDays);
+            const response = await AddHolidays(skipDatesSave, skipDaysSave);
             toast.success('Added Holidays Successfully', {
                 position: 'top-right',
                 autoClose: 2000, // Time in milliseconds for the notification to automatically close
@@ -213,6 +215,17 @@ const HolidaysDialog = ({ open, onClose }) => {
         onClose();
     }
 
+    React.useEffect(() => {
+        (async () => {
+            const response = await EmailWhatsAppDetailsService();
+            console.log(response);
+            const data = response.data;
+            if (data.success === true) {
+                setSkipDates(data.user.skipDates);
+                setSkipDays(data.user.skipDays);
+            }
+        })();
+    }, []);
     return <>
         <Dialog
             open={open}
@@ -226,13 +239,13 @@ const HolidaysDialog = ({ open, onClose }) => {
                     <Typography component={"div"}>
                         <DateChipsSelector
                             onHandleSelectedDates={handleSelectedDates}
-                            preSelectedDates={[]}
+                            preSelectedDates={skipDates}
                         />
                     </Typography>
                     <Typography>
                         <WeekdaySelector
                             onHandleSelectedWeekDay={handleSelectedWeeks}
-                            preSelectedDays={[]}
+                            preSelectedDays={skipDays}
                         />
                     </Typography>
                 </Typography>
@@ -518,7 +531,7 @@ export default function SideNavBar() {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="fixed" open={open} sx={{ background: "#bcbc42" }}>
+                <AppBar position="fixed" open={open} sx={{ background: "#64acc8" }}>
                     <Toolbar style={{ width: '100%', display: 'flex', zIndex: "1111" }}>
                         <IconButton
                             color="inherit"
@@ -783,7 +796,6 @@ export default function SideNavBar() {
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
-                                                {/*  */}
                                             </ListItem>
                                         </List>
                                     </Collapse>
@@ -962,7 +974,7 @@ export default function SideNavBar() {
                     </List>
                     <Divider />
                 </Drawer>
-            </Box >
+            </Box>
             {
                 isHolidayDialogOpen && (
                     <HolidaysDialog

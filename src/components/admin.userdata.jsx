@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
-import { Button, Card, CardContent, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import Loader from './loader';
 
 function AdminUsersData() {
@@ -23,9 +23,7 @@ function AdminUsersData() {
             if (response.data.success) {
                 setUsersData(response.data.users);
             }
-        } catch (e) {
-
-        }
+        } catch (e) { }
         setLoader(false);
     }
 

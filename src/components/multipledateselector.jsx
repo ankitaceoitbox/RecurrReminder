@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 
 const DateChipsSelector = ({ onHandleSelectedDates, preSelectedDates }) => {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
     const [selectedDates, setSelectedDates] = useState([]); // Store selected dates
 
     const handleSelectDates = (dates) => {
@@ -22,7 +22,11 @@ const DateChipsSelector = ({ onHandleSelectedDates, preSelectedDates }) => {
             const date = preSelectedDates[0].split(",").map(date => new Date(date));
             setSelectedDates([...date]);
         }
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        setSelectedDates(preSelectedDates.map(date => new Date(date)));
+    }, [preSelectedDates]);
 
     return (
         <div>

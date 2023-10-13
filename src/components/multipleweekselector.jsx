@@ -10,7 +10,6 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function WeekdaySelector({ onHandleSelectedWeekDay, preSelectedDays }) {
     const [selectedDays, setSelectedDays] = React.useState([]);
-
     const daysOfWeek = [
         'Sunday',
         'Monday',
@@ -27,10 +26,8 @@ export default function WeekdaySelector({ onHandleSelectedWeekDay, preSelectedDa
     };
 
     React.useEffect(() => {
-        if (preSelectedDays) {
-            setSelectedDays([...preSelectedDays]);
-        }
-    }, [])
+        setSelectedDays([...preSelectedDays]);
+    }, [preSelectedDays])
 
     return (
         <Autocomplete
