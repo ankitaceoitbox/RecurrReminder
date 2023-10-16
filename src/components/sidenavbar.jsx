@@ -576,6 +576,7 @@ export default function SideNavBar() {
                     </Toolbar>
                     {isAuth == true ? (
                         <Typography variant="h4" noWrap component="div" style={{
+                            fontFamily: "roboto",
                             color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
                             background: "transparent", zIndex: 0, padding: "5px 5px"
                         }}>
