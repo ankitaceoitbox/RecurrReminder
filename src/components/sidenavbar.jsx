@@ -233,7 +233,7 @@ const HolidaysDialog = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle>Add Dates/Weeks</DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Add Dates/Weeks</span></DialogTitle>
             <DialogContent>
                 <Typography component={"div"} sx={{ display: "flex", flexDirection: "column", alignContent: "center", gap: 2 }}>
                     <Typography component={"div"}>
@@ -264,12 +264,14 @@ const HolidaysDialog = ({ open, onClose }) => {
                 <Button
                     color="primary"
                     onClick={saveHoldiays}
+                    sx={{ fontFamily: "roboto" }}
                 >
                     Save
                 </Button>
                 <Button
                     color="primary"
                     onClick={onClose}
+                    sx={{ fontFamily: "roboto" }}
                 >
                     Close
                 </Button>
@@ -320,7 +322,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle>Email & Whatsapp Settings</DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & Whatsapp Settings</span></DialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
@@ -328,11 +330,18 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             margin="normal"
                             required
                             fullWidth
-                            label="Email Address"
+                            label={<span style={{ fontFamily: 'roboto' }}>Email Address</span>}
                             autoFocus
                             size={"small"}
                             value={email}
                             onChange={(e) => { setEmail(e.target.value) }}
+                            InputProps={{
+                                inputProps: {
+                                    style: {
+                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                    }
+                                },
+                            }}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -340,10 +349,17 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             margin="normal"
                             required
                             fullWidth
-                            label="WhatsApp Api"
+                            label={<span style={{ fontFamily: 'roboto' }}>WhatsApp Api</span>}
                             size={"small"}
                             value={whatsapp}
                             onChange={(e) => { setWhatsapp(e.target.value) }}
+                            InputProps={{
+                                inputProps: {
+                                    style: {
+                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                    }
+                                },
+                            }}
                         />
                     </Grid>
                 </Grid>
@@ -354,10 +370,17 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             type='password'
                             required
                             fullWidth
-                            label="Email Password"
+                            label={<span style={{ fontFamily: 'roboto' }}>Email Password</span>}
                             size={"small"}
                             value={emailPassword}
                             onChange={(e) => { setEmailPassword(e.target.value) }}
+                            InputProps={{
+                                inputProps: {
+                                    style: {
+                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                    }
+                                },
+                            }}
                         />
                     </Grid>
                     <Grid item xs={6}>
@@ -366,10 +389,17 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             type='password'
                             required
                             fullWidth
-                            label="WhatsApp Password"
+                            label={<span style={{ fontFamily: 'roboto' }}>WhatsApp Password</span>}
                             size={"small"}
                             value={whatsappPassword}
                             onChange={(e) => { setWhatsappPassword(e.target.value) }}
+                            InputProps={{
+                                inputProps: {
+                                    style: {
+                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                    }
+                                },
+                            }}
                         />
                     </Grid>
                 </Grid>
@@ -381,7 +411,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                     type="button"
                                     fullWidth
                                     variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
+                                    sx={{ mt: 3, mb: 2, fontFamily: "roboto" }}
                                     onClick={emailSetup}
                                     disabled={emailSetup == '' || emailPassword == ''}
                                 >
@@ -399,7 +429,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                     type="button" // Change to type="submit" if using form submission
                                     fullWidth
                                     variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
+                                    sx={{ mt: 3, mb: 2, fontFamily: "roboto" }}
                                     onClick={whatsappSetup}
                                     disabled={whatsappPassword == '' || whatsapp == ''}
                                 >
@@ -416,6 +446,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                 <Button
                     color="primary"
                     onClick={onClose}
+                    sx={{ fontFamily: "roboto" }}
                 >
                     Close
                 </Button>
@@ -431,7 +462,7 @@ const EmailWhatsAppDetails = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle>Email & Whatsapp Settings</DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & Whatsapp Settings</span></DialogTitle>
             <DialogContent>
                 <WhatsAppEmailDetails />
             </DialogContent>
@@ -439,6 +470,7 @@ const EmailWhatsAppDetails = ({ open, onClose }) => {
                 <Button
                     color="primary"
                     onClick={onClose}
+                    sx={{ fontFamily: "roboto" }}
                 >
                     Close
                 </Button>
@@ -619,7 +651,7 @@ export default function SideNavBar() {
                                                     />
                                                 </Tooltip>
                                             </ListItemIcon>
-                                            <ListItemText primary="Recurring Task" />
+                                            <ListItemText primary={<span style={{ fontFamily: "roboto" }}>Recurring Task</span>} />
                                             {taskMenu ? <ExpandLess /> : <ExpandMore />}
                                         </ListItemButton>
                                     </ListItem>
@@ -654,7 +686,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="Add Reminder"
+                                                        primary={<span style={{ fontFamily: "roboto" }}>Add Reminder</span>}
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
@@ -683,7 +715,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="All Reminder"
+                                                        primary={<span style={{ fontFamily: "roboto" }}>All Reminder</span>}
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }} />
                                                 </ListItemButton>
                                             </ListItem>
@@ -706,7 +738,7 @@ export default function SideNavBar() {
                                                     />
                                                 </Tooltip>
                                             </ListItemIcon>
-                                            <ListItemText primary="Common Settings" />
+                                            <ListItemText primary={<span style={{ fontFamily: "roboto" }}>Common Settings</span>} />
                                             {holidays ? <ExpandLess /> : <ExpandMore />}
                                         </ListItemButton>
                                     </ListItem>
@@ -742,7 +774,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="Holidays"
+                                                        primary={<span style={{ fontFamily: "roboto" }}>Holidays</span>}
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
@@ -767,7 +799,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="Email/WhatsApp"
+                                                        primary={<span style={{ fontFamily: "roboto" }}>Email/WhatsApp</span>}
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
@@ -793,7 +825,7 @@ export default function SideNavBar() {
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
-                                                        primary="User Table"
+                                                        primary={<span style={{ fontFamily: "roboto" }}>User Table</span>}
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
@@ -830,7 +862,7 @@ export default function SideNavBar() {
                                                 </Tooltip>
                                             </ListItemIcon>
                                             <ListItemText
-                                                primary="LogOut"
+                                                primary={<span style={{ fontFamily: "roboto" }}>LogOut</span>}
                                                 sx={{ opacity: open ? 1 : 0, color: "#333", marginLeft: "6px" }}
                                             />
                                         </ListItemButton>
@@ -935,7 +967,7 @@ export default function SideNavBar() {
                                                     </Tooltip>
                                                 </ListItemIcon>
                                                 <ListItemText
-                                                    primary="Login"
+                                                    primary={<span style={{ fontFamily: "roboto" }}>LogIn</span>}
                                                     sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                 />
                                             </ListItemButton>
@@ -965,7 +997,7 @@ export default function SideNavBar() {
                                                     </Tooltip>
                                                 </ListItemIcon>
                                                 <ListItemText
-                                                    primary="Sign Up"
+                                                    primary={<span style={{ fontFamily: "roboto" }}>Sign Up</span>}
                                                     sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                 />
                                             </ListItemButton>

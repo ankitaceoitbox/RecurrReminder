@@ -35,6 +35,7 @@ const DateChipsSelector = ({ onHandleSelectedDates, preSelectedDates }) => {
                 variant="outlined"
                 color='warning'
                 fullWidth
+                sx={{ fontFamily: "roboto" }}
             >
                 {
                     selectedDates.length > 0 ? selectedDates.length + " dates selected" : "Select Holidays"
@@ -45,6 +46,7 @@ const DateChipsSelector = ({ onHandleSelectedDates, preSelectedDates }) => {
                 selectedDates={selectedDates}
                 onCancel={() => setOpen(false)}
                 onSubmit={handleSelectDates}
+                style={{ fontFamily: 'Roboto, sans-serif' }}
             />
         </div>
     )

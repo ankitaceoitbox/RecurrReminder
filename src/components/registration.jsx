@@ -64,7 +64,7 @@ function RegistrationForm() {
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <PersonAddIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)" }}>
+                    <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }}>
                         Sign up
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -76,7 +76,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     id="firstName"
-                                    label="First Name"
+                                    label={<span style={{ fontFamily: "roboto" }}>First Name</span>}
                                     autoFocus
                                     value={formData.firstName}
                                     onChange={handleInputChange}
@@ -96,7 +96,13 @@ function RegistrationForm() {
                                         "& label.MuiInputLabel-root": {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
-
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
                                     }}
                                 />
                             </Grid>
@@ -105,7 +111,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     id="lastName"
-                                    label="Last Name"
+                                    label={<span style={{ fontFamily: "roboto" }}>Last Name</span>}
                                     name="lastName"
                                     autoComplete="family-name"
                                     value={formData.lastName}
@@ -127,6 +133,13 @@ function RegistrationForm() {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
                                     }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
+                                    }}
                                 />
                             </Grid>
 
@@ -135,7 +148,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     id="contactNo"
-                                    label="Contact No."
+                                    label={<span style={{ fontFamily: "roboto" }}>Contact No.</span>}
                                     name="contactNo"
                                     autoComplete="tel"
                                     value={formData.contactNo}
@@ -156,7 +169,13 @@ function RegistrationForm() {
                                         "& label.MuiInputLabel-root": {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
-
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
                                     }}
                                 />
                             </Grid>
@@ -165,7 +184,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
+                                    label={<span style={{ fontFamily: "roboto" }}>Email Address</span>}
                                     name="email"
                                     autoComplete="email"
                                     value={formData.email}
@@ -186,7 +205,13 @@ function RegistrationForm() {
                                         "& label.MuiInputLabel-root": {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
-
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
                                     }}
                                 />
                             </Grid>
@@ -195,7 +220,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     id="company"
-                                    label="Company Name"
+                                    label={<span style={{ fontFamily: "roboto" }}>Company Name</span>}
                                     name="companyName"
                                     autoComplete="company-name"
                                     value={formData.companyName}
@@ -216,7 +241,13 @@ function RegistrationForm() {
                                         "& label.MuiInputLabel-root": {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
-
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
                                     }}
                                 />
                             </Grid>
@@ -225,7 +256,7 @@ function RegistrationForm() {
                                     required
                                     fullWidth
                                     name="password"
-                                    label="Password"
+                                    label={<span style={{ fontFamily: "roboto" }}>Password</span>}
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
@@ -247,13 +278,19 @@ function RegistrationForm() {
                                         "& label.MuiInputLabel-root": {
                                             color: 'rgb(180 180 180)', // Specify label color
                                         },
-
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
                                     }}
                                 />
                             </Grid>
                         </Grid>
                         {error && (
-                            <Typography variant="body2" color="error">
+                            <Typography variant="body2" color="error" sx={{ fontFamily: "roboto" }}>
                                 {error}
                             </Typography>
                         )}
@@ -262,13 +299,13 @@ function RegistrationForm() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
-                            style={{ background: "rgb(180 180 180)", color: "black" }}
+                            style={{ background: "rgb(180 180 180)", color: "black", fontFamily: "roboto" }}
                         >
                             Sign Up
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2" to="/login" style={{ color: "rgb(180 180 180)" }} >
+                                <Link href="#" variant="body2" to="/login" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }} >
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

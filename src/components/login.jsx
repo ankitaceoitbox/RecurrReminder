@@ -89,7 +89,7 @@ function LoginForm() {
                                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                                             <LockIcon />
                                         </Avatar>
-                                        <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)" }}>
+                                        <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }}>
                                             Sign in
                                         </Typography>
                                     </div>
@@ -103,12 +103,12 @@ function LoginForm() {
                                             }}
 
                                         >
-                                            <FormControlLabel value="admin" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />} label="Admin"
+                                            <FormControlLabel value="admin" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />} label={<span style={{ fontFamily: "roboto" }}>Admin</span>}
                                                 style={{ color: "rgb(180 180 180)" }}
 
                                             />
                                             <FormControlLabel value="user" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />}
-                                                label="User" style={{ color: "rgb(180 180 180)" }} />
+                                                label={<span style={{ fontFamily: "roboto" }}>User</span>} style={{ color: "rgb(180 180 180)" }} />
                                         </RadioGroup>
                                     </FormControl>
                                     <Box component="form">
@@ -117,7 +117,7 @@ function LoginForm() {
                                             required
                                             fullWidth
                                             id="email"
-                                            label="Email Address"
+                                            label={<span style={{ fontFamily: "roboto" }}>Email Address</span>}
                                             name="email"
                                             value={formData.email}
                                             onChange={handleInputChange}
@@ -138,13 +138,20 @@ function LoginForm() {
                                                     color: 'rgb(180 180 180)', // Specify label color
                                                 },
                                             }}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                         <TextField
                                             margin="normal"
                                             required
                                             fullWidth
                                             name="password"
-                                            label="Password"
+                                            label={<span style={{ fontFamily: "roboto" }}>Password</span>}
                                             type="password"
                                             value={formData.password}
                                             onChange={handleInputChange}
@@ -171,6 +178,13 @@ function LoginForm() {
                                                     color: 'rgb(180 180 180)', // Specify label color
                                                 },
                                             }}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                         {
                                             showLoader === true ?
@@ -186,7 +200,7 @@ function LoginForm() {
                                                     variant="contained"
                                                     sx={{ mt: 3, mb: 2 }}
                                                     onClick={userLogin}
-                                                    style={{ background: "rgb(180 180 180)", color: "black" }}
+                                                    style={{ background: "rgb(180 180 180)", color: "black", fontFamily: "roboto" }}
                                                 >
                                                     Log In
                                                 </Button>
@@ -194,12 +208,12 @@ function LoginForm() {
 
                                         <Grid container>
                                             <Grid item xs>
-                                                <Link href="#" variant="body2" to="/reset-password/" style={{ color: "rgb(180 180 180)" }}>
+                                                <Link href="#" variant="body2" to="/reset-password/" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }}>
                                                     Forgot password?
                                                 </Link>
                                             </Grid>
                                             <Grid item>
-                                                <Link href="#" variant="body2" to="/register" style={{ color: "rgb(180 180 180)" }}>
+                                                <Link href="#" variant="body2" to="/register" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }}>
                                                     {"Don't have an account? Sign Up"}
                                                 </Link>
                                             </Grid>

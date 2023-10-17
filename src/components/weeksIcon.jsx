@@ -40,7 +40,7 @@ const CircularCheckbox = ({ label }) => {
             <Checkbox
                 checked={checked}
                 onChange={handleCheckboxChange}
-                icon={<div style={{ display: 'inline-block' }}>{label}</div>}
+                icon={<div style={{ display: 'inline-block', fontFamily: "roboto" }}>{label}</div>}
                 checkedIcon={<div style={{ display: 'inline-block' }}>{label}</div>}
             />
         </div>

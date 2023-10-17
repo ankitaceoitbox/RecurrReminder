@@ -36,20 +36,20 @@ function WhatsAppEmailDetails() {
                     <Table>
                         <TableBody>
                             <TableRow>
-                                <TableCell>Email Id</TableCell>
-                                <TableCell>{allDetails.setUpEmail?.email}</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>Email Id</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>{allDetails.setUpEmail?.email}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell>WhatsApp API</TableCell>
-                                <TableCell>{allDetails.setUpWhatsapp?.username}</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>WhatsApp API</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>{allDetails.setUpWhatsapp?.username}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell>WhatsApp Password</TableCell>
-                                <TableCell>{allDetails.setUpWhatsapp?.password}</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>WhatsApp Password</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>{allDetails.setUpWhatsapp?.password}</TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell>Skip Days</TableCell>
-                                <TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>Skip Days</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>
                                     {
                                         allDetails.skipDays.map((day, index) => {
                                             return <span>{day} {allDetails.skipDays.length - 1 == index ? '' : ','}</span>
@@ -58,8 +58,8 @@ function WhatsAppEmailDetails() {
                                 </TableCell>
                             </TableRow>
                             <TableRow>
-                                <TableCell>Skip Dates</TableCell>
-                                <TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>Skip Dates</TableCell>
+                                <TableCell sx={{ fontFamily: "roboto" }}>
                                     {
                                         allDetails.skipDates.map((day, index) => {
                                             return <span>{day} {allDetails.skipDates.length - 1 == index ? '' : ','}</span>

@@ -555,7 +555,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                     }}
                 >
                     <Box component="form" noValidate>
-                        <h4 style={{ textAlign: "center", marginTop: 0, fontFamily: "roboto" }}>Recurring Reminder</h4>
+                        <h1 style={{ textAlign: "center", marginTop: 0, fontFamily: "roboto" }}>Recurring Reminder</h1>
                     </Box>
                     <Box component="form" noValidate>
                         <Grid container spacing={2}>
@@ -564,11 +564,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    label="Name"
+                                    label={<span style={{ fontFamily: 'roboto' }}>Name</span>}
                                     value={formData.commonFields.name}
                                     onChange={handleNameChange}
                                     size="small"
-
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -576,24 +582,30 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    label="Company"
+                                    label={<span style={{ fontFamily: 'roboto' }}>Company</span>}
                                     value={formData.commonFields.company}
                                     onChange={handleCompanyChange}
                                     size="small"
-
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
+                                    }}
                                 />
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
-                                        label="Start Date"
-                                        sx={{ width: "100%" }}
+                                        label={<span style={{ fontFamily: "roboto" }}>Start Date</span>}
+                                        sx={{ width: "100%", fontFamily: "roboto" }}
                                         onChange={handleStartDateChange}
                                         slotProps={{
                                             textField: {
                                                 size: 'small', helperText: startDateError && 'Invalid Date entered',
-                                            }
+                                            },
                                         }}
                                         defaultValue={formData.commonFields.startDate && dayjs(formData.commonFields.startDate)}
                                         value={formData.commonFields.startDate}
@@ -607,25 +619,36 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <TextField
                                     fullWidth
                                     variant="outlined"
-                                    label="Day"
+                                    label={<span style={{ fontFamily: 'roboto' }}>Day</span>}
                                     value={formData.commonFields.day}
                                     disabled
                                     size="small"
+                                    InputProps={{
+                                        style: {
+                                            fontFamily: 'roboto',  // Change the font family for the input and placeholder text
+                                        },
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth size="small">
-                                    <InputLabel htmlFor="send-every-select">Send Every</InputLabel>
+                                    <InputLabel htmlFor="send-every-select" sx={{ fontFamily: "roboto" }}>Send Every</InputLabel>
                                     <Select
                                         id="send-every-select"
                                         value={formData.commonFields.every}
                                         label="Send Every"
                                         onChange={handleSendEveryChange}
+                                        style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
                                     >
-                                        <MenuItem value="day">Day</MenuItem>
-                                        <MenuItem value="week">Week</MenuItem>
-                                        <MenuItem value="month">Month</MenuItem>
-                                        <MenuItem value="year">Year</MenuItem>
+                                        <MenuItem value="day"><span style={{ fontFamily: "roboto" }}>Day</span></MenuItem>
+                                        <MenuItem value="week"><span style={{ fontFamily: "roboto" }}>Week</span></MenuItem>
+                                        <MenuItem value="month"><span style={{ fontFamily: "roboto" }}>Month</span></MenuItem>
+                                        <MenuItem value="year"><span style={{ fontFamily: "roboto" }}>Year</span></MenuItem>
                                     </Select>
                                     <FormHelperText></FormHelperText>
                                 </FormControl>
@@ -634,13 +657,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <TextField
                                     fullWidth
                                     variant="outlined"
-                                    label="Frequency"
+                                    label={<span style={{ fontFamily: 'roboto' }}>Frequency</span>}
                                     size="small"
                                     type='number'
                                     onChange={handleFrequency}
                                     min={1}
                                     value={formData.commonFields.frequency}
-
+                                    InputProps={{
+                                        inputProps: {
+                                            style: {
+                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                            }
+                                        },
+                                    }}
                                 />
                             </Grid>
                             {
@@ -652,48 +681,43 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                             }
                             {
                                 formData.commonFields.every == 'month' ?
-                                    <Grid item xs={12} sm={12}>
-                                        <Button
-                                            id="basic-button"
-                                            aria-controls={open ? 'basic-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={open ? 'true' : undefined}
-                                            onClick={handleClick}
-                                        >
-                                            Click Frequency
-                                        </Button>
-                                        <Menu
-                                            id="basic-menu"
-                                            anchorEl={anchorEl}
-                                            open={open}
-                                            onClose={handleClose}
-                                            MenuListProps={{
-                                                'aria-labelledby': 'basic-button',
-                                            }}
-                                        >
-                                            <MenuItem onClick={handleClose}> {formData.commonFields.startDate ? <DayDateFrequencyFormat /> : `Please select the date`} </MenuItem>
-                                            <MenuItem onClick={handleClose}>{formData.commonFields.day ? <DayFrequencyFormat /> : `Please select the date`} </MenuItem>
-                                        </Menu>
-                                    </Grid>
+                                    <>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel htmlFor="select-frequency" sx={{ fontFamily: "roboto" }}>Select Frequency</InputLabel>
+                                                <Select
+                                                    id="select-frequency"
+                                                    label="Select Frequency"
+                                                    style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
+                                                >
+                                                    <MenuItem value={<DayDateFrequencyFormat />}><DayDateFrequencyFormat /></MenuItem>
+                                                    <MenuItem value={<DayFrequencyFormat />}><DayFrequencyFormat /></MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}></Grid>
+                                    </>
                                     :
-                                    <></>
+                                    <>
+                                    </>
                             }
 
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth size="small">
                                     <InputLabel htmlFor="ends-on-select"
+                                        sx={{ fontFamily: "roboto" }}
                                     >
                                         End's On
                                     </InputLabel>
                                     <Select
                                         id="ends-on-select"
-                                        label="Ends On"
-
+                                        label={<span style={{ fontFamily: "roboto" }}>Ends On</span>}
                                         onChange={handleEndsOnChange}
+                                        style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
                                     >
-                                        <MenuItem value="never">Never</MenuItem>
-                                        <MenuItem value="ondate">On Date</MenuItem>
-                                        <MenuItem value="after">After</MenuItem>
+                                        <MenuItem value="never"><span style={{ fontFamily: "roboto" }}>Never</span></MenuItem>
+                                        <MenuItem value="ondate"><span style={{ fontFamily: "roboto" }}>On Date</span></MenuItem>
+                                        <MenuItem value="after"><span style={{ fontFamily: "roboto" }}>After</span></MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -704,7 +728,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     label="Ends On"
-
                                                     onChange={handleEndsOnDateChange}
                                                     slotProps={{
                                                         textField: {
@@ -726,24 +749,31 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 <TextField
                                                     fullWidth
                                                     variant="outlined"
-                                                    label="Occurrence"
+                                                    label={<span style={{ fontFamily: "roboto" }}>Occurrence</span>}
                                                     size="small"
                                                     type='number'
                                                     min={1}
+                                                    InputProps={{
+                                                        inputProps: {
+                                                            style: {
+                                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                                            }
+                                                        },
+                                                    }}
                                                 />
                                             </Grid>
                                         </>
                                         :
                                         <>
                                             <Grid item xs={12} sm={6} md={6}>
-                                                <i>Recurring reminder will never end</i>
+                                                <span style={{ fontFamily: "roboto" }}><i>Recurring reminder will never end if end's on is never</i></span>
                                             </Grid>
                                         </>
                             }
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
-                                        label="Send Time"
+                                        label={<span style={{ fontFamily: "roboto" }}>Send Time</span>}
                                         sx={{ width: "100%" }}
                                         defaultValue={setTimeToAMPM(formData.commonFields.sendTime)}
                                         value={formData.commonFields.sendTime}
@@ -764,7 +794,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         />
                                     }
                                     style={{}}
-                                    label="Skip Holidays"
+                                    label={<span style={{ fontFamily: 'roboto' }}>Skip Holidays</span>}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
@@ -773,7 +803,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         onChange={handleWAActivationChange}
                                     />}
 
-                                    label="Activate WA"
+                                    label={<span style={{ fontFamily: "roboto" }}>Activate WA</span>}
                                 />
                             </Grid>
                             {isWAChecked && (
@@ -783,11 +813,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Mobile/Group ID"
+                                            label={<span style={{ fontFamily: "roboto" }}>Mobile/Group ID</span>}
                                             value={formData.whatsappFields.mobileOrGroupID}
                                             onChange={handleMobileOrGroupIDChange}
                                             size="small"
-
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -795,11 +831,18 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="WA Message"
+                                            label={<span style={{ fontFamily: "roboto" }}>WA Message</span>}
                                             value={formData.whatsappFields.waMessage}
                                             onChange={handleWAMessageChange}
                                             size="small"
-
+                                            sx={{ fontFamily: "roboto" }}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -807,14 +850,20 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="WA Attachments URL"
+                                            label={<span style={{ fontFamily: "roboto" }}>WA Attachments URL</span>}
                                             onChange={handleWAattachmentChange}
                                             size="small"
                                             error={wtsappAttachmentError}
                                             helperText={wtsappAttachmentError ? "Only google drive url are valid." : ''}
-
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
-                                        <small style={{ color: "" }}><i>Use drive links only.</i></small>
+                                        <small style={{ fontFamily: "roboto" }}><i>Use drive links only.</i></small>
                                     </Grid>
                                 </>
                             )}
@@ -824,7 +873,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
 
                                     />}
                                     style={{}}
-                                    label="Activate Email"
+                                    label={<span style={{ fontFamily: "roboto" }}>Activate Email</span>}
                                 />
                             </Grid>
                             {isEmailChecked && (
@@ -834,13 +883,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Email ID: To"
+                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: To</span>}
                                             value={formData.emailFields.emailIDTo}
                                             onChange={handleEmailIDToChange}
                                             size="small"
                                             error={emailError}
-                                            helperText={emailError ? "Invalid Email Id." : ''}
-
+                                            helperText={emailError ? <span style={{ fontFamily: "roboto" }}>Invalid Email Id.</span> : ''}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -848,12 +903,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Email ID: Cc"
+                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: Cc</span>}
                                             value={formData.emailFields.emailIDCc}
                                             onChange={handleEmailIDCcChange}
                                             size="small"
                                             error={ccEmailError}
-                                            helperText={ccEmailError ? "Invalid Cc." : ''}
+                                            helperText={ccEmailError ? <span style={{ fontFamily: "roboto" }}>Invalid Cc.</span> : ''}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -861,12 +923,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Email ID: BCc"
+                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: BCc</span>}
                                             value={formData.emailFields.emailIDBCc}
                                             onChange={handleEmailIDBCcChange}
                                             size="small"
                                             error={bccEmailError}
-                                            helperText={bccEmailError ? "Invalid Bcc." : ''}
+                                            helperText={bccEmailError ? <span style={{ fontFamily: "roboto" }}>Invalid BCc.</span> : ''}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -874,11 +943,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Subject line"
+                                            label={<span style={{ fontFamily: "roboto" }}>Subject line</span>}
                                             value={formData.emailFields.subjectLine}
                                             onChange={handleSubjectLineChange}
                                             size="small"
-
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -886,24 +961,37 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Email Attachments URL"
+                                            label={<span style={{ fontFamily: "roboto" }}>Email Attachments URL</span>}
                                             onChange={handleEmailAttachmentChange}
                                             size="small"
                                             error={emailAttachmentError}
-                                            helperText={emailAttachmentError ? "Only google drive url are valid." : ''}
+                                            helperText={emailAttachmentError ? <span style={{ fontFamily: "roboto" }}>Only google drive url are valid.</span> : ''}
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
-                                        <small style={{ color: "" }}><i>Use drive links only.</i></small>
+                                        <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label="Mail body(HTML)"
+                                            label={<span style={{ fontFamily: "roboto" }}>Mail body(HTML)</span>}
                                             value={formData.emailFields.mailBodyHTML}
                                             onChange={handleMailBodyHTMLChange}
                                             size="small"
-
+                                            InputProps={{
+                                                inputProps: {
+                                                    style: {
+                                                        fontFamily: 'roboto',  // Change the font family for the input text
+                                                    }
+                                                },
+                                            }}
                                         />
                                     </Grid>
                                 </>
@@ -919,7 +1007,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                     variant='contained'
                                                     onClick={handleFormSubmit}
                                                     disabled={emailError || bccEmailError || ccEmailError || startDateError || endsOnDateError || wtsappAttachmentError || emailAttachmentError}
-                                                    style={{ background: "rgb(93 167 199)", color: "black" }}
+                                                    style={{ background: "rgb(93 167 199)", color: "white", fontFamily: "roboto" }}
                                                 >
                                                     Submit
                                                 </Button>
@@ -930,8 +1018,8 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                         </Grid>
                     </Box>
                 </Paper>
-            </Box>
-        </div>
+            </Box >
+        </div >
     );
 }
 

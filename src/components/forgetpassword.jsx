@@ -51,7 +51,7 @@ function ForgetPassword() {
                         <Grid item xs={12} sm={12} md={12}>
                             <Paper elevation={5} style={{ padding: '20px' }}>
                                 <div style={{ display: 'flex', alignItems: "center", flexDirection: "column" }}>
-                                    <Typography component="h1" variant="h5" >
+                                    <Typography component="h1" variant="h5" sx={{ fontFamily: "roboto" }}>
                                         Forget Password
                                     </Typography>
                                 </div>
@@ -64,15 +64,22 @@ function ForgetPassword() {
                                                     required
                                                     fullWidth
                                                     id="email"
-                                                    label="Email"
+                                                    label={<span style={{ fontFamily: "roboto" }}>Email</span>}
                                                     name="email"
                                                     autoFocus
                                                     onChange={(e) => setUserEmail(e.target.value)}
+                                                    InputProps={{
+                                                        inputProps: {
+                                                            style: {
+                                                                fontFamily: 'roboto',  // Change the font family for the input text
+                                                            }
+                                                        },
+                                                    }}
                                                 />
                                             </Box>
                                             <Grid container>
                                                 <Grid item xs>
-                                                    <Button onClick={sendOTP}>Send OTP</Button>
+                                                    <Button onClick={sendOTP} sx={{ fontFamily: "roboto" }}>Send OTP</Button>
                                                 </Grid>
                                             </Grid>
 

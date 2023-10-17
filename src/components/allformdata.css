@@ -9,6 +9,7 @@
 
 .view-data {
   word-break: break-all;
+  font-family: "Roboto";
 }
 
 .view-dialog-grid-container:nth-child(odd) {
@@ -38,4 +39,8 @@
 }
 body {
   background-color: #e4f5fb !important;
+}
+
+.custom-date-picker .MuiPickersDay-daySelected {
+  font-family: "roboto";
 }

@@ -330,6 +330,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                             columns={columns}
                             pageSize={5}
                             className="header-bg-color"
+                            style={{ fontFamily: "roboto" }}
                             slots={{
                                 toolbar: GridToolbar,
                             }}
@@ -363,7 +364,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                 <Paper style={containerStyle} elevation={6}>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Name</div>
+                                            <div style={{ fontFamily: "roboto" }}>Name</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.name}</div>
@@ -371,7 +372,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Company</div>
+                                            <div style={{ fontFamily: "roboto" }}>Company</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.company}</div>
@@ -380,7 +381,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Day</div>
+                                            <div style={{ fontFamily: "roboto" }}>Day</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.day}</div>
@@ -388,7 +389,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Start Date</div>
+                                            <div style={{ fontFamily: "roboto" }}>Start Date</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{formatDateToIndianTime(viewData.startDate)}</div>
@@ -397,7 +398,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Reminder Date</div>
+                                            <div style={{ fontFamily: "roboto" }}>Reminder Date</div>
                                         </Grid>
                                         <Grid xs={6} item>
 
@@ -406,7 +407,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Ends On</div>
+                                            <div style={{ fontFamily: "roboto" }}>Ends On</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{formatDateToIndianTime(viewData.endDate)}</div>
@@ -414,7 +415,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Send Time</div>
+                                            <div style={{ fontFamily: "roboto" }}>Send Time</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.sendTime}</div>
@@ -422,7 +423,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>WhatsApp Phone</div>
+                                            <div style={{ fontFamily: "roboto" }}>WhatsApp Phone</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.mobile}</div>
@@ -431,7 +432,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Email</div>
+                                            <div style={{ fontFamily: "roboto" }}>Email</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.email}</div>
@@ -439,7 +440,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>cc</div>
+                                            <div style={{ fontFamily: "roboto" }}>cc</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.cc?.join(",")}</div>
@@ -447,14 +448,14 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>bcc</div>
+                                            <div style={{ fontFamily: "roboto" }}>bcc</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.bcc?.join(",")}</div>
                                         </Grid>
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
-                                        <Grid xs={6} item><div>Email Subject</div>
+                                        <Grid xs={6} item><div style={{ fontFamily: "roboto" }}>Email Subject</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.emailSubject}</div>
@@ -462,7 +463,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>Email Body</div>
+                                            <div style={{ fontFamily: "roboto" }}>Email Body</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.emailBody}</div>
@@ -470,7 +471,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>WhatsApp Message</div>
+                                            <div style={{ fontFamily: "roboto" }}>WhatsApp Message</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.waMessage}</div>
@@ -478,7 +479,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div>WatSapp Attachement</div>
+                                            <div style={{ fontFamily: "roboto" }}>WatSapp Attachement</div>
                                         </Grid>
                                         <Grid xs={6} item>
                                             <div className="view-data">{viewData.WaAttachement}</div>
@@ -504,7 +505,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                 onClose={() => setOpenEditDialog(false)}
                 maxWidth="sm"
             >
-                <DialogTitle>Edit Data</DialogTitle>
+                <DialogTitle><span style={{ fontFamily: "roboto" }}>Edit Data</span></DialogTitle>
                 <DialogContent>
                     <ContactForm
                         width="100%"
@@ -514,7 +515,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenEditDialog(false)}>Close</Button>
+                    <Button onClick={() => setOpenEditDialog(false)} sx={{ fontFamily: "roboto" }}>Close</Button>
                 </DialogActions>
             </Dialog>
             {/* End of edit the data inside dialog. */}
