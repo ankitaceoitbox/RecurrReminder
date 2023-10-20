@@ -1,4 +1,5 @@
 function setTimeToAMPM(time) {
+    console.log(time)
     if (!time) {
         return;
     }

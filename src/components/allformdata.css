@@ -44,3 +44,13 @@ body {
 .custom-date-picker .MuiPickersDay-daySelected {
   font-family: "roboto";
 }
+
+.centered-cell {
+  display: flex;
+  justify-content: center !important;
+}
+
+.centered-header > div > div {
+  display: flex;
+  justify-content: center !important;
+}

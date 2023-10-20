@@ -10,6 +10,7 @@ import setTimeToAMPM from '../utility/converttimetodate';
 import { areEmailsValid } from '../utility/validations';
 import './allformdata.css';
 import WeeksIcon from './weeksIcon';
+import { DayDateFrequencyFormat, DayFrequencyFormat, createDateWithTime, getDayOfWeek } from '../utility/date_related_function';
 function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop }) {
     const [isWAChecked, setIsWAChecked] = useState(() => {
         if (autoFillData) {
@@ -24,42 +25,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         return false;
     });
     const [submitClicked, setSubmitClicked] = useState(false);
-
-    const [formData, setFormData] = useState(() => {
-        if (autoFillData) {
-            return autoFillData;
-        } else {
-            return {
-                isWAChecked: false,
-                whatsappFields: {
-                    sendWADate: null,
-                    mobileOrGroupID: '',
-                    waMessage: '',
-                    attachment: [],
-                },
-                isEmailChecked: false,
-                emailFields: {
-                    emailIDTo: '',
-                    emailIDCc: [],
-                    emailIDBCc: [],
-                    subjectLine: '',
-                    attachment: [],
-                    mailBodyHTML: '',
-                },
-                commonFields: {
-                    startDate: null,
-                    day: '',
-                    every: '',
-                    frequency: '',
-                    sendTime: null,
-                    name: '',
-                    company: '',
-                    endsOnDate: null,
-                    skipHolidays: false,
-                },
-            };
-        }
-    });
     const [emailError, setEmailError] = useState(false);
     const [bccEmailError, setBccEmailError] = useState(false);
     const [ccEmailError, setCcEmailError] = useState(false);
@@ -67,18 +32,64 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     const [endsOnDateError, setEndsOnDateError] = useState(false);
     const [wtsappAttachmentError, setWtsappAttachmentError] = useState(false);
     const [emailAttachmentError, setEmailAttachmentError] = useState(false);
-    const [endsOnOption, setEndsOnOption] = useState("never");
+
+    /** states for form data */
+    const [name, setName] = useState('');
+    const [company, setCompany] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [day, setDay] = useState('');
+    const [every, setEvery] = useState('');
+    const [frequency, setFrequency] = useState('');
+    const [endsOnObject, setEndsOnObject] = useState({
+        occurence: 0,
+        date: null,
+        never: "never",
+    })
+    const [endsOnOption, setEndsOnOption] = useState('never');
+    const [month, setMonth] = useState({
+        date: null,
+        day: "",
+    });
+    const [week, setWeek] = useState({
+        days: []
+    });
+    const [sendTime, setSendTime] = useState(null);
+    const [skipHolidays, setSkipHolidays] = useState(false);
+    const [sendWADate, setSendWADate] = useState(null);
+    const [mobileOrGroupID, setMobileOrGroupID] = useState('');
+    const [waMessage, setWaMessage] = useState('');
+    const [waAttachment, setWaAttachment] = useState([]);
+    const [emailIDTo, setEmailIDTo] = useState('');
+    const [emailIDCc, setEmailIDCc] = useState('');
+    const [emailIDBCc, setEmailIDBCc] = useState('');
+    const [subjectLine, setSubjectLine] = useState('');
+    const [emailAttachment, setEmailAttachment] = useState([]);
+    const [mailBodyHTML, setMailBodyHTML] = useState('');
+    const [sendMailDate, setSendMailDate] = useState(null);
+    /** ends of form data states */
+
+    /** for setting the font to roboto */
+    const fontFamilySet = {
+        inputProps: {
+            style: {
+                fontFamily: 'roboto',
+            }
+        },
+    }
+
+    /** For setting the font of label to roboto */
+    const LabelStyling = ({ labelName }) => {
+        return (
+            <>
+                <span style={{ fontFamily: 'roboto' }}>{labelName}</span>
+            </>
+        )
+    }
 
     const handleStartDateChange = (date) => {
         if (date && dayjs(date).isBefore(dayjs(), 'day')) {
             setStartDateError(true);
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    day: '',
-                },
-            }));
+            setDay('');
             return;
         } else {
             setStartDateError(false);
@@ -86,179 +97,85 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         if (date) {
             const formattedDate = dayjs(date).format('YYYY-MM-DD');
             const day = dayjs(date).format('dddd');
-            // Update formData with formatted startDate and dayOfWeek
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    startDate: formattedDate,
-                    day: day,
-                },
-            }));
+            setStartDate(formattedDate);
+            setDay(day);
         } else {
-            // Update formData with null values for startDate and dayOfWeek
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    startDate: null,
-                    day: '',
-                },
-            }));
+            setStartDate(null);
+            setDay('');
         }
-    };
-    // dropdown for month
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleSendEveryChange = (event) => {
-        const every = event.target.value;
-        setFormData((prevData) => ({
-            ...prevData,
-            commonFields: {
-                ...prevData.commonFields,
-                every,
-            },
-        }));
     };
 
     const handleEndsOnChange = (event) => {
         const endsOn = event.target.value;
+        const endsOnDate = {};
+        if (endsOn === "never") {
+            endsOnDate['occurence'] = 0;
+            endsOnDate['date'] = null;
+            endsOnDate['never'] = "never";
+        } else if (endsOn === 'ondate') {
+            endsOnDate['occurence'] = 0;
+            endsOnDate['date'] = null;
+            endsOnDate['never'] = "never";
+
+        } else if (endsOn === "after") {
+            endsOnDate['occurence'] = 0;
+            endsOnDate['date'] = null;
+            endsOnDate['never'] = "never";
+        }
+        setEndsOnObject(endsOnDate);
         setEndsOnOption(endsOn);
     }
 
-    const handleFrequency = (event) => {
-        const frequency = event.target.value;
-        if (frequency === '+' || frequency === '-') {
-            return;
-        }
-        if (frequency === '-' || frequency === '+') {
-            return;
-        }
-        setFormData((prevData) => ({
-            ...prevData,
-            commonFields: {
-                ...prevData.commonFields,
-                frequency,
-            },
-        }));
-    }
-
     const handleSendTimeChange = (time) => {
-        if (time && time.$d instanceof Date) {
-            const date = time.$d;
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
-            const period = hours >= 12 ? 'PM' : 'AM';
-            const adjustedHours = hours % 12 === 0 ? 12 : hours % 12;
-            const formattedHours = adjustedHours.toString().padStart(2, '0');
-            const formattedMinutes = minutes.toString().padStart(2, '0');
-            const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    sendTime: formattedTime,
-                },
-            }));
-        }
-    };
-
-    const handleNameChange = (e) => {
-        setFormData({
-            ...formData,
-            commonFields: {
-                ...formData.commonFields,
-                name: e.target.value,
-            },
-        });
-    };
-
-    const handleSkipHolidays = (e) => {
-        setFormData({
-            ...formData,
-            commonFields: {
-                ...formData.commonFields,
-                skipHolidays: e.target.checked,
-            },
-        });
-    }
-
-    const handleCompanyChange = (e) => {
-        setFormData({
-            ...formData,
-            commonFields: {
-                ...formData.commonFields,
-                company: e.target.value,
-            },
-        });
-    };
-
-    const handleMobileOrGroupIDChange = (e) => {
-        setFormData({
-            ...formData,
-            whatsappFields: {
-                ...formData.whatsappFields,
-                mobileOrGroupID: e.target.value,
-            },
-        });
-    };
-
-    const handleWAActivationChange = () => {
-        setIsWAChecked(!isWAChecked);
-        // Update formData with the new value
-        setFormData((prevData) => ({
-            ...prevData,
-            isWAChecked: !isWAChecked,
-        }));
-    };
-
-    const handleEmailActivationChange = () => {
-        setIsEmailChecked(!isEmailChecked);
-        // Update formData with the new value
-        setFormData((prevData) => ({
-            ...prevData,
-            isEmailChecked: !isEmailChecked,
-        }));
-    };
-
-    const handleWAMessageChange = (e) => {
-        setFormData({
-            ...formData,
-            whatsappFields: {
-                ...formData.whatsappFields,
-                waMessage: e.target.value,
-            },
-        });
+        // console.log(time)
+        setSendTime(time);
+        // return;
+        // if (time && time.$d instanceof Date) {
+        //     const date = time.$d;
+        //     const hours = date.getHours();
+        //     const minutes = date.getMinutes();
+        //     const period = hours >= 12 ? 'PM' : 'AM';
+        //     const adjustedHours = hours % 12 === 0 ? 12 : hours % 12;
+        //     const formattedHours = adjustedHours.toString().padStart(2, '0');
+        //     const formattedMinutes = minutes.toString().padStart(2, '0');
+        //     const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
+        //     setSendTime(formattedTime);
+        // }
     };
 
     const handleWAattachmentChange = async (e) => {
+        let attachment = e.target.value || "";
+        setWtsappAttachmentError(false);
+        setWaAttachment(attachment);
+    };
+
+    const handleWAattachmentChangeError = async (e) => {
         let attachment = e.target.value || "";
         if (attachment) {
             attachment = attachment.split(',');
         }
         for (let i = 0; i < attachment.length; i++) {
             const url = attachment[i];
-            if (url.indexOf('https://drive.google.com') == -1) {
+            if (url.indexOf('https://drive.google.com') === -1) {
                 setWtsappAttachmentError(true);
                 return;
             }
         }
-        setWtsappAttachmentError(false);
-        setFormData({
-            ...formData,
-            whatsappFields: {
-                ...formData.whatsappFields,
-                attachment: attachment,
-            },
-        });
-    };
+    }
+
+    const handleEmailattachmentChangeError = async (e) => {
+        let attachment = e.target.value || "";
+        if (attachment) {
+            attachment = attachment.split(',');
+        }
+        for (let i = 0; i < attachment.length; i++) {
+            const url = attachment[i];
+            if (url.indexOf('https://drive.google.com') === -1) {
+                setEmailAttachmentError(true);
+                return;
+            }
+        }
+    }
 
     const handleEmailIDToChange = (e) => {
         const validOrNot = areEmailsValid(e.target.value);
@@ -267,13 +184,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         } else {
             setEmailError(false);
         }
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDTo: e.target.value,
-            },
-        });
+        setEmailIDTo(e.target.value)
     };
 
     const handleEmailIDCcChange = (e) => {
@@ -287,13 +198,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         } else {
             setCcEmailError(false);
         }
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDCc: cc,
-            },
-        });
+        setEmailIDCc(cc);
     };
 
     const handleEmailIDBCcChange = (e) => {
@@ -308,56 +213,13 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         } else {
             setBccEmailError(false);
         }
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                emailIDBCc: bcc,
-            },
-        });
-    };
-
-    const handleSubjectLineChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                subjectLine: e.target.value,
-            },
-        });
+        setEmailIDBCc(bcc);
     };
 
     const handleEmailAttachmentChange = async (e) => {
         let attachment = e.target.value || "";
-        console.log(attachment);
-        if (attachment) {
-            attachment = attachment.split(',');
-        }
-        for (let i = 0; i < attachment.length; i++) {
-            const url = attachment[i];
-            if (url.indexOf("https://drive.google.com") == -1) {
-                setEmailAttachmentError(true);
-                return;
-            }
-        }
         setEmailAttachmentError(false);
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                attachment: attachment,
-            },
-        });
-    };
-
-    const handleMailBodyHTMLChange = (e) => {
-        setFormData({
-            ...formData,
-            emailFields: {
-                ...formData.emailFields,
-                mailBodyHTML: e.target.value,
-            },
-        });
+        setEmailAttachment(attachment);
     };
 
     const handleEndsOnDateChange = (date) => {
@@ -368,31 +230,50 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
             setEndsOnDateError(false);
         }
         if (date) {
-            // Format the date to a string in a desired format (e.g., 'YYYY-MM-DD')
             const formattedDate = dayjs(date).format('YYYY-MM-DD');
-
-            // Update formData with the formatted date
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    endsOnDate: formattedDate,
-                },
-            }));
+            setEndsOnObject({
+                occurence: 0,
+                date: formattedDate,
+                never: "",
+            });
         } else {
-            // Update formData with null value for endsOnDate
-            setFormData((prevData) => ({
-                ...prevData,
-                commonFields: {
-                    ...prevData.commonFields,
-                    endsOnDate: null,
-                },
-            }));
+            setEndsOnObject({
+                occurence: 0,
+                date: null,
+                never: "never",
+            });
         }
     };
 
     const handleFormSubmit = async () => {
         setSubmitClicked(true);
+        console.log(week);
+        const formData = {
+            startDate,
+            skipHolidays,
+            day,
+            frequency,
+            every,
+            month,
+            week,
+            sendTime,
+            name,
+            company,
+            isActiveWA: isWAChecked,
+            isActiveEmail: isEmailChecked,
+            mobile: mobileOrGroupID,
+            waMessage,
+            WaAttachement: waAttachment,
+            emailAttachments: emailAttachment,
+            sendWADate,
+            email: emailIDTo,
+            cc: emailIDCc,
+            bcc: emailIDBCc,
+            emailSubject: subjectLine,
+            emailBody: mailBodyHTML,
+            sendMailDate: new Date(),
+            endDate: endsOnObject,
+        }
         const res = await onHandleContactFormSubmit(formData);
         if (res) {
             setSubmitClicked(false);
@@ -400,136 +281,101 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         }
     }
 
-    function handleFileUpload(files) {
-        return new Promise((resolve, reject) => {
-            const fileDetailsArray = [];
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const filename = file.name;
-                const contentType = file.type;
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const content = e.target.result; // Content as a Buffer (or ArrayBuffer)
-                    const fileDetails = {
-                        filename: filename,
-                        contentType: contentType,
-                        content
-                    };
-                    fileDetailsArray.push(fileDetails);
-                    if (fileDetailsArray.length === files.length) {
-                        resolve(fileDetailsArray);
-                    }
-                };
-                reader.onerror = function (error) {
-                    reject(error);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
     const resetForm = () => {
-        const formData = {
-            isWAChecked: false,
-            whatsappFields: {
-                sendWADate: null,
-                mobileOrGroupID: '',
-                waMessage: '',
-                attachment: [],
-            },
-            isEmailChecked: false,
-            emailFields: {
-                emailIDTo: '',
-                emailIDCc: [],
-                emailIDBCc: [],
-                subjectLine: '',
-                attachment: [],
-                mailBodyHTML: '',
-            },
-            commonFields: {
-                startDate: null,
-                day: '',
-                every: '',
-                frequency: '',
-                sendTime: null,
-                name: '',
-                company: '',
-                endsOnDate: null,
-                skipHolidays: false,
-            }
-        }
-        setFormData(formData);
+        setStartDate(null);
+        setSkipHolidays(false);
+        setDay('');
+        setFrequency('');
+        setEvery('');
+        setMonth({
+            date: null,
+            day: ''
+        });
+        setWeek({
+            days: []
+        });
+        setSendTime(null);
+        setName('')
+        setCompany('');
+        setIsWAChecked(false);
+        setIsEmailChecked(false);
+        setMobileOrGroupID('');
+        setWaMessage('');
+        setWaAttachment('');
+        setEmailAttachment('');
+        setSendWADate(null);
+        setEmailIDTo('');
+        setEmailIDCc('');
+        setEmailIDBCc('');
+        setSubjectLine('');
+        setMailBodyHTML('');
+        setSendMailDate(null);
+        setEndsOnObject({
+            occurence: 0,
+            date: null,
+            never: ""
+        });
         setIsWAChecked(false);
         setIsEmailChecked(false);
         setEndsOnDateError(false);
         setStartDateError(false);
     }
 
-    const getDayOfWeek = (date) => {
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const dayIndex = date.getDay();
-        return daysOfWeek[dayIndex];
-    }
-
-    const getOccurrenceInMonth = (date) => {
-        const targetDayOfWeek = date.getDay();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDayOfMonth = new Date(year, month, 1);
-        const firstDayOfWeek = firstDayOfMonth.getDay();
-        // Calculate the difference between the target day and the first day of the month
-        let difference = targetDayOfWeek - firstDayOfWeek;
-        if (difference < 0) difference += 7;
-
-        // Calculate the occurrence
-        const occurrence = Math.floor((date.getDate() - difference) / 7) + 1;
-        return occurrence;
-    }
-
-    function getOccurrenceSuffix(occurrence) {
-        if (occurrence >= 11 && occurrence <= 13) {
-            return 'th';
-        }
-        switch (occurrence % 10) {
-            case 1:
-                return 'st';
-            case 2:
-                return 'nd';
-            case 3:
-                return 'rd';
-            default:
-                return 'th';
-        }
-    }
-
-    // 1st friday
-    const DayFrequencyFormat = () => {
-        const date = new Date(formData.commonFields.startDate);
-        console.log(date)
-        const occurence = getOccurrenceInMonth(date);
-        const format = getOccurrenceSuffix(occurence); // st,nd,rd
-        const weekDayName = getDayOfWeek(date);
-        const formattedText = `Every ${occurence}<sup>${format}</sup> ${weekDayName} Of Month`
-
-        return (
-            <div dangerouslySetInnerHTML={{ __html: formattedText }} />
-        );
-    }
-
-    const DayDateFrequencyFormat = () => {
-        const date = new Date(formData.commonFields.startDate);
-        const format = getOccurrenceSuffix(date.getDate());
-        const formattedText = `Every ${date.getDate()}<sup>${format}</sup> Date Of Month`;
-        return (
-            <div dangerouslySetInnerHTML={{ __html: formattedText }} />
-        );
-    }
 
     useEffect(() => {
         loginSubject.next({
             isAuth: true
         });
     }, []);
+
+    useEffect(() => {
+        if (autoFillData) {
+            console.log(autoFillData);
+            setStartDate(dayjs(new Date(autoFillData.startDate)));
+            setSkipHolidays(autoFillData.skipHolidays);
+            setDay(autoFillData.day);
+            setFrequency(autoFillData.frequency);
+            setEvery(autoFillData.every);
+            setMonth({
+                date: autoFillData?.month?.date,
+                day: autoFillData?.month?.day
+            });
+            setWeek({
+                days: autoFillData?.week?.days
+            });
+            const timeDate = createDateWithTime(autoFillData.sendTime);
+            console.log(dayjs(timeDate));
+            // handleSendTimeChange(dayjs(timeDate))
+            setSendTime(dayjs(timeDate));
+            setName(autoFillData.name);
+            setCompany(autoFillData.company);
+            setIsWAChecked(autoFillData.isWAChecked);
+            setIsEmailChecked(autoFillData.isEmailChecked);
+            setMobileOrGroupID(autoFillData.mobileOrGroupID);
+            setWaMessage(autoFillData.waMessage);
+            setWaAttachment(autoFillData.waAttachment);
+            setEmailAttachment(autoFillData.emailAttachment);
+            setSendWADate(null);
+            setEmailIDTo(autoFillData.emailIDTo);
+            setEmailIDCc(autoFillData.emailIDCc);
+            setEmailIDBCc(autoFillData.emailIDBCc);
+            setSubjectLine(autoFillData.subjectLine);
+            setMailBodyHTML(autoFillData.mailBodyHTML);
+            setSendMailDate(null);
+            setEndsOnObject({
+                occurence: autoFillData?.endsOnObject?.occurence,
+                date: autoFillData?.endsOnObject?.date,
+                never: autoFillData?.endsOnObject?.never
+            });
+            if (autoFillData?.endsOnObject?.occurence > 0) {
+                setEndsOnOption('after');
+            } else if (autoFillData?.endsOnObject?.date > 0) {
+                setEndsOnOption('ondate');
+            } else if (autoFillData?.endsOnObject?.never > 0) {
+                setEndsOnOption('never');
+            }
+        }
+    }, [autoFillData]);
 
     return (
         <div className='container'>
@@ -550,7 +396,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                         width: { xs: '90%', sm: width != undefined ? width : '45%' },
                     }}
                     style={{
-                        // boxShadow: "rgb(180 180 180) 1px 1px 14px 1px"
                         boxShadow: "rgb(204 227 238) 1px 1px 20px 4px"
                     }}
                 >
@@ -564,17 +409,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    label={<span style={{ fontFamily: 'roboto' }}>Name</span>}
-                                    value={formData.commonFields.name}
-                                    onChange={handleNameChange}
+                                    label={<LabelStyling labelName="Name" />}
+                                    value={name}
+                                    onChange={(e) => { setName(e.target.value) }}
                                     size="small"
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
+                                    InputProps={fontFamilySet}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -582,24 +421,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    label={<span style={{ fontFamily: 'roboto' }}>Company</span>}
-                                    value={formData.commonFields.company}
-                                    onChange={handleCompanyChange}
+                                    label={<LabelStyling labelName="Company" />}
+                                    value={company}
+                                    onChange={(e) => { setCompany(e.target.value) }}
                                     size="small"
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
+                                    InputProps={fontFamilySet}
                                 />
                             </Grid>
-
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
-                                        label={<span style={{ fontFamily: "roboto" }}>Start Date</span>}
+                                        label={<LabelStyling labelName="Start Date" />}
                                         sx={{ width: "100%", fontFamily: "roboto" }}
                                         onChange={handleStartDateChange}
                                         slotProps={{
@@ -607,8 +439,8 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 size: 'small', helperText: startDateError && 'Invalid Date entered',
                                             },
                                         }}
-                                        defaultValue={formData.commonFields.startDate && dayjs(formData.commonFields.startDate)}
-                                        value={formData.commonFields.startDate}
+                                        defaultValue={startDate && dayjs(startDate)}
+                                        value={startDate}
                                         minDate={dayjs(new Date())}
                                         reduceAnimations
                                         error={startDateError}
@@ -619,20 +451,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <TextField
                                     fullWidth
                                     variant="outlined"
-                                    label={<span style={{ fontFamily: 'roboto' }}>Day</span>}
-                                    value={formData.commonFields.day}
+                                    label={<LabelStyling labelName="Day" />}
+                                    value={day}
                                     disabled
                                     size="small"
-                                    InputProps={{
-                                        style: {
-                                            fontFamily: 'roboto',  // Change the font family for the input and placeholder text
-                                        },
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
+                                    InputProps={fontFamilySet}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -640,15 +463,15 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     <InputLabel htmlFor="send-every-select" sx={{ fontFamily: "roboto" }}>Send Every</InputLabel>
                                     <Select
                                         id="send-every-select"
-                                        value={formData.commonFields.every}
+                                        value={every}
                                         label="Send Every"
-                                        onChange={handleSendEveryChange}
-                                        style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
+                                        onChange={(e) => { setEvery(e.target.value) }}
+                                        style={{ fontFamily: 'roboto' }}
                                     >
-                                        <MenuItem value="day"><span style={{ fontFamily: "roboto" }}>Day</span></MenuItem>
-                                        <MenuItem value="week"><span style={{ fontFamily: "roboto" }}>Week</span></MenuItem>
-                                        <MenuItem value="month"><span style={{ fontFamily: "roboto" }}>Month</span></MenuItem>
-                                        <MenuItem value="year"><span style={{ fontFamily: "roboto" }}>Year</span></MenuItem>
+                                        <MenuItem value="day"><LabelStyling labelName="Day" /></MenuItem>
+                                        <MenuItem value="week"><LabelStyling labelName="Week" /></MenuItem>
+                                        <MenuItem value="month"><LabelStyling labelName="Month" /></MenuItem>
+                                        <MenuItem value="year"><LabelStyling labelName="Year" /></MenuItem>
                                     </Select>
                                     <FormHelperText></FormHelperText>
                                 </FormControl>
@@ -657,30 +480,31 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <TextField
                                     fullWidth
                                     variant="outlined"
-                                    label={<span style={{ fontFamily: 'roboto' }}>Frequency</span>}
+                                    label={<LabelStyling labelName="Frequency" />}
                                     size="small"
                                     type='number'
-                                    onChange={handleFrequency}
+                                    onChange={(e) => { setFrequency(e.target.value) }}
                                     min={1}
-                                    value={formData.commonFields.frequency}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
+                                    value={frequency}
+                                    InputProps={fontFamilySet}
                                 />
                             </Grid>
                             {
-                                formData.commonFields.every == 'week' ?
+                                every == 'week' ?
                                     <Grid item xs={12} sm={12} sx={{ marginTop: "0px" }}>
-                                        <WeeksIcon />
+                                        <WeeksIcon
+                                            onSelectedWeeksChange={(selectedWeeks) => {
+                                                setWeek({
+                                                    days: [...selectedWeeks]
+                                                })
+                                            }}
+                                            initiallySelectedWeeks={week.days ?? []}
+                                        />
                                     </Grid>
                                     : <></>
                             }
                             {
-                                formData.commonFields.every == 'month' ?
+                                every === 'month' ?
                                     <>
                                         <Grid item xs={12} sm={6}>
                                             <FormControl fullWidth size="small">
@@ -688,10 +512,26 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 <Select
                                                     id="select-frequency"
                                                     label="Select Frequency"
-                                                    style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
+                                                    style={{ fontFamily: 'roboto' }}
+                                                    onChange={(e) => {
+                                                        if (e.target.value === 'date') {
+                                                            const date = new Date(startDate);
+                                                            setMonth({
+                                                                date: date,
+                                                                day: "",
+                                                            });
+                                                        } else {
+                                                            const date = new Date(startDate);
+                                                            const weekDayName = getDayOfWeek(date);
+                                                            setMonth({
+                                                                date: null,
+                                                                day: weekDayName,
+                                                            });
+                                                        }
+                                                    }}
                                                 >
-                                                    <MenuItem value={<DayDateFrequencyFormat />}><DayDateFrequencyFormat /></MenuItem>
-                                                    <MenuItem value={<DayFrequencyFormat />}><DayFrequencyFormat /></MenuItem>
+                                                    <MenuItem value="date"><DayDateFrequencyFormat date={startDate} /></MenuItem>
+                                                    <MenuItem value="day"><DayFrequencyFormat date={startDate} /></MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -701,7 +541,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     <>
                                     </>
                             }
-
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth size="small">
                                     <InputLabel htmlFor="ends-on-select"
@@ -711,9 +550,10 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     </InputLabel>
                                     <Select
                                         id="ends-on-select"
-                                        label={<span style={{ fontFamily: "roboto" }}>Ends On</span>}
+                                        label={<LabelStyling labelName="Ends On" />}
                                         onChange={handleEndsOnChange}
                                         style={{ fontFamily: 'roboto' }}  // Change the font family for the menu items
+                                        value={endsOnOption}
                                     >
                                         <MenuItem value="never"><span style={{ fontFamily: "roboto" }}>Never</span></MenuItem>
                                         <MenuItem value="ondate"><span style={{ fontFamily: "roboto" }}>On Date</span></MenuItem>
@@ -728,16 +568,17 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DatePicker
                                                     label="Ends On"
+                                                    sx={{ width: "100%", fontFamily: "roboto" }}
                                                     onChange={handleEndsOnDateChange}
                                                     slotProps={{
                                                         textField: {
                                                             size: 'small', helperText: endsOnDateError && 'Invalid Date entered',
                                                         }
                                                     }}
-                                                    defaultValue={formData.commonFields.endsOnDate && dayjs(formData.commonFields.endsOnDate)}
+                                                    defaultValue={endsOnObject.date && dayjs(endsOnObject.date)}
                                                     minDate={dayjs(new Date())}
                                                     reduceAnimations
-                                                    value={formData.commonFields.endsOnDate}
+                                                    value={endsOnObject.date}
                                                 />
                                             </LocalizationProvider>
                                         </Grid>
@@ -749,17 +590,20 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 <TextField
                                                     fullWidth
                                                     variant="outlined"
-                                                    label={<span style={{ fontFamily: "roboto" }}>Occurrence</span>}
+                                                    label={<LabelStyling labelName="Occurrence" />}
                                                     size="small"
                                                     type='number'
                                                     min={1}
-                                                    InputProps={{
-                                                        inputProps: {
-                                                            style: {
-                                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                                            }
-                                                        },
-                                                    }}
+                                                    value={endsOnObject.occurence ?? ''}
+                                                    InputProps={fontFamilySet}
+                                                    onChange={(e) => {
+                                                        setEndsOnObject({
+                                                            occurence: e.target.value,
+                                                            date: null,
+                                                            never: "",
+                                                        })
+                                                    }
+                                                    }
                                                 />
                                             </Grid>
                                         </>
@@ -773,10 +617,9 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                             <Grid item xs={12} sm={6}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
-                                        label={<span style={{ fontFamily: "roboto" }}>Send Time</span>}
+                                        label={<LabelStyling labelName="Send Time" />}
                                         sx={{ width: "100%" }}
-                                        defaultValue={setTimeToAMPM(formData.commonFields.sendTime)}
-                                        value={formData.commonFields.sendTime}
+                                        value={sendTime}
                                         onChange={(event) => {
                                             handleSendTimeChange(event);
                                         }}
@@ -789,21 +632,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={formData.commonFields.skipHolidays ?? false}
-                                            onChange={handleSkipHolidays}
+                                            checked={skipHolidays}
+                                            onChange={(e) => {
+                                                setSkipHolidays(e.target.checked)
+                                            }}
                                         />
                                     }
-                                    style={{}}
-                                    label={<span style={{ fontFamily: 'roboto' }}>Skip Holidays</span>}
+                                    label={<LabelStyling labelName="Skip Holidays" />}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
                                     control={<Switch checked={isWAChecked}
-                                        onChange={handleWAActivationChange}
+                                        onChange={(e) => {
+                                            setIsWAChecked(e.target.checked)
+                                        }}
                                     />}
-
-                                    label={<span style={{ fontFamily: "roboto" }}>Activate WA</span>}
+                                    label={<LabelStyling labelName="Activate WA" />}
                                 />
                             </Grid>
                             {isWAChecked && (
@@ -813,17 +658,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Mobile/Group ID</span>}
-                                            value={formData.whatsappFields.mobileOrGroupID}
-                                            onChange={handleMobileOrGroupIDChange}
+                                            label={<LabelStyling labelName="Mobile/Group ID" />}
+                                            value={mobileOrGroupID}
+                                            onChange={(e) => { setMobileOrGroupID(e.target.value) }}
                                             size="small"
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -831,18 +670,12 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>WA Message</span>}
-                                            value={formData.whatsappFields.waMessage}
-                                            onChange={handleWAMessageChange}
+                                            label={<LabelStyling labelName="WA Message" />}
+                                            value={waMessage}
+                                            onChange={(e) => setWaMessage(e.target.value)}
                                             size="small"
                                             sx={{ fontFamily: "roboto" }}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -850,18 +683,14 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>WA Attachments URL</span>}
+                                            label={<LabelStyling labelName="WA Attachments URL" />}
+                                            value={waAttachment}
                                             onChange={handleWAattachmentChange}
+                                            onBlur={handleWAattachmentChangeError}
                                             size="small"
                                             error={wtsappAttachmentError}
                                             helperText={wtsappAttachmentError ? "Only google drive url are valid." : ''}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                         <small style={{ fontFamily: "roboto" }}><i>Use drive links only.</i></small>
                                     </Grid>
@@ -869,11 +698,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                             )}
                             <Grid item xs={12} sm={12}>
                                 <FormControlLabel
-                                    control={<Switch checked={isEmailChecked} onChange={handleEmailActivationChange}
-
+                                    control={<Switch checked={isEmailChecked} onChange={(e) => {
+                                        setIsEmailChecked(e.target.checked)
+                                    }}
                                     />}
-                                    style={{}}
-                                    label={<span style={{ fontFamily: "roboto" }}>Activate Email</span>}
+                                    label={<LabelStyling labelName="Activate Email" />}
                                 />
                             </Grid>
                             {isEmailChecked && (
@@ -883,19 +712,13 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: To</span>}
-                                            value={formData.emailFields.emailIDTo}
+                                            label={<LabelStyling labelName="Email ID: To" />}
+                                            value={emailIDTo}
                                             onChange={handleEmailIDToChange}
                                             size="small"
                                             error={emailError}
                                             helperText={emailError ? <span style={{ fontFamily: "roboto" }}>Invalid Email Id.</span> : ''}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -903,19 +726,13 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: Cc</span>}
-                                            value={formData.emailFields.emailIDCc}
+                                            label={<LabelStyling labelName="Email ID: Cc" />}
+                                            value={emailIDCc}
                                             onChange={handleEmailIDCcChange}
                                             size="small"
                                             error={ccEmailError}
                                             helperText={ccEmailError ? <span style={{ fontFamily: "roboto" }}>Invalid Cc.</span> : ''}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -923,19 +740,13 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Email ID: BCc</span>}
-                                            value={formData.emailFields.emailIDBCc}
+                                            label={<LabelStyling labelName="Email ID: BCc" />}
+                                            value={emailIDBCc}
                                             onChange={handleEmailIDBCcChange}
                                             size="small"
                                             error={bccEmailError}
                                             helperText={bccEmailError ? <span style={{ fontFamily: "roboto" }}>Invalid BCc.</span> : ''}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -943,17 +754,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Subject line</span>}
-                                            value={formData.emailFields.subjectLine}
-                                            onChange={handleSubjectLineChange}
+                                            label={<LabelStyling labelName="Subject line" />}
+                                            value={subjectLine}
+                                            onChange={(e) => setSubjectLine(e.target.value)}
                                             size="small"
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -961,18 +766,14 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Email Attachments URL</span>}
+                                            label={<LabelStyling labelName="Email Attachments URL" />}
                                             onChange={handleEmailAttachmentChange}
+                                            onBlur={handleEmailattachmentChangeError}
+                                            value={emailAttachment}
                                             size="small"
                                             error={emailAttachmentError}
                                             helperText={emailAttachmentError ? <span style={{ fontFamily: "roboto" }}>Only google drive url are valid.</span> : ''}
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                         <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
                                     </Grid>
@@ -981,17 +782,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<span style={{ fontFamily: "roboto" }}>Mail body(HTML)</span>}
-                                            value={formData.emailFields.mailBodyHTML}
-                                            onChange={handleMailBodyHTMLChange}
+                                            label={<LabelStyling labelName="Mail Body (HTML)" />}
+                                            value={mailBodyHTML}
+                                            onChange={(e) => setMailBodyHTML(e.target.value)}
                                             size="small"
-                                            InputProps={{
-                                                inputProps: {
-                                                    style: {
-                                                        fontFamily: 'roboto',  // Change the font family for the input text
-                                                    }
-                                                },
-                                            }}
+                                            InputProps={fontFamilySet}
                                         />
                                     </Grid>
                                 </>
@@ -1018,27 +813,9 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                         </Grid>
                     </Box>
                 </Paper>
-            </Box >
-        </div >
+            </Box>
+        </div>
     );
 }
 
 export default ContactForm;
-
-// sx={{
-//     "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-//     "& .MuiOutlinedInput-root": {
-//         "& > fieldset": { borderColor: "rgb(180 180 180)" },
-//         "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-//         "&.Mui-focused fieldset": {
-//             borderColor: "rgb(180 180 180)",
-//         },
-//         "& > fieldset": { borderColor: "rgb(180 180 180)" },
-//         "& input": {
-//             color: '',
-//         },
-//     },
-//     "& label.MuiInputLabel-root": {
-//         color: 'rgb(180 180 180)', // Specify label color
-//     },
-// }}

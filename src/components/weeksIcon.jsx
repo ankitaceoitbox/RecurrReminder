@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
 
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const weeks = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const CircularCheckbox = ({ label }) => {
+const CircularCheckbox = ({ label, onCheckboxChange, weekname, selectedDays }) => {
     const [checked, setChecked] = useState(false);
+
+    useEffect(() => {
+        setChecked(selectedDays.includes(weekname));
+    });
 
     const handleCheckboxChange = () => {
         setChecked(!checked);
+        onCheckboxChange(weekname, !checked); // Notify the parent about the change
     };
 
     const checkboxStyle = {
@@ -31,11 +37,9 @@ const CircularCheckbox = ({ label }) => {
         color: '#000'
     };
 
-
     return (
         <div
             style={{ ...checkboxStyle, ...(checked ? checkedStyle : unCheckedStyle) }}
-            onClick={handleCheckboxChange}
         >
             <Checkbox
                 checked={checked}
@@ -47,7 +51,26 @@ const CircularCheckbox = ({ label }) => {
     );
 };
 
-const WeeksIcon = () => {
+const WeeksIcon = ({ initiallySelectedWeeks, onSelectedWeeksChange }) => {
+    const [selectedDays, setSelectedDays] = useState([]);
+
+    const handleCheckboxChange = (day, isChecked) => {
+        if (isChecked) {
+            setSelectedDays(prevSelectedDays => [...prevSelectedDays, day]);
+        } else {
+            setSelectedDays(prevSelectedDays => prevSelectedDays.filter(selectedDay => selectedDay !== day));
+        }
+        onSelectedWeeksChange(selectedDays);
+    };
+
+    useEffect(() => {
+        // Set the initially selected weeks when the component mounts
+        if (initiallySelectedWeeks && initiallySelectedWeeks.length > 0) {
+            setSelectedDays([...initiallySelectedWeeks]);
+            onSelectedWeeksChange(initiallySelectedWeeks);
+        }
+    }, []);
+
     return (
         <>
             <div>
@@ -55,7 +78,12 @@ const WeeksIcon = () => {
                 <Grid container sx={{ display: "flex", justifyContent: "center" }}>
                     {daysOfWeek.map((day, index) => (
                         <Grid item key={index} sm={1.5}>
-                            <CircularCheckbox label={day} />
+                            <CircularCheckbox
+                                weekname={weeks[index]}
+                                label={day}
+                                onCheckboxChange={handleCheckboxChange}
+                                selectedDays={selectedDays ?? []}
+                            />
                         </Grid>
                     ))}
                 </Grid>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell, createTheme } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -11,40 +11,43 @@ import ContactForm from './contactform';
 import './allformdata.css';
 import { UpdateSingleUserForm } from '../services/updateForm.service';
 import { toast } from 'react-toastify';
-const theme = createTheme(); // Create a theme
 
 function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoadFormDataAgain }) {
-    // Check if the screen size is small (mobile)
     const [allFormData, setAllFormData] = React.useState([]);
     const [editRowID, setEditRowID] = React.useState();
     const [formData, setFormData] = React.useState({
-        isWAChecked: false,
-        whatsappFields: {
-            sendWADate: null,
-            mobileOrGroupID: '',
-            waMessage: '',
-            attachment: [],
+        name: "",
+        company: '',
+        startDate: null,
+        day: '',
+        every: '',
+        frequency: '',
+        endsOnObject: {
+            occurence: 0,
+            date: null,
+            never: "never",
         },
-        isEmailChecked: false,
-        emailFields: {
-            emailIDTo: '',
-            emailIDCc: [],
-            emailIDBCc: [],
-            subjectLine: '',
-            attachment: [],
-            mailBodyHTML: '',
+        month: {
+            date: null,
+            day: "",
         },
-        commonFields: {
-            startDate: null,
-            day: '',
-            every: '',
-            frequency: '',
-            skipHolidays: false,
-            sendTime: null,
-            name: '',
-            company: '',
-            endsOnDate: null,
+        week: {
+            days: []
         },
+        sendTime: null,
+        skipHolidays: false,
+        sendWADate: null,
+        mobileOrGroupID: '',
+        waMessage: '',
+        waAttachment: [],
+        emailIDTo: '',
+        emailIDCc: '',
+        emailIDBCc: '',
+        subjectLine: '',
+        emailAttachment: [],
+        mailBodyHTML: '',
+        sendMailDate: null,
+        /** ends of form data states */
     });
     const [editRowIndex, setEditRowIndex] = React.useState(-1);
     const [openEditDialog, setOpenEditDialog] = React.useState(false);
@@ -123,35 +126,37 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         const editedData = { ...allFormData[index] };
         setFormData((prevFormData) => ({
             ...prevFormData,
-            commonFields: {
-                ...prevFormData.commonFields,
-                startDate: null,
-                day: editedData.day,
-                every: editedData.every,
-                frequency: editedData.frequency,
-                skipHolidays: editedData.skipHolidays,
-                sendTime: null,
-                name: editedData.name,
-                company: editedData.company,
-                endsOnDate: null,
+            name: editedData.name,
+            company: editedData.company,
+            startDate: editedData.startDate,
+            day: editedData.day,
+            every: editedData.every,
+            frequency: editedData.frequency,
+            endsOnObject: {
+                occurence: editedData?.endDate?.occurence,
+                date: editedData?.endDate?.date,
+                never: editedData?.endDate?.never,
             },
-            isWAChecked: editedData.isActiveWA,
-            whatsappFields: {
-                ...prevFormData.whatsappFields,
-                sendWADate: editedData.sendWADate,
-                waMessage: editedData.waMessage,
-                attachment: editedData.WaAttachement,
+            month: {
+                date: editedData?.month?.date,
+                day: editedData?.month?.day,
             },
-            isEmailChecked: editedData.isActiveEmail,
-            emailFields: {
-                ...prevFormData.emailFields,
-                emailIDTo: editedData.email,
-                emailIDCc: editedData.cc,
-                emailIDBCc: editedData.bcc,
-                subjectLine: editedData.emailSubject,
-                attachment: editedData.attachment,
-                mailBodyHTML: editedData.emailBody,
+            week: {
+                days: editedData?.week?.days
             },
+            sendTime: editedData.sendTime,
+            skipHolidays: editedData.skipHolidays,
+            sendWADate: editedData.sendWADate,
+            mobileOrGroupID: editedData.mobile,
+            waMessage: editedData.waMessage,
+            waAttachment: editedData.WaAttachement,
+            emailIDTo: editedData.email,
+            emailIDCc: editedData.cc,
+            emailIDBCc: editedData.bcc,
+            subjectLine: editedData.emailSubject,
+            emailAttachment: editedData.emailAttachments,
+            mailBodyHTML: editedData.emailBody,
+            sendMailDate: editedData.sendMailDate,
         }));
     };
 
@@ -180,7 +185,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                         />
                     </TableCell>
                 )
-            }
+            },
+            cellClassName: 'centered-cell',
         },
         {
             field: 'edit',
@@ -195,10 +201,12 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                     <TableCell>
                         <EditIcon
                             sx={{ fontSize: "18px" }}
-                            onClick={() => handleEditClick(params.row.id, params.row._id)} />
+                            onClick={() => handleEditClick(params.row.id, params.row._id)}
+                        />
                     </TableCell>
                 );
             },
+            cellClassName: 'centered-cell',
         },
         {
             field: 'delete',
@@ -216,21 +224,24 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                         />
                     </TableCell>
                 )
-            }
+            },
+            cellClassName: 'centered-cell',
         },
         {
-            field: 'id', headerName: 'ID', width: 70, headerClassName: "header-bg-color"
+            field: 'id', headerName: 'ID', width: 70, headerClassName: "header-bg-color", cellClassName: 'centered-cell',
         },
-        { field: 'startDate', headerName: 'Start Date', width: 150 },
-        { field: 'day', headerName: 'Week Day', width: 100 },
-        { field: 'every', headerName: 'Every (day/week/month/year)', width: 200 },
-        { field: 'frequency', headerName: 'Frequency', width: 200 },
-        { field: 'skipholidays', headerName: 'Skipped Holidays', width: 200 },
-        { field: 'sendtime', headerName: 'Send Time', width: 150 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field: 'company', headerName: 'Company', width: 150 },
-        { field: 'isActiveWA', headerName: 'WhatsApp Activate', width: 150 },
-        { field: 'waMessage', headerName: 'WhatsApp Message', width: 150 },
+        { field: 'startDate', headerName: 'Start Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'day', headerName: 'Week Day', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'every', headerName: 'Every (day/week/month/year)', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'repeatson', headerName: 'Selected Week', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'month', headerName: 'Month', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'frequency', headerName: 'Frequency', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'skipholidays', headerName: 'Skipped Holidays', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'sendtime', headerName: 'Send Time', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'name', headerName: 'Name', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'company', headerName: 'Company', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'isActiveWA', headerName: 'WhatsApp Activate', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'waMessage', headerName: 'WhatsApp Message', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         {
             field: 'WaAttachement',
             headerName: 'Whatsapp Attachments',
@@ -251,15 +262,17 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                         ))}
                     </TableCell>
                 );
-            }
+            },
+            cellClassName: 'centered-cell',
+            headerClassName: 'centered-header'
         },
-        { field: 'mobile', headerName: 'WhatsApp Phone', width: 150 },
-        { field: 'isActiveEmail', headerName: 'Email Activate', width: 150 },
-        { field: 'email', headerName: 'Email ID', width: 150 },
-        { field: 'cc', headerName: 'Email Cc', width: 150 },
-        { field: 'bcc', headerName: 'Email Bcc', width: 150 },
-        { field: 'emailSubject', headerName: 'Email Subject', width: 150 },
-        { field: 'emailBody', headerName: 'Email Body', width: 150 },
+        { field: 'mobile', headerName: 'WhatsApp Phone', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'isActiveEmail', headerName: 'Email Activate', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'email', headerName: 'Email ID', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'cc', headerName: 'Email Cc', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'bcc', headerName: 'Email Bcc', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'emailSubject', headerName: 'Email Subject', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'emailBody', headerName: 'Email Body', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         {
             field: 'emailAttachment',
             headerName: 'Email Attachment',
@@ -280,39 +293,109 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                         ))}
                     </TableCell>
                 );
-            }
+            },
+            cellClassName: 'centered-cell',
+            headerClassName: 'centered-header'
         },
-        { field: 'endDate', headerName: 'End Date', width: 150 },
-        { field: '_id', headerName: 'Unique Id', width: 100 },
+        { field: 'endDate', headerName: 'End Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: '_id', headerName: 'Unique Id', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
     ];
 
-    const rows = allFormData.map((item, index) => ({
-        id: index,
-        startDate: formatDateToIndianTime(item.startDate),
-        day: item.day,
-        every: item.every,
-        frequency: item.frequency,
-        skipholidays: item.skipHolidays,
-        sendtime: item.sendTime,
-        name: item.name,
-        company: item.company,
-        isActiveWA: String(item.isActiveWA),
-        waMessage: item.waMessage,
-        WaAttachement: item.WaAttachement,
-        mobile: item.mobile,
-        isActiveEmail: item.isActiveEmail,
-        email: item.email,
-        cc: item.cc?.join(','),
-        bcc: item.bcc?.join(','),
-        emailSubject: item.emailSubject,
-        emailBody: item.emailBody,
-        emailAttachment: item.emailAttachments,
-        endDate: formatDateToIndianTime(item.endDate),
-        _id: item._id,
-    }));
+    const rows = allFormData.map((item, index) => {
+        let formattedEndDate = '';
+        if (item.endDate) {
+            formattedEndDate = (() => {
+                if (item.endDate?.date) {
+                    return `DATE - ${item.endDate?.date}`;
+                } else if (item.endDate?.occurence > 0) {
+                    return `OCCURENCE - ${item.endDate?.occurence}`;
+                } else if (item.endDate?.never === 'never') {
+                    return 'NEVER';
+                } else {
+                    return '';
+                }
+            })();
+        }
+        let formattedMonth = '';
+        if (item.month) {
+            formattedMonth = (() => {
+                if (item.month.date) {
+                    return item.month.date;
+                } else if (item.month.day) {
+                    return item.month.day;
+                }
+            })()
+        }
+        return {
+            id: index,
+            startDate: formatDateToIndianTime(item.startDate),
+            day: item.day,
+            every: item.every,
+            repeatson: item?.week?.days.join(",") ?? '',
+            month: formattedMonth,
+            frequency: item.frequency,
+            skipholidays: item.skipHolidays,
+            sendtime: item.sendTime,
+            name: item.name,
+            company: item.company,
+            isActiveWA: String(item.isActiveWA),
+            waMessage: item.waMessage,
+            WaAttachement: item.WaAttachement,
+            mobile: item.mobile,
+            isActiveEmail: item.isActiveEmail,
+            email: item.email,
+            cc: item.cc?.join(','),
+            bcc: item.bcc?.join(','),
+            emailSubject: item.emailSubject,
+            emailBody: item.emailBody,
+            emailAttachment: item.emailAttachments,
+            endDate: formattedEndDate,
+            _id: item._id,
+        }
+    });
 
     const handleDelete = async (_id) => {
         onDeleteFormDataById(_id);
+    }
+
+    const formateMonthDate = (month) => {
+        let formattedMonth = '';
+        if (month) {
+            formattedMonth = (() => {
+                if (month.date) {
+                    return month.date;
+                } else if (month.day) {
+                    return month.day;
+                }
+            })();
+        }
+        return formattedMonth;
+    }
+
+    const formateEndDate = (endDate) => {
+        console.log(endDate);
+        if (endDate?.date) {
+            return `DATE - ${endDate?.date}`;
+        } else if (endDate?.occurence > 0) {
+            return `OCCURENCE - ${endDate?.occurence}`;
+        } else if (endDate?.never === 'never') {
+            return 'NEVER';
+        } else {
+            return '';
+        }
+    }
+
+    const ClickHereLinks = ({ links }) => {
+        return <>
+            {
+                links.map((link, index) => {
+                    if (index === links.length - 1) {
+                        return <span><a href={link}>Click Here</a></span>;
+                    }
+                    return <><span><a href={link}>Click Here</a></span><span>,</span></>
+                })
+            }
+        </>
     }
 
     return (
@@ -349,6 +432,11 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             </Grid>
 
             {/* This is for view data in dialog. */}
+            {
+                /*
+            endDate: formattedEndDate,
+            _id: item._id,
+         */}
             <Dialog
                 open={openViewDialog}
                 onClose={() => setOpenViewDialog(false)}
@@ -398,11 +486,51 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div style={{ fontFamily: "roboto" }}>Reminder Date</div>
+                                            <div style={{ fontFamily: "roboto" }}>Every</div>
                                         </Grid>
                                         <Grid xs={6} item>
 
-                                            <div className="view-data">{viewData.remDay}</div>
+                                            <div className="view-data">{viewData.every}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Repeats On</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{viewData?.week?.days.join(",") ?? ''}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Month</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{formateMonthDate(viewData?.month)}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Frequency</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{viewData.frequency}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Skip Holidays</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{String(viewData.skipHolidays)}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Whatsapp Message</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{String(viewData.waMessage)}</div>
                                         </Grid>
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
@@ -410,7 +538,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                             <div style={{ fontFamily: "roboto" }}>Ends On</div>
                                         </Grid>
                                         <Grid xs={6} item>
-                                            <div className="view-data">{formatDateToIndianTime(viewData.endDate)}</div>
+                                            <div className="view-data">{formateEndDate(viewData.endDate)}</div>
                                         </Grid>
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
@@ -471,6 +599,14 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
+                                            <div style={{ fontFamily: "roboto" }}>Email Attachments</div>
+                                        </Grid>
+                                        <Grid xs={6} item>
+                                            <div className="view-data">{<ClickHereLinks links={viewData.emailAttachments ?? []} />}</div>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container className='view-dialog-grid-container' style={itemStyle}>
+                                        <Grid xs={6} item>
                                             <div style={{ fontFamily: "roboto" }}>WhatsApp Message</div>
                                         </Grid>
                                         <Grid xs={6} item>
@@ -479,10 +615,10 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                                     </Grid>
                                     <Grid container className='view-dialog-grid-container' style={itemStyle}>
                                         <Grid xs={6} item>
-                                            <div style={{ fontFamily: "roboto" }}>WatSapp Attachement</div>
+                                            <div style={{ fontFamily: "roboto" }}>WhatsApp Attachements</div>
                                         </Grid>
                                         <Grid xs={6} item>
-                                            <div className="view-data">{viewData.WaAttachement}</div>
+                                            <div className="view-data">{<ClickHereLinks links={viewData.WaAttachement ?? []} />}</div>
                                         </Grid>
                                     </Grid>
                                     <div style={{ textAlign: 'center', marginTop: '20px' }}>

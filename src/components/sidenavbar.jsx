@@ -217,13 +217,15 @@ const HolidaysDialog = ({ open, onClose }) => {
 
     React.useEffect(() => {
         (async () => {
-            const response = await EmailWhatsAppDetailsService();
-            console.log(response);
-            const data = response.data;
-            if (data.success === true) {
-                setSkipDates(data.user.skipDates);
-                setSkipDays(data.user.skipDays);
-            }
+            try {
+                const response = await EmailWhatsAppDetailsService();
+                console.log(response);
+                const data = response.data;
+                if (data.success === true) {
+                    setSkipDates(data.user.skipDates);
+                    setSkipDays(data.user.skipDays);
+                }
+            } catch (e) { }
         })();
     }, []);
     return <>
