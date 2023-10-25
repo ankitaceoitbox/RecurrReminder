@@ -50,270 +50,176 @@ function RegistrationForm() {
             style={{
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: "29px"
+                boxSizing: "border-box",
+                alignItems: "center",
             }}
-            className="registartionForm"
+            className="registration-form"
         >
-            <Container component="main" maxWidth="sm">
-                <CssBaseline />
-                <Paper elevation={6} sx={{
-                    padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: "transparent", border: "1px solid rgb(180 180 180)",
-                    boxShadow: "rgb(180 180 180) 1px 1px 14px 1px"
-                }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <PersonAddIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }}>
-                        Sign up
-                    </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="firstName"
-                                    required
-                                    fullWidth
-                                    id="firstName"
-                                    label={<span style={{ fontFamily: "roboto" }}>First Name</span>}
-                                    autoFocus
-                                    value={formData.firstName}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="lastName"
-                                    label={<span style={{ fontFamily: "roboto" }}>Last Name</span>}
-                                    name="lastName"
-                                    autoComplete="family-name"
-                                    value={formData.lastName}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
+            <Container component="main" sx={{ marginTop: "60px" }}>
+                <Box>
+                    <Grid container sx={{ display: "flex", justifyContent: "center" }}>
+                        <Grid item xs={12} sm={12} md={6} sx={{ alignItems: "center", mt: "auto" }}>
+                            <Paper elevation={5} sx={{
+                                padding: '20px', background: "#f1f6f9",
+                                boxShadow: "rgb(204 227 238) 1px 1px 20px 4px",
+                                boxSizing: "border-box",
+                            }}>
+                                <div style={{ display: 'flex', alignItems: "center", flexDirection: "column", marginBottom: "12px" }}>
+                                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                                        <PersonAddIcon />
+                                    </Avatar>
+                                    <Typography component="h1" variant="h5" style={{ color: "", fontFamily: "roboto" }}>
+                                        Sign up
+                                    </Typography>
+                                </div>
+                                <Box component="form" noValidate onSubmit={handleSubmit}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                autoComplete="given-name"
+                                                name="firstName"
+                                                required
+                                                fullWidth
+                                                id="firstName"
+                                                label={<span style={{ fontFamily: "roboto" }}>First Name</span>}
+                                                autoFocus
+                                                value={formData.firstName}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                id="lastName"
+                                                label={<span style={{ fontFamily: "roboto" }}>Last Name</span>}
+                                                name="lastName"
+                                                autoComplete="family-name"
+                                                value={formData.lastName}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
 
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="contactNo"
-                                    label={<span style={{ fontFamily: "roboto" }}>Contact No.</span>}
-                                    name="contactNo"
-                                    autoComplete="tel"
-                                    value={formData.contactNo}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label={<span style={{ fontFamily: "roboto" }}>Email Address</span>}
-                                    name="email"
-                                    autoComplete="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="company"
-                                    label={<span style={{ fontFamily: "roboto" }}>Company Name</span>}
-                                    name="companyName"
-                                    autoComplete="company-name"
-                                    value={formData.companyName}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label={<span style={{ fontFamily: "roboto" }}>Password</span>}
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                    value={formData.password}
-                                    onChange={handleInputChange}
-                                    sx={{
-                                        "& .MuiInputLabel-root": { color: 'rgb(180 180 180)' },
-                                        "& .MuiOutlinedInput-root": {
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&:hover fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "& > fieldset": { borderColor: "rgb(180 180 180)" },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "rgb(180 180 180)",
-                                            },
-                                            "& input": {
-                                                color: 'ghostwhite',
-                                            },
-                                        },
-                                        "& label.MuiInputLabel-root": {
-                                            color: 'rgb(180 180 180)', // Specify label color
-                                        },
-                                    }}
-                                    InputProps={{
-                                        inputProps: {
-                                            style: {
-                                                fontFamily: 'roboto',  // Change the font family for the input text
-                                            }
-                                        },
-                                    }}
-                                />
-                            </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                id="contactNo"
+                                                label={<span style={{ fontFamily: "roboto" }}>Contact No.</span>}
+                                                name="contactNo"
+                                                autoComplete="tel"
+                                                value={formData.contactNo}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                id="email"
+                                                label={<span style={{ fontFamily: "roboto" }}>Email Address</span>}
+                                                name="email"
+                                                autoComplete="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                id="company"
+                                                label={<span style={{ fontFamily: "roboto" }}>Company Name</span>}
+                                                name="companyName"
+                                                autoComplete="company-name"
+                                                value={formData.companyName}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                required
+                                                fullWidth
+                                                name="password"
+                                                label={<span style={{ fontFamily: "roboto" }}>Password</span>}
+                                                type="password"
+                                                id="password"
+                                                autoComplete="new-password"
+                                                value={formData.password}
+                                                onChange={handleInputChange}
+                                                InputProps={{
+                                                    inputProps: {
+                                                        style: {
+                                                            fontFamily: 'roboto',  // Change the font family for the input text
+                                                        }
+                                                    },
+                                                }}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    {error && (
+                                        <Typography variant="body2" color="error" sx={{ fontFamily: "roboto" }}>
+                                            {error}
+                                        </Typography>
+                                    )}
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        style={{ background: "rgb(93 167 199)", color: "white", fontFamily: "roboto" }}
+                                    >
+                                        Sign Up
+                                    </Button>
+                                    <Grid container justifyContent="flex-end">
+                                        <Grid item>
+                                            <Link href="#" variant="body2" to="/login" style={{ fontFamily: "roboto" }} >
+                                                Already have an account? Sign in
+                                            </Link>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </Paper>
                         </Grid>
-                        {error && (
-                            <Typography variant="body2" color="error" sx={{ fontFamily: "roboto" }}>
-                                {error}
-                            </Typography>
-                        )}
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                            style={{ background: "rgb(180 180 180)", color: "black", fontFamily: "roboto" }}
-                        >
-                            Sign Up
-                        </Button>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Link href="#" variant="body2" to="/login" style={{ color: "rgb(180 180 180)", fontFamily: "roboto" }} >
-                                    Already have an account? Sign in
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Paper>
+                    </Grid>
+                </Box>
             </Container>
-        </div>
+        </div >
     );
 }
 

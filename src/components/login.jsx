@@ -8,9 +8,6 @@ import { Subject } from 'rxjs';
 import LockIcon from '@mui/icons-material/Lock'
 import { AdminLogin } from '../services/adminlogin.service';
 import './global.css';
-import { ClassNames } from '@emotion/react';
-
-
 
 export const loginSubject = new Subject();
 function LoginForm() {
@@ -73,16 +70,19 @@ function LoginForm() {
                 style={{
                     display: 'flex',
                     justifyContent: 'center',
+                    boxSizing: "border-box",
+                    alignItems: "center",
                 }}
                 className="login-form"
             >
-                <Container component="main" maxWidth="sm">
+                <Container component="main" sx={{ justifyContent: "center", display: "flex" }}>
                     <Box>
                         <Grid container>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <Paper elevation={5} style={{
-                                    padding: '20px', marginTop: "165px", background: "transparent",
-                                    boxShadow: "rgb(204 227 238) 1px 1px 20px 4px"
+                            <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", alignItems: "center", mt: "auto" }}>
+                                <Paper elevation={5} sx={{
+                                    padding: '20px', background: "#f1f6f9",
+                                    boxShadow: "rgb(204 227 238) 1px 1px 20px 4px",
+                                    boxSizing: "border-box",
                                 }}>
                                     <div style={{ display: 'flex', alignItems: "center", flexDirection: "column" }}>
                                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -100,11 +100,8 @@ function LoginForm() {
                                             onChange={(e) => {
                                                 setSelectOrAdminUser(e.target.value);
                                             }}
-
                                         >
                                             <FormControlLabel value="admin" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />} label={<span style={{ fontFamily: "roboto" }}>Admin</span>}
-                                                style={{ color: "" }}
-
                                             />
                                             <FormControlLabel value="user" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />}
                                                 label={<span style={{ fontFamily: "roboto" }}>User</span>} style={{ color: "" }} />

@@ -1,5 +1,11 @@
-.registartionForm {
+.registration-form {
   height: 100vh;
-  background-image: url("../../public/img3.jpeg");
+  background-image: url("../../public/bgimg.jpg");
   background-size: cover;
+}
+
+@media (max-width: 600px) {
+  .registration-form {
+    height: 100vh;
+  }
 }

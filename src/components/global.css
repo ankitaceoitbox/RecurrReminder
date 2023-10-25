@@ -11,6 +11,9 @@
   background-image: url("../../public/bgimg.jpg");
   background-size: cover;
 }
-/* body {
-  background-color: #343434;
-} */
+
+@media (max-width: 600px) {
+  .login-form {
+    height: 90vh;
+  }
+}

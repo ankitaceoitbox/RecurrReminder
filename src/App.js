@@ -22,7 +22,7 @@ function App() {
         <Grid item sm={0.3}>
           <SideNavBar />
         </Grid>
-        <Grid item sm={11.7} xs={11}>
+        <Grid item sm={12} xs={12} md={12}>
           <Routes>
             <Route
               path="/allforms"
