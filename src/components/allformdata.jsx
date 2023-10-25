@@ -373,7 +373,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
     }
 
     const formateEndDate = (endDate) => {
-        console.log(endDate);
         if (endDate?.date) {
             return `DATE - ${endDate?.date}`;
         } else if (endDate?.occurence > 0) {
