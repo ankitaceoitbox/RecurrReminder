@@ -3,6 +3,7 @@ import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import Loader from './loader';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 function AdminUsersData() {
     const [name, setName] = useState('');
@@ -26,7 +27,19 @@ function AdminUsersData() {
         } catch (e) { }
         setLoader(false);
     }
-
+    const columns = [
+        { field: 'name', headerName: 'Name', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'email', headerName: 'Email', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'reminderCount', headerName: 'Reminder Count', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+    ]
+    const rows = usersData.map((item, index) => {
+        return {
+            id: item._id,
+            name: item.name,
+            email: item.email,
+            reminderCount: item.reminderCount
+        }
+    });
     useEffect(() => {
         loginSubject.next({
             isAdminAuth: true
@@ -41,74 +54,31 @@ function AdminUsersData() {
     return <>
         <div style={{ marginTop: "60px" }}>
             <Grid container spacing={1} >
-                <Grid item xs={12} sm={6} md={2}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoFocus
-                        size={'small'}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={2}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="Name"
-                        label="Name"
-                        name="Name"
-                        autoFocus
-                        size={'small'}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={1} sx={{ mt: 2.1 }}>
-                    <Button
-                        fullWidth
-                        variant='outlined'
-                        onClick={() => { searchByNameAndEmail(name, email) }}
-                    >
-                        Search
-                    </Button>                </Grid>
-                <Grid item xs={12} sm={6} md={1} sx={{ mt: 2.1 }}>
-                    <Button
-                        fullWidth
-                        variant='outlined'
-                        onClick={() => { searchByNameAndEmail('', '') }}
-                    >
-                        Reset
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid container spacing={1} >
-                <Grid item xs={12} md={11.5} sm={12} >
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Reminder Count</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {usersData.map(user => (
-                                    <TableRow key={user._id}>
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>{user.reminderCount}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                <Grid item xs={12} sm={11.5} md={10} sx={{
+                    ml: "auto", mr: "auto", mt: "20px"
+                }}>
+                    <Paper elevation={10} sx={{ padding: "10px" }}>
+                        <DataGrid
+                            disableSelectionOnClick={true}
+                            rows={rows}
+                            columns={columns}
+                            pageSize={5}
+                            className="header-bg-color"
+                            style={{ fontFamily: "roboto" }}
+                            slots={{
+                                toolbar: GridToolbar,
+                            }}
+                            initialState={{
+                                columns: {
+                                    columnVisibilityModel: {
+                                        id: false,
+                                        _id: false,
+                                    },
+                                },
+                            }}
+                            stickyHeader
+                        />
+                    </Paper>
                 </Grid>
             </Grid>
         </div>

@@ -80,7 +80,7 @@ function LoginForm() {
                         <Grid container>
                             <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", alignItems: "center", mt: "auto" }}>
                                 <Paper elevation={5} sx={{
-                                    padding: '20px', background: "#f1f6f9",
+                                    padding: '20px', background: "transparent",
                                     boxShadow: "rgb(204 227 238) 1px 1px 20px 4px",
                                     boxSizing: "border-box",
                                 }}>
