@@ -767,7 +767,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         />
                                         <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={12} md={12}>
                                         <textarea
                                             onChange={(e) => setMailBodyHTML(e.target.value)}
                                             placeholder="Mail Body (HTML)"
@@ -776,6 +776,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 fontFamily: "roboto",
                                                 maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
                                                 overflowY: "auto",
+                                                minHeight: "100px",
                                                 paddingLeft: "10px",
                                                 paddingTop: "10px",
                                             }}
