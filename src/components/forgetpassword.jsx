@@ -79,7 +79,7 @@ function ForgetPassword() {
                                             </Box>
                                             <Grid container>
                                                 <Grid item xs>
-                                                    <Button onClick={sendOTP} sx={{ fontFamily: "roboto" }}>Send OTP</Button>
+                                                    <Button variant="contained" onClick={sendOTP} sx={{ fontFamily: "roboto" }}>Send OTP</Button>
                                                 </Grid>
                                             </Grid>
 

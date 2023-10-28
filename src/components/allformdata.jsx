@@ -115,7 +115,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             month: "2-digit",
             day: "2-digit",
         };
-
         // Format the date and time in the Indian time zone
         return utcDate.toLocaleString("en-IN", options);
     }
@@ -234,7 +233,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             field: 'id', headerName: 'ID', width: 70, headerClassName: "header-bg-color", cellClassName: 'centered-cell',
         },
         { field: 'startDate', headerName: 'Start Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'day', headerName: 'Week Day', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        // { field: 'day', headerName: 'Week Day', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'every', headerName: 'Every (day/week/month/year)', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'repeatson', headerName: 'Selected Week', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'month', headerName: 'Month', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
@@ -332,7 +331,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         return {
             id: index,
             startDate: formatDateToIndianTime(item.startDate),
-            day: item.day,
+            // day: item.day,
             every: item.every,
             repeatson: item?.week?.days.join(",") ?? '',
             month: formattedMonth,

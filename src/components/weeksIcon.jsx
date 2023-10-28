@@ -53,14 +53,13 @@ const CircularCheckbox = ({ label, onCheckboxChange, weekname, selectedDays }) =
 
 const WeeksIcon = ({ initiallySelectedWeeks, onSelectedWeeksChange }) => {
     const [selectedDays, setSelectedDays] = useState([]);
-
     const handleCheckboxChange = (day, isChecked) => {
         if (isChecked) {
-            setSelectedDays(prevSelectedDays => [...prevSelectedDays, day]);
+            setSelectedDays(prevSelectedDays => { return [...prevSelectedDays, day] });
         } else {
             setSelectedDays(prevSelectedDays => prevSelectedDays.filter(selectedDay => selectedDay !== day));
         }
-        onSelectedWeeksChange(selectedDays);
+        // onSelectedWeeksChange(selectedDays);
     };
 
     useEffect(() => {
@@ -70,6 +69,11 @@ const WeeksIcon = ({ initiallySelectedWeeks, onSelectedWeeksChange }) => {
             onSelectedWeeksChange(initiallySelectedWeeks);
         }
     }, []);
+
+    useEffect(() => {
+        console.log(selectedDays);
+        onSelectedWeeksChange(selectedDays);
+    }, [selectedDays])
 
     return (
         <>

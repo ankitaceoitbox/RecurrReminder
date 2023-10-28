@@ -231,6 +231,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     };
 
     const handleFormSubmit = async () => {
+        console.log(week);
         let time = '';
         if (sendTime) {
             time = sendTime.$d;
