@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Grid, Paper, Switch, FormControlLabel, InputLabel, FormControl, Select, MenuItem, FormHelperText, Input, Checkbox, Typography, Menu } from '@mui/material';
+import { TextField, Button, Box, Grid, Paper, Switch, FormControlLabel, InputLabel, FormControl, Select, MenuItem, FormHelperText, Input, Checkbox, Typography, Menu, TextareaAutosize } from '@mui/material';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import CircularProgress from '@mui/material/CircularProgress';
 import { loginSubject } from './login';
-import setTimeToAMPM from '../utility/converttimetodate';
 import { areEmailsValid } from '../utility/validations';
 import './allformdata.css';
 import WeeksIcon from './weeksIcon';
-import { DayDateFrequencyFormat, DayFrequencyFormat, createDateWithTime, getDayOfWeek } from '../utility/date_related_function';
+import { DayDateFrequencyFormat, DayFrequencyFormat, createDateWithTime, getDayOfWeek, getTimeFromDateString } from '../utility/date_related_function';
 function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop }) {
     const [isWAChecked, setIsWAChecked] = useState(() => {
         if (autoFillData) {
@@ -44,7 +43,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
         occurence: 0,
         date: null,
         never: "never",
-    })
+    });
     const [endsOnOption, setEndsOnOption] = useState('never');
     const [month, setMonth] = useState({
         date: null,
@@ -127,20 +126,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     }
 
     const handleSendTimeChange = (time) => {
-        // console.log(time)
         setSendTime(time);
-        // return;
-        // if (time && time.$d instanceof Date) {
-        //     const date = time.$d;
-        //     const hours = date.getHours();
-        //     const minutes = date.getMinutes();
-        //     const period = hours >= 12 ? 'PM' : 'AM';
-        //     const adjustedHours = hours % 12 === 0 ? 12 : hours % 12;
-        //     const formattedHours = adjustedHours.toString().padStart(2, '0');
-        //     const formattedMinutes = minutes.toString().padStart(2, '0');
-        //     const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
-        //     setSendTime(formattedTime);
-        // }
     };
 
     const handleWAattachmentChange = async (e) => {
@@ -203,7 +189,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
 
     const handleEmailIDBCcChange = (e) => {
         let bcc = [];
-        console.log(e.target.value)
         if (e.target.value !== '') {
             bcc = [...e.target.value.split(",")];
         }
@@ -246,8 +231,12 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     };
 
     const handleFormSubmit = async () => {
+        let time = '';
+        if (sendTime) {
+            time = sendTime.$d;
+            time = getTimeFromDateString(new Date(time));
+        }
         setSubmitClicked(true);
-        console.log(week);
         const formData = {
             startDate,
             skipHolidays,
@@ -256,7 +245,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
             every,
             month,
             week,
-            sendTime,
+            sendTime: time,
             name,
             company,
             isActiveWA: isWAChecked,
@@ -330,7 +319,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
 
     useEffect(() => {
         if (autoFillData) {
-            console.log(autoFillData);
             setStartDate(dayjs(new Date(autoFillData.startDate)));
             setSkipHolidays(autoFillData.skipHolidays);
             setDay(autoFillData.day);
@@ -344,13 +332,11 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                 days: autoFillData?.week?.days
             });
             const timeDate = createDateWithTime(autoFillData.sendTime);
-            console.log(dayjs(timeDate));
-            // handleSendTimeChange(dayjs(timeDate))
             setSendTime(dayjs(timeDate));
             setName(autoFillData.name);
             setCompany(autoFillData.company);
-            setIsWAChecked(autoFillData.isWAChecked);
-            setIsEmailChecked(autoFillData.isEmailChecked);
+            setIsWAChecked(autoFillData.isActiveWA);
+            setIsEmailChecked(autoFillData.isActiveEmail);
             setMobileOrGroupID(autoFillData.mobileOrGroupID);
             setWaMessage(autoFillData.waMessage);
             setWaAttachment(autoFillData.waAttachment);
@@ -369,9 +355,9 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
             });
             if (autoFillData?.endsOnObject?.occurence > 0) {
                 setEndsOnOption('after');
-            } else if (autoFillData?.endsOnObject?.date > 0) {
+            } else if (autoFillData?.endsOnObject?.date) {
                 setEndsOnOption('ondate');
-            } else if (autoFillData?.endsOnObject?.never > 0) {
+            } else if (autoFillData?.endsOnObject?.never) {
                 setEndsOnOption('never');
             }
         }
@@ -439,8 +425,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                 size: 'small', helperText: startDateError && 'Invalid Date entered',
                                             },
                                         }}
-                                        defaultValue={startDate && dayjs(startDate)}
-                                        value={startDate}
+                                        value={!!startDate ? dayjs(startDate) : null}
                                         minDate={dayjs(new Date())}
                                         reduceAnimations
                                         error={startDateError}
@@ -575,10 +560,10 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                                             size: 'small', helperText: endsOnDateError && 'Invalid Date entered',
                                                         }
                                                     }}
-                                                    defaultValue={endsOnObject.date && dayjs(endsOnObject.date)}
+                                                    defaultValue={endsOnObject.date === null ? null : (endsOnObject.date && dayjs(endsOnObject.date))}
                                                     minDate={dayjs(new Date())}
                                                     reduceAnimations
-                                                    value={endsOnObject.date}
+                                                    value={endsOnObject.date === null ? null : dayjs(endsOnObject.date)}
                                                 />
                                             </LocalizationProvider>
                                         </Grid>
@@ -670,19 +655,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             required
                                             fullWidth
                                             variant="outlined"
-                                            label={<LabelStyling labelName="WA Message" />}
-                                            value={waMessage}
-                                            onChange={(e) => setWaMessage(e.target.value)}
-                                            size="small"
-                                            sx={{ fontFamily: "roboto" }}
-                                            InputProps={fontFamilySet}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            variant="outlined"
                                             label={<LabelStyling labelName="WA Attachments URL" />}
                                             value={waAttachment}
                                             onChange={handleWAattachmentChange}
@@ -694,6 +666,23 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         />
                                         <small style={{ fontFamily: "roboto" }}><i>Use drive links only.</i></small>
                                     </Grid>
+                                    <Grid item xs={12} sm={12} md={12}>
+                                        <textarea
+                                            onChange={(e) => setWaMessage(e.target.value)}
+                                            placeholder="WA Message"
+                                            value={waMessage}
+                                            style={{
+                                                fontFamily: "roboto",
+                                                maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
+                                                overflowY: "auto",
+                                                minHeight: "100px",
+                                                paddingLeft: "10px",
+                                                paddingTop: "10px",
+                                            }}
+                                        >
+                                        </textarea>
+                                    </Grid>
+
                                 </>
                             )}
                             <Grid item xs={12} sm={12}>
@@ -778,16 +767,19 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            variant="outlined"
-                                            label={<LabelStyling labelName="Mail Body (HTML)" />}
-                                            value={mailBodyHTML}
+                                        <textarea
                                             onChange={(e) => setMailBodyHTML(e.target.value)}
-                                            size="small"
-                                            InputProps={fontFamilySet}
-                                        />
+                                            placeholder="Mail Body (HTML)"
+                                            value={mailBodyHTML}
+                                            style={{
+                                                fontFamily: "roboto",
+                                                maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
+                                                overflowY: "auto",
+                                                paddingLeft: "10px",
+                                                paddingTop: "10px",
+                                            }}
+                                        >
+                                        </textarea>
                                     </Grid>
                                 </>
                             )}

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TableCell } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { loginSubject } from './login';
 import { useEffect } from 'react';
@@ -22,6 +21,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         day: '',
         every: '',
         frequency: '',
+        isActiveEmail: false,
+        isActiveWA: false,
         endsOnObject: {
             occurence: 0,
             date: null,
@@ -132,6 +133,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             day: editedData.day,
             every: editedData.every,
             frequency: editedData.frequency,
+            isActiveEmail: editedData.isActiveEmail,
+            isActiveWA: editedData.isActiveWA,
             endsOnObject: {
                 occurence: editedData?.endDate?.occurence,
                 date: editedData?.endDate?.date,
@@ -300,13 +303,13 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         { field: 'endDate', headerName: 'End Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: '_id', headerName: 'Unique Id', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
     ];
-
+    console.log(allFormData)
     const rows = allFormData.map((item, index) => {
         let formattedEndDate = '';
         if (item.endDate) {
             formattedEndDate = (() => {
                 if (item.endDate?.date) {
-                    return `DATE - ${item.endDate?.date}`;
+                    return `DATE - ${formatDateToIndianTime(item.endDate.date)}`;
                 } else if (item.endDate?.occurence > 0) {
                     return `OCCURENCE - ${item.endDate?.occurence}`;
                 } else if (item.endDate?.never === 'never') {
@@ -374,7 +377,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
     const formateEndDate = (endDate) => {
         if (endDate?.date) {
-            return `DATE - ${endDate?.date}`;
+            return `DATE - ${formatDateToIndianTime(endDate?.date)}`;
         } else if (endDate?.occurence > 0) {
             return `OCCURENCE - ${endDate?.occurence}`;
         } else if (endDate?.never === 'never') {
@@ -431,11 +434,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             </Grid>
 
             {/* This is for view data in dialog. */}
-            {
-                /*
-            endDate: formattedEndDate,
-            _id: item._id,
-         */}
             <Dialog
                 open={openViewDialog}
                 onClose={() => setOpenViewDialog(false)}

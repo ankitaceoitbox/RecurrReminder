@@ -2,18 +2,24 @@ import React from 'react'
 import ContactForm from '../components/contactform'
 import { ContactFormSubmit } from '../services/contactform_submit.services';
 import { toast } from 'react-toastify';
-import './global.css';
 
 function ContactPage() {
     /** This function will call the api function. */
     const handleContactFormSubmit = async (formData) => {
-        const response = await ContactFormSubmit(formData);
-        if (response.data.success === true) {
-            toast.success('Form Submitted Successfully.', {
-                position: 'top-right',
-                autoClose: 3000, // Time in milliseconds for the notification to automatically close
-            });
-        } else {
+        try {
+            const response = await ContactFormSubmit(formData);
+            if (response.data.success === true) {
+                toast.success('Form Submitted Successfully.', {
+                    position: 'top-right',
+                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                });
+            } else {
+                toast.error('Form not Submitted.', {
+                    position: 'top-right',
+                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                });
+            }
+        } catch (e) {
             toast.error('Form not Submitted.', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close

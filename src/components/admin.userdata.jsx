@@ -4,18 +4,11 @@ import { AdminUsersDataService } from '../services/admin_userdata.service';
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import Loader from './loader';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import './adminuserdata.css';
 
 function AdminUsersData() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
     const [usersData, setUsersData] = useState([]);
     const [loader, setLoader] = useState(false);
-
-    const searchByNameAndEmail = async (name, email) => {
-        await getAllUsersData(name, email);
-        setName('');
-        setEmail('');
-    }
 
     const getAllUsersData = async (name, email) => {
         setLoader(true);
@@ -28,9 +21,9 @@ function AdminUsersData() {
         setLoader(false);
     }
     const columns = [
-        { field: 'name', headerName: 'Name', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'email', headerName: 'Email', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'reminderCount', headerName: 'Reminder Count', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'name', headerName: 'Name', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
+        { field: 'email', headerName: 'Email', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'reminderCount', headerName: 'Reminder Count', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
     ]
     const rows = usersData.map((item, index) => {
         return {

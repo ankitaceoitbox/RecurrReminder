@@ -56,17 +56,48 @@ export const getOccurrenceInMonth = (date) => {
 }
 
 export function createDateWithTime(desiredTime) {
-    const desiredDate = new Date();  // Get the current date
-    // Split the time string into hours, minutes, and period (AM/PM)
-    const [hours, minutes] = desiredTime.split(":").map(parseFloat);
-    const isPM = desiredTime.includes("PM");
-    // Adjust hours for PM
-    if (isPM && hours !== 12) {
-        hours += 12;
-    }
-    // Set the time in the Date object
-    desiredDate.setHours(hours);
-    desiredDate.setMinutes(minutes);
-    desiredDate.setSeconds(0);  // Optional: Set seconds to 0 if needed
-    return desiredDate;
+    if (!!desiredTime) {
+        const desiredDate = new Date();  // Get the current date
+        // Split the time string into hours, minutes, and period (AM/PM)
+        const [hours, minutes] = desiredTime.split(":").map(parseFloat);
+        const isPM = desiredTime.includes("PM");
+        // Adjust hours for PM
+        if (isPM && hours !== 12) {
+            hours += 12;
+        }
+        // Set the time in the Date object
+        desiredDate.setHours(hours);
+        desiredDate.setMinutes(minutes);
+        desiredDate.setSeconds(0);  // Optional: Set seconds to 0 if needed
+        return desiredDate;
+    } return null;
 }
+
+export function getTimeFromDateString(date) {
+    try {
+        // Extract hours and minutes
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        // Format hours and minutes for 24-hour clock
+        const time24 = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+        // Format hours and minutes for 12-hour clock
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const twelveHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
+        const time12 = `${twelveHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+        return time12;
+    } catch (e) {
+        return date;
+    }
+    // return {
+    //     time12
+    // };
+}
+
+// Usage example with the provided date string
+// const dateString = "Sat Oct 28 2023 03:00:00 GMT+0530 (India Standard Time)";
+// const extractedTime = getTimeFromDateString(dateString);
+
+// console.log("Time in 24-hour format:", extractedTime.time24);
+// console.log("Time in 12-hour format:", extractedTime.time12);

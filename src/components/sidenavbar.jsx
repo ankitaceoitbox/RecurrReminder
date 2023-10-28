@@ -324,7 +324,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & Whatsapp Settings</span></DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & Whatsapp Credentials</span></DialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
@@ -384,6 +384,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                 },
                             }}
                         />
+                        <a href="https://myaccount.google.com/security" target='_blank' rel="noopener noreferrer"> Vsit to get app Password</a>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
@@ -403,6 +404,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                 },
                             }}
                         />
+                        <a href="https://live.ceoitbox.com/" target='_blank' rel="noopener noreferrer">Vsit to get app Password</a>
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>

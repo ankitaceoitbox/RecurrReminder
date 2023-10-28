@@ -54,3 +54,11 @@ body {
   display: flex;
   justify-content: center !important;
 }
+
+.centered-header {
+  font-size: 17px !important;
+}
+
+.centered-cell {
+  font-size: 16px !important;
+}
