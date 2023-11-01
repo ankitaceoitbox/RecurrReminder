@@ -739,18 +739,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             InputProps={fontFamilySet}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            variant="outlined"
-                                            label={<LabelStyling labelName="Subject line" />}
-                                            value={subjectLine}
-                                            onChange={(e) => setSubjectLine(e.target.value)}
-                                            size="small"
-                                            InputProps={fontFamilySet}
-                                        />
-                                    </Grid>
+
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             required
@@ -766,6 +755,24 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             InputProps={fontFamilySet}
                                         />
                                         <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
+                                    </Grid>
+                                    <Grid item xs={12} sm={12} md={12}>
+                                        <textarea
+                                            placeholder="Subject line"
+                                            value={subjectLine}
+                                            onChange={(e) => setSubjectLine(e.target.value)}
+                                            size="small"
+                                            InputProps={fontFamilySet}
+                                            style={{
+                                                fontFamily: "roboto",
+                                                maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
+                                                overflowY: "auto",
+                                                minHeight: "40px",
+                                                paddingLeft: "10px",
+                                                paddingTop: "10px",
+                                            }}
+                                        >
+                                        </textarea>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
                                         <textarea

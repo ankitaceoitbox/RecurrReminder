@@ -240,6 +240,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         { field: 'frequency', headerName: 'Frequency', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'skipholidays', headerName: 'Skipped Holidays', width: 200, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'sendtime', headerName: 'Send Time', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'lastreminder', headerName: 'Last Reminder Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'name', headerName: 'Name', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'company', headerName: 'Company', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'isActiveWA', headerName: 'WhatsApp Activate', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
@@ -304,6 +305,10 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
     ];
     console.log(allFormData)
     const rows = allFormData.map((item, index) => {
+        let lastReminder = "";
+        if (item.lastReminder) {
+            lastReminder = formatDateToIndianTime(item.lastReminder);
+        }
         let formattedEndDate = '';
         if (item.endDate) {
             formattedEndDate = (() => {
@@ -326,7 +331,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                 } else if (item.month.day) {
                     return item.month.day;
                 }
-            })()
+            })();
         }
         return {
             id: index,
@@ -338,6 +343,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             frequency: item.frequency,
             skipholidays: item.skipHolidays,
             sendtime: item.sendTime,
+            lastreminder: lastReminder,
             name: item.name,
             company: item.company,
             isActiveWA: String(item.isActiveWA),
