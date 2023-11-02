@@ -184,3 +184,25 @@ skipDays:[]
 "name":"ankita","email":"ankita@ceoitbox.in","_v":5,
 "skipDates":["2023-09-21"],
 "skipDays":["Sunday"]}}
+
+/** For whatsapp manual checking **/
+For whatsapp=> post  /check/wa,{
+	"username":"WAmarketing",
+	"password":"cbx123"
+} ,response = {
+	"success": true,
+	"message": "Credentials are valid for sending messages."
+}
+
+/** email manual testing **/
+for  email => post /check/email,{
+	"email":"email....",
+	"password":"password..."
+},response ={
+	"success": true,
+	"message": "Email and password are valid for sending emails."
+}
+{
+	"email":"techboost85@gmail.com",
+	"password":"omlemwulqlujexif"
+}

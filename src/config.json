@@ -9,7 +9,9 @@
       "forgetPassword": "forget-password",
       "adminLogin": "admin/login",
       "setupemail": "setup/email",
-      "setupwhatsapp": "setup/wa"
+      "setupwhatsapp": "setup/wa",
+      "whatsappmanualtesting": "check/wa",
+      "emailmanualtesting": "check/email"
     },
     "get": {
       "forms": "forms",

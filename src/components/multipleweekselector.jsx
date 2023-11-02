@@ -52,7 +52,7 @@ export default function WeekdaySelector({ onHandleSelectedWeekDay, preSelectedDa
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Select Days of the Week"
+                    label="Select days of the Weekdays"
                     placeholder="Days"
                     size="small"
                 />

@@ -1,3 +1,8 @@
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import AddAlertOutlinedIcon from '@mui/icons-material/AddAlertOutlined';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SmsSharpIcon from '@mui/icons-material/SmsSharp';
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -23,7 +28,7 @@ import LoginIcon from '@mui/icons-material/AccountCircle';
 import SignUpIcon from '@mui/icons-material/PersonAdd';
 import LogoutIcon from '@mui/icons-material/ExitToApp';
 import { loginSubject } from './login';
-import { Link as RouterLink } from 'react-router-dom'; // If you're using React Router
+import { Link, Link as RouterLink } from 'react-router-dom'; // If you're using React Router
 import Tooltip from '@mui/material/Tooltip';
 import { Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
 import { ExpandLess } from "@mui/icons-material";
@@ -42,6 +47,9 @@ import { SetUpEmailService } from '../services/emailsetup.service';
 import { SetUpWhatsappService } from '../services/whatsappsetup.service';
 import WhatsAppEmailDetails from './WhatsAppEmailDetails';
 import { EmailWhatsAppDetailsService } from '../services/emailWhatsappdetails.service';
+import { EmailManualTestingService } from '../services/emailmanualtesting.service';
+import { WhatsAppManualTestingService } from '../services/whatsappmanualtesting.service';
+import { isValidEmail } from '../utility/validations';
 
 const drawerWidth = 250;
 
@@ -219,7 +227,6 @@ const HolidaysDialog = ({ open, onClose }) => {
         (async () => {
             try {
                 const response = await EmailWhatsAppDetailsService();
-                console.log(response);
                 const data = response.data;
                 if (data.success === true) {
                     setSkipDates(data.user.skipDates);
@@ -235,7 +242,7 @@ const HolidaysDialog = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle><span style={{ fontFamily: "roboto" }}>Add Dates/Weeks</span></DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Add Dates/Weekdays</span></DialogTitle>
             <DialogContent>
                 <Typography component={"div"} sx={{ display: "flex", flexDirection: "column", alignContent: "center", gap: 2 }}>
                     <Typography component={"div"}>
@@ -288,7 +295,9 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
     const [whatsapp, setWhatsapp] = React.useState('');
     const [whatsappPassword, setWhatsappPassword] = React.useState('');
     const [whatsappLoader, setWhatsappLoader] = React.useState(false);
-
+    const [emailTestingLoader, setEmailTestingLoader] = React.useState(false);
+    const [whatsAppTestingLoader, setWhatsAppTestingLoader] = React.useState(false);
+    const [emailError, setEmailError] = React.useState('');
     const emailSetup = async () => {
         setEmailLoader(true);
         try {
@@ -317,6 +326,29 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
         }
         setWhatsappLoader(false);
     }
+
+    const emailManualTestingService = async () => {
+        setEmailTestingLoader(true);
+        try {
+            const response = await EmailManualTestingService(email, emailPassword);
+            if (response.data.success == "true") {
+                toast.success(response.data.message);
+            }
+        } catch (e) { console.log(e); toast.error("Wrong credentials"); }
+        setEmailTestingLoader(false);
+    }
+
+    const whatsappManualTestingService = async () => {
+        setWhatsAppTestingLoader(true)
+        try {
+            const response = await WhatsAppManualTestingService(whatsapp, whatsappPassword);
+            if (response.data.success == true) {
+                toast.success(response.data.message);
+            }
+        } catch (e) { console.log(e); toast.error("Wrong credentials"); }
+        setWhatsAppTestingLoader(false);
+    }
+
     return <>
         <Dialog
             open={open}
@@ -324,9 +356,9 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
             maxWidth="xs"
             fullWidth
         >
-            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & Whatsapp Credentials</span></DialogTitle>
+            <DialogTitle><span style={{ fontFamily: "roboto" }}>Email & WhatsApp Credentials</span></DialogTitle>
             <DialogContent>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs={6}>
                         <TextField
                             margin="normal"
@@ -336,13 +368,25 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             autoFocus
                             size={"small"}
                             value={email}
-                            onChange={(e) => { setEmail(e.target.value) }}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                const res = isValidEmail(e.target.value);
+                                if (res) {
+                                    setEmailError(false);
+                                } else {
+                                    setEmailError(true);
+                                }
+                            }}
                             InputProps={{
                                 inputProps: {
                                     style: {
                                         fontFamily: 'roboto',  // Change the font family for the input text
                                     }
                                 },
+                            }}
+                            helperText={emailError ? 'Please enter a valid email address' : ''}
+                            FormHelperTextProps={{
+                                sx: { color: 'red' }, // Set the color for the helper text when there's an error
                             }}
                         />
                     </Grid>
@@ -365,7 +409,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                         />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs={6}>
                         <TextField
                             margin="normal"
@@ -384,7 +428,12 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                 },
                             }}
                         />
-                        <a href="https://myaccount.google.com/security" target='_blank' rel="noopener noreferrer"> Vsit to get app Password</a>
+                        <div style={{ textAlign: "left" }}>
+                            <Button sx={{ padding: "0 0" }} component="a" href="https://myaccount.google.com/security" target="_blank">
+                                CLICK HERE
+                            </Button>
+                            <span> to get App password</span>
+                        </div>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
@@ -404,10 +453,15 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                                 },
                             }}
                         />
-                        <a href="https://live.ceoitbox.com/" target='_blank' rel="noopener noreferrer">Vsit to get app Password</a>
+                        <div style={{ textAlign: "left" }}>
+                            <Button sx={{ padding: "0 0" }} component="a" href="https://live.ceoitbox.com/buy-credits" target="_blank">
+                                CLICK HERE
+                            </Button>
+                            <span> to purchase</span>
+                        </div>
                     </Grid>
                 </Grid>
-                <Grid container spacing={2}>
+                <Grid container spacing={1}>
                     <Grid item xs={6}>
                         {
                             emailLoader == false ? <>
@@ -430,7 +484,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                         {
                             whatsappLoader == false ? <>
                                 <Button
-                                    type="button" // Change to type="submit" if using form submission
+                                    type="button"
                                     fullWidth
                                     variant="contained"
                                     sx={{ mt: 3, mb: 2, fontFamily: "roboto" }}
@@ -442,6 +496,41 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
                             </> : <div style={{ display: "flex", justifyContent: "center", marginTop: "2px" }}>
                                 <CircularProgress color="primary" size={50} thickness={4} />
                             </div>
+                        }
+                    </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        {
+                            emailTestingLoader == false ? <>
+                                <Button
+                                    variant='contained'
+                                    fullWidth
+                                    disabled={emailSetup == '' || emailPassword == ''}
+                                    onClick={emailManualTestingService}
+                                >
+                                    Test Credentials
+                                </Button>
+                            </> : <>
+                                <div style={{ display: "flex", justifyContent: "center", marginTop: "2px" }}>
+                                    <CircularProgress color="primary" size={50} thickness={4} />
+                                </div>
+                            </>
+                        }
+                    </Grid>
+                    <Grid item xs={6}>
+                        {
+                            whatsAppTestingLoader == false ? <>
+                                <Button variant='contained' fullWidth disabled={whatsappPassword == '' || whatsapp == ''}
+                                    onClick={whatsappManualTestingService}
+                                >
+                                    Manual Test Send
+                                </Button>
+                            </> : <>
+                                <div style={{ display: "flex", justifyContent: "center", marginTop: "2px" }}>
+                                    <CircularProgress color="primary" size={50} thickness={4} />
+                                </div>
+                            </>
                         }
                     </Grid>
                 </Grid>
@@ -606,6 +695,20 @@ export default function SideNavBar() {
                                             </>
                                         </Tooltip>
                                     </Typography>
+                                    <div style={{ marginLeft: "auto" }} onClick={() => {
+                                        localStorage.removeItem('isAuth');
+                                        loginSubject.next({ isAuth: false });
+                                    }}
+                                    >
+                                        <Link to="/login">
+                                            <Tooltip title="Logout" arrow placement="right">
+                                                <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
+                                                    <LogoutIcon />
+                                                    <span>Logout</span>
+                                                </div>
+                                            </Tooltip>
+                                        </Link>
+                                    </div>
                                 </>
                                 : <></>
                         }
@@ -616,7 +719,7 @@ export default function SideNavBar() {
                             color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
                             background: "transparent", zIndex: 0, padding: "5px 5px"
                         }}>
-                            Task
+                            Tasks
                         </Typography>
                     ) : null}
                     {isAdminAuth == true ? (
@@ -639,6 +742,117 @@ export default function SideNavBar() {
                         {
                             isAuth == true ?
                                 <>
+                                    <ListItem key="Common Settings" disablePadding>
+                                        <ListItemButton
+                                            onClick={() => {
+                                                setHolidays(!holidays);
+                                                if (holidays === false) {
+                                                    setOpen(true);
+                                                }
+                                            }}
+                                        >
+                                            <ListItemIcon>
+                                                <Tooltip title="Common Settings" arrow placement="right">
+                                                    <SettingsIcon
+                                                        sx={{ marginLeft: "3px" }}
+                                                    />
+                                                </Tooltip>
+                                            </ListItemIcon>
+                                            <ListItemText primary={<span style={{ fontFamily: "roboto" }}>Common Settings</span>} />
+                                            {holidays ? <ExpandLess /> : <ExpandMore />}
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <Divider />
+                                    <Collapse
+                                        in={holidays}
+                                        timeout="auto"
+                                        unmountOnExit
+                                        sx={{ marginLeft: '30px' }}
+                                    >
+                                        <List component="div" disablePadding>
+                                            <ListItem
+                                                disablePadding sx={{ display: 'block' }}
+                                                component={RouterLink} to={'/'}
+                                            >
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                    onClick={handleHolidayDialogOpen}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
+                                                            <CalendarMonthRoundedIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={<span style={{ fontFamily: "roboto" }}>Holidays</span>}
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
+                                                </ListItemButton>
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                    onClick={handleEmailWatsAppDialogOpen}
+
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="Email WhatsApp" arrow placement="right">
+                                                            <SmsSharpIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={<span style={{ fontFamily: "roboto" }}>Email/WhatsApp</span>}
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
+                                                </ListItemButton>
+
+                                                {/*  */}
+                                                <ListItemButton
+                                                    sx={{
+                                                        minHeight: 48,
+                                                        justifyContent: open ? 'initial' : 'center',
+                                                        px: 2.5,
+                                                    }}
+                                                    onClick={handleEmailWatsAppDetailsTableOpen}
+                                                >
+                                                    <ListItemIcon
+                                                        sx={{
+                                                            minWidth: 0,
+                                                            mr: open ? 3 : 'auto',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >
+                                                        <Tooltip title="User Table" arrow placement="right">
+                                                            <TableChartIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                        </Tooltip>
+                                                    </ListItemIcon>
+                                                    <ListItemText
+                                                        primary={<span style={{ fontFamily: "roboto" }}>User Table</span>}
+                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
+                                                    />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        </List>
+                                    </Collapse>
+                                    <Divider />
                                     <ListItem key="TaskMenu" disablePadding>
                                         <ListItemButton
                                             onClick={() => {
@@ -650,7 +864,7 @@ export default function SideNavBar() {
                                         >
                                             <ListItemIcon>
                                                 <Tooltip title="Recurring Task" arrow placement="right">
-                                                    <EventIcon
+                                                    <EventRepeatIcon
                                                         sx={{ marginLeft: "3px" }}
                                                     />
                                                 </Tooltip>
@@ -659,7 +873,6 @@ export default function SideNavBar() {
                                             {taskMenu ? <ExpandLess /> : <ExpandMore />}
                                         </ListItemButton>
                                     </ListItem>
-                                    <Divider />
                                     <Collapse
                                         in={taskMenu}
                                         timeout="auto"
@@ -686,7 +899,7 @@ export default function SideNavBar() {
                                                         }}
                                                     >
                                                         <Tooltip title="Add Reminder" arrow placement="right">
-                                                            <AssignmentIcon sx={{ opacity: open ? 1 : 0 }} />
+                                                            <AddAlertOutlinedIcon sx={{ opacity: open ? 1 : 0 }} />
                                                         </Tooltip>
                                                     </ListItemIcon>
                                                     <ListItemText
@@ -725,119 +938,7 @@ export default function SideNavBar() {
                                             </ListItem>
                                         </List>
                                     </Collapse>
-                                    <Divider />
-                                    <ListItem key="Common Settings" disablePadding>
-                                        <ListItemButton
-                                            onClick={() => {
-                                                setHolidays(!holidays);
-                                                if (holidays === false) {
-                                                    setOpen(true);
-                                                }
-                                            }}
-                                        >
-                                            <ListItemIcon>
-                                                <Tooltip title="Common Settings" arrow placement="right">
-                                                    <DateRangeIcon
-                                                        sx={{ marginLeft: "3px" }}
-                                                    />
-                                                </Tooltip>
-                                            </ListItemIcon>
-                                            <ListItemText primary={<span style={{ fontFamily: "roboto" }}>Common Settings</span>} />
-                                            {holidays ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItemButton>
-                                    </ListItem>
-                                    <Divider />
-                                    <Collapse
-                                        in={holidays}
-                                        timeout="auto"
-                                        unmountOnExit
-                                        sx={{ marginLeft: '30px' }}
-                                    >
-                                        <List component="div" disablePadding>
-                                            <ListItem
-                                                disablePadding sx={{ display: 'block' }}
-                                                component={RouterLink} to={'/'}
-                                            >
-                                                <ListItemButton
-                                                    sx={{
-                                                        minHeight: 48,
-                                                        justifyContent: open ? 'initial' : 'center',
-                                                        px: 2.5,
-                                                    }}
-                                                    onClick={handleHolidayDialogOpen}
-                                                >
-                                                    <ListItemIcon
-                                                        sx={{
-                                                            minWidth: 0,
-                                                            mr: open ? 3 : 'auto',
-                                                            justifyContent: 'center',
-                                                        }}
-                                                    >
-                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
-                                                            <EventIcon sx={{ opacity: open ? 1 : 0 }} />
-                                                        </Tooltip>
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={<span style={{ fontFamily: "roboto" }}>Holidays</span>}
-                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
-                                                    />
-                                                </ListItemButton>
-                                                <ListItemButton
-                                                    sx={{
-                                                        minHeight: 48,
-                                                        justifyContent: open ? 'initial' : 'center',
-                                                        px: 2.5,
-                                                    }}
-                                                    onClick={handleEmailWatsAppDialogOpen}
-
-                                                >
-                                                    <ListItemIcon
-                                                        sx={{
-                                                            minWidth: 0,
-                                                            mr: open ? 3 : 'auto',
-                                                            justifyContent: 'center',
-                                                        }}
-                                                    >
-                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
-                                                            <EventIcon sx={{ opacity: open ? 1 : 0 }} />
-                                                        </Tooltip>
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={<span style={{ fontFamily: "roboto" }}>Email/WhatsApp</span>}
-                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
-                                                    />
-                                                </ListItemButton>
-
-                                                {/*  */}
-                                                <ListItemButton
-                                                    sx={{
-                                                        minHeight: 48,
-                                                        justifyContent: open ? 'initial' : 'center',
-                                                        px: 2.5,
-                                                    }}
-                                                    onClick={handleEmailWatsAppDetailsTableOpen}
-                                                >
-                                                    <ListItemIcon
-                                                        sx={{
-                                                            minWidth: 0,
-                                                            mr: open ? 3 : 'auto',
-                                                            justifyContent: 'center',
-                                                        }}
-                                                    >
-                                                        <Tooltip title="Add Dates/Weeks" arrow placement="right">
-                                                            <EventIcon sx={{ opacity: open ? 1 : 0 }} />
-                                                        </Tooltip>
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={<span style={{ fontFamily: "roboto" }}>User Table</span>}
-                                                        sx={{ opacity: open ? 1 : 0, color: "#333" }}
-                                                    />
-                                                </ListItemButton>
-                                            </ListItem>
-                                        </List>
-                                    </Collapse>
-                                    <Divider />
-                                    <ListItem
+                                    {/* <ListItem
                                         disablePadding
                                         sx={{ display: 'block' }}
                                         component={RouterLink}
@@ -870,7 +971,7 @@ export default function SideNavBar() {
                                                 sx={{ opacity: open ? 1 : 0, color: "#333", marginLeft: "6px" }}
                                             />
                                         </ListItemButton>
-                                    </ListItem>
+                                    </ListItem> */}
                                 </>
                                 :
                                 isAdminAuth == true ?

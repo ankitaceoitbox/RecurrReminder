@@ -596,7 +596,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         :
                                         <>
                                             <Grid item xs={12} sm={6} md={6}>
-                                                <span style={{ fontFamily: "roboto" }}><i>Recurring reminder will never end if end's on is never</i></span>
+                                                <span style={{ color: "blue", fontFamily: "roboto", fontWeight: "1000" }}><i>Recurring reminder will never end if end's on is never</i></span>
                                             </Grid>
                                         </>
                             }
@@ -665,7 +665,8 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             helperText={wtsappAttachmentError ? "Only google drive url are valid." : ''}
                                             InputProps={fontFamilySet}
                                         />
-                                        <small style={{ fontFamily: "roboto" }}><i>Use drive links only.</i></small>
+                                        <span style={{ color: "blue", fontFamily: "roboto", fontWeight: "1000" }}><i>Use Google Drive URL.
+                                        </i></span>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
                                         <textarea
@@ -754,7 +755,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                             helperText={emailAttachmentError ? <span style={{ fontFamily: "roboto" }}>Only google drive url are valid.</span> : ''}
                                             InputProps={fontFamilySet}
                                         />
-                                        <small style={{ fontFamily: 'roboto' }}><i>Use drive links only.</i></small>
+                                        <span style={{ color: "blue", fontFamily: 'roboto', fontWeight: "1000" }}><i>Use Google Drive URL.</i></span>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
                                         <textarea

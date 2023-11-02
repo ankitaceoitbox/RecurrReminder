@@ -172,9 +172,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
     const columns = [
         {
-            field: 'view',
-            headerName: 'View',
-            width: 70,
+            field: 'View',
+            width: 30,
             renderCell: (params) => {
                 return (
                     <TableCell>
@@ -191,9 +190,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             cellClassName: 'centered-cell',
         },
         {
-            field: 'edit',
-            headerName: 'Edit',
-            width: 70,
+            field: 'Edit',
+            width: 30,
             sortable: false,
             filterable: false,
             toolbar: false,
@@ -211,9 +209,8 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             cellClassName: 'centered-cell',
         },
         {
-            field: 'delete',
-            headerName: 'Delete',
-            width: 70,
+            field: 'Delete',
+            width: 30,
             renderCell: (params) => {
                 return (
                     <TableCell>
@@ -420,7 +417,7 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
                             columns={columns}
                             pageSize={5}
                             className="header-bg-color"
-                            style={{ fontFamily: "roboto" }}
+                            style={{ fontFamily: "roboto", overflow: "auto", height: "85vh" }}
                             slots={{
                                 toolbar: GridToolbar,
                             }}
