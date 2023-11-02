@@ -1,3 +1,5 @@
+import CustomWhatsAppEditor from './CustomWhatsAppEditor';
+import MyRichTextArea from './MyRichTextArea';
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Grid, Paper, Switch, FormControlLabel, InputLabel, FormControl, Select, MenuItem, FormHelperText, Input, Checkbox, Typography, Menu, TextareaAutosize } from '@mui/material';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers';
@@ -363,7 +365,9 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
             }
         }
     }, [autoFillData]);
-
+    const handleTextAreaChange = (value) => {
+        setMailBodyHTML(value);
+    };
     return (
         <div className='container'>
             <Box
@@ -669,22 +673,8 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         </i></span>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
-                                        <textarea
-                                            onChange={(e) => setWaMessage(e.target.value)}
-                                            placeholder="WA Message"
-                                            value={waMessage}
-                                            style={{
-                                                fontFamily: "roboto",
-                                                maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
-                                                overflowY: "auto",
-                                                minHeight: "100px",
-                                                paddingLeft: "10px",
-                                                paddingTop: "10px",
-                                            }}
-                                        >
-                                        </textarea>
+                                        <CustomWhatsAppEditor onMessageChange={setWaMessage} />
                                     </Grid>
-
                                 </>
                             )}
                             <Grid item xs={12} sm={12}>
@@ -776,20 +766,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         </textarea>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
-                                        <textarea
-                                            onChange={(e) => setMailBodyHTML(e.target.value)}
-                                            placeholder="Mail Body (HTML)"
-                                            value={mailBodyHTML}
-                                            style={{
-                                                fontFamily: "roboto",
-                                                maxWidth: "100%", minWidth: "100%", maxHeight: "200px",
-                                                overflowY: "auto",
-                                                minHeight: "100px",
-                                                paddingLeft: "10px",
-                                                paddingTop: "10px",
-                                            }}
-                                        >
-                                        </textarea>
+                                        <MyRichTextArea onChange={handleTextAreaChange} />
                                     </Grid>
                                 </>
                             )}

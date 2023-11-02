@@ -659,7 +659,3 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 }
 
 export default AllFormData;
-
-
-
-

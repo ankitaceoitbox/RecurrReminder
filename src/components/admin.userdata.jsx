@@ -14,6 +14,7 @@ function AdminUsersData() {
         setLoader(true);
         try {
             const response = await AdminUsersDataService(name, email);
+            console.log(response);
             if (response.data.success) {
                 setUsersData(response.data.users);
             }
@@ -21,16 +22,21 @@ function AdminUsersData() {
         setLoader(false);
     }
     const columns = [
-        { field: 'name', headerName: 'Name', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
-        { field: 'email', headerName: 'Email', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'reminderCount', headerName: 'Reminder Count', width: 400, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: '_id', headerName: 'ID', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'name', headerName: 'Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
+        { field: 'email', headerName: 'Email', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'reminderCount', headerName: 'Reminder Count', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'role', headerName: 'Role', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'approve', headerName: 'Approve Status', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
     ]
     const rows = usersData.map((item, index) => {
         return {
             id: item._id,
             name: item.name,
             email: item.email,
-            reminderCount: item.reminderCount
+            reminderCount: item.reminderCount,
+            role: item.role,
+            approve: item.apprve
         }
     });
     useEffect(() => {
