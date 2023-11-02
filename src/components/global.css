@@ -1,0 +1,19 @@
+.nav {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid gray;
+}
+
+.login-form {
+  height: 100vh;
+  background-image: url("../../public/bgimg.jpg");
+  background-size: cover;
+}
+
+@media (max-width: 600px) {
+  .login-form {
+    height: 90vh;
+  }
+}

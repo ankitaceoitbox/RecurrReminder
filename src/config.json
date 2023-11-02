@@ -1,0 +1,31 @@
+{
+  "recurring": {
+    "domainUrl": "https://reminder-r1v8.onrender.com/api/v1",
+    "post": {
+      "form": "form",
+      "login": "login",
+      "register": "register",
+      "logo": "upload-logo",
+      "forgetPassword": "forget-password",
+      "adminLogin": "admin/login",
+      "setupemail": "setup/email",
+      "setupwhatsapp": "setup/wa"
+    },
+    "get": {
+      "forms": "forms",
+      "logo": "get-logo",
+      "userdata": "admin/users",
+      "adminlogout": "admin/logout",
+      "emailWhatsAppDetails": "me"
+    },
+    "delete": {
+      "form": "form"
+    },
+    "update": {},
+    "put": {
+      "updateForm": "form",
+      "addholidays": "holidays",
+      "verifyPassword": "verify-password"
+    }
+  }
+}
