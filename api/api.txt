@@ -206,3 +206,5 @@ for  email => post /check/email,{
 	"email":"techboost85@gmail.com",
 	"password":"omlemwulqlujexif"
 }
+
+admin credentials - email:rsuneel47@gmail.com,password:suneel

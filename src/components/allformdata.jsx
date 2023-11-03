@@ -172,50 +172,24 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
 
     const columns = [
         {
-            field: 'View',
-            width: 30,
+            field: 'View/Edit/Delete',
+            width: 100,
             renderCell: (params) => {
                 return (
-                    <TableCell>
+                    <TableCell sx={{ display: "flex", justifyContent: "space-around", border: 0, padding: "0 0", width: "100%" }}>
                         <VisibilityIcon
-                            sx={{ fontSize: "18px" }}
+                            sx={{ fontSize: "18px", cursor: "pointer" }}
                             onClick={() => {
                                 setOpenViewDialog(true);
                                 handleViewDataObject(params.row._id);
                             }}
                         />
-                    </TableCell>
-                )
-            },
-            cellClassName: 'centered-cell',
-        },
-        {
-            field: 'Edit',
-            width: 30,
-            sortable: false,
-            filterable: false,
-            toolbar: false,
-            disableColumnMenu: true,
-            renderCell: (params) => {
-                return (
-                    <TableCell>
                         <EditIcon
-                            sx={{ fontSize: "18px" }}
+                            sx={{ fontSize: "18px", cursor: "pointer" }}
                             onClick={() => handleEditClick(params.row.id, params.row._id)}
                         />
-                    </TableCell>
-                );
-            },
-            cellClassName: 'centered-cell',
-        },
-        {
-            field: 'Delete',
-            width: 30,
-            renderCell: (params) => {
-                return (
-                    <TableCell>
                         <DeleteIcon
-                            sx={{ fontSize: "18px" }}
+                            sx={{ fontSize: "18px", cursor: "pointer" }}
                             onClick={() => {
                                 const id = params.row._id;
                                 handleDelete(id);
@@ -226,6 +200,43 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
             },
             cellClassName: 'centered-cell',
         },
+        // {
+        //     field: 'Edit',
+        //     width: 30,
+        //     sortable: false,
+        //     filterable: false,
+        //     toolbar: false,
+        //     disableColumnMenu: true,
+        //     renderCell: (params) => {
+        //         return (
+        //             <TableCell>
+        //                 <EditIcon
+        //                     sx={{ fontSize: "18px" }}
+        //                     onClick={() => handleEditClick(params.row.id, params.row._id)}
+        //                 />
+        //             </TableCell>
+        //         );
+        //     },
+        //     cellClassName: 'centered-cell',
+        // },
+        // {
+        //     field: 'Delete',
+        //     width: 30,
+        //     renderCell: (params) => {
+        //         return (
+        //             <TableCell>
+        //                 <DeleteIcon
+        //                     sx={{ fontSize: "18px" }}
+        //                     onClick={() => {
+        //                         const id = params.row._id;
+        //                         handleDelete(id);
+        //                     }}
+        //                 />
+        //             </TableCell>
+        //         )
+        //     },
+        //     cellClassName: 'centered-cell',
+        // },
         {
             field: 'id', headerName: 'ID', width: 70, headerClassName: "header-bg-color", cellClassName: 'centered-cell',
         },

@@ -21,8 +21,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import EventIcon from '@mui/icons-material/Event';
 import ListIcon from '@mui/icons-material/List';
 import LoginIcon from '@mui/icons-material/AccountCircle';
 import SignUpIcon from '@mui/icons-material/PersonAdd';
@@ -36,7 +34,6 @@ import { ExpandMore } from "@mui/icons-material";
 import { UploadLogo, getLogo } from '../services/logo.service';
 import { toast } from 'react-toastify';
 import { Buffer } from 'buffer'
-import { DateRangeIcon } from '@mui/x-date-pickers';
 import DateChipsSelector from './multipledateselector';
 import WeekdaySelector from './multipleweekselector';
 import { AddHolidays } from '../services/addholidays.service';
@@ -189,6 +186,27 @@ const ImageDialog = ({ open, onClose, setProfileImage }) => {
         </Dialog>
     );
 };
+
+// const UserProfile = ({ open, onClose, }) => {
+//     return (
+//         <Dialog open={open} onClose={() => { onClose(); }}>
+//             <DialogTitle>Change Image</DialogTitle>
+//             <DialogContent>
+
+
+//             </DialogContent>
+//             <DialogActions>
+//                 <Button color="primary"
+//                     onClick={onClose}
+//                 >
+//                     Close
+//                 </Button>
+//             </DialogActions>
+//         </Dialog>
+//     );
+// };
+
+
 
 const HolidaysDialog = ({ open, onClose }) => {
     const [showLoader, setShowLoader] = React.useState(false);
@@ -589,6 +607,7 @@ export default function SideNavBar() {
     const [isEmailWhatsAppDialogOpen, setIsEmailWhatsAppDialogOpen] = React.useState(false);
     const [isEmailWatsAppDetailsTableOpen, setEmailWatsAppDetailsTableOpen] = React.useState(false);
     const navigate = useNavigate();
+    const [userDialogOpen, setUserDialogOpen] = React.useState(false);
 
     /** This is for handling Holidays dialog */
     const handleHolidayDialogOpen = () => {
@@ -604,6 +623,7 @@ export default function SideNavBar() {
     const handleEmailWatsAppDialogclose = () => {
         setIsEmailWhatsAppDialogOpen(false);
     }
+
     const handleProfileImageClick = () => {
         setImageDialogOpen(true);
     }
@@ -695,12 +715,13 @@ export default function SideNavBar() {
                                             </>
                                         </Tooltip>
                                     </Typography>
-                                    <div style={{ marginLeft: "auto" }} onClick={() => {
-                                        localStorage.removeItem('isAuth');
-                                        loginSubject.next({ isAuth: false });
-                                    }}
-                                    >
-                                        <Link to="/login">
+
+                                    <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                                        onClick={() => {
+                                            localStorage.removeItem('isAuth');
+                                            loginSubject.next({ isAuth: false });
+                                        }}>
+                                        <Link to="/login" >
                                             <Tooltip title="Logout" arrow placement="right">
                                                 <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
                                                     <LogoutIcon />
@@ -709,6 +730,7 @@ export default function SideNavBar() {
                                             </Tooltip>
                                         </Link>
                                     </div>
+
                                 </>
                                 : <></>
                         }
@@ -1112,7 +1134,7 @@ export default function SideNavBar() {
                     </List>
                     <Divider />
                 </Drawer>
-            </Box>
+            </Box >
             {
                 isHolidayDialogOpen && (
                     <HolidaysDialog

@@ -27,7 +27,9 @@
     "put": {
       "updateForm": "form",
       "addholidays": "holidays",
-      "verifyPassword": "verify-password"
+      "verifyPassword": "verify-password",
+      "adminapprove": "admin/approve",
+      "adminrole": "admin/role"
     }
   }
 }
