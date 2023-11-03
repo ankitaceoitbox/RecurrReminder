@@ -1,7 +1,7 @@
 import { Avatar, Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import * as React from 'react';
-import { UserLogin } from '../services/login.service';
+import { UserAdminLogin, UserLogin } from '../services/login.service';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { Subject } from 'rxjs';
@@ -32,27 +32,30 @@ function LoginForm() {
     const userLogin = async () => {
         setShowLoader(true);
         try {
-            if (selectAdminOrUser == 'admin') {
-                const response = await AdminLogin(formData);
-                toast.success('Logged In', {
-                    position: 'top-right',
-                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
-                });
-                localStorage.setItem('isAdminAuth', true);
-                loginSubject.next({ isAdminAuth: true });
-                navigate('/admin/userdata');
-            } else if (selectAdminOrUser == 'user') {
-                const response = await UserLogin(formData);
-                toast.success('Logged In', {
-                    position: 'top-right',
-                    autoClose: 3000, // Time in milliseconds for the notification to automatically close
-                });
-                localStorage.setItem('isAuth', true);
-                loginSubject.next({ isAuth: true });
-                navigate('/');
-            } else {
-                setShowLoader(false);
-                toast.error("Please select user or admin.");
+            const response = await UserAdminLogin(formData);
+            console.log(response);
+            if (response.data.success === true) {
+                const { role, approve } = response.data.user;
+                if (approve === true) {
+                    if (role === "admin") {
+                        navigate('/admin/userdata');
+                        localStorage.setItem('isAdminAuth', true);
+                        loginSubject.next({ isAdminAuth: true });
+                    } else {
+                        localStorage.setItem('isAuth', true);
+                        loginSubject.next({ isAuth: true });
+                        navigate('/');
+                    }
+                    toast.success('Logged In', {
+                        position: 'top-right',
+                        autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                    });
+                } else {
+                    toast.error('User not approved', {
+                        position: 'top-right',
+                        autoClose: 3000, // Time in milliseconds for the notification to automatically close
+                    });
+                }
             }
         } catch (error) {
             setShowLoader(false);
@@ -62,6 +65,7 @@ function LoginForm() {
             });
             setError('Invalid email or password'); // Handle authentication error
         }
+        setShowLoader(false);
     };
 
     return (
@@ -92,21 +96,6 @@ function LoginForm() {
                                             Sign in
                                         </Typography>
                                     </div>
-                                    <FormControl component="fieldset">
-                                        <RadioGroup
-                                            aria-label="login"
-                                            name="login"
-                                            sx={{ display: 'flex', flexDirection: 'row' }} // Apply styles using sx prop
-                                            onChange={(e) => {
-                                                setSelectOrAdminUser(e.target.value);
-                                            }}
-                                        >
-                                            <FormControlLabel value="admin" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />} label={<span style={{ fontFamily: "roboto" }}>Admin</span>}
-                                            />
-                                            <FormControlLabel value="user" control={<Radio sx={{ color: '#97d19a', "& .Mui-checked": { background: "#97d19a" } }} />}
-                                                label={<span style={{ fontFamily: "roboto" }}>User</span>} style={{ color: "" }} />
-                                        </RadioGroup>
-                                    </FormControl>
                                     <Box component="form">
                                         <TextField
                                             margin="normal"

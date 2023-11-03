@@ -9,6 +9,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import './adminuserdata.css';
 import { ApproveAdminService } from '../services/adminapprove.service';
 import { UpdateRoleService } from '../services/adminrole.service';
+import { toast } from 'react-toastify';
 
 function AdminUsersData() {
     const [usersData, setUsersData] = useState([]);
@@ -39,13 +40,13 @@ function AdminUsersData() {
         { field: '_id', headerName: 'ID', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'name', headerName: 'Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
         { field: 'email', headerName: 'Email', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'contact', headerName: 'Contact', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'contact', headerName: 'Contact', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: 'company', headerName: 'Company Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'reminderCount', headerName: 'Reminder Count', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+        { field: 'reminderCount', headerName: 'Reminder Count', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         {
             field: 'role',
             headerName: 'Role',
-            width: 250,
+            width: 150,
             renderCell: (params) => (
                 <FormControl variant="standard" sx={{ minWidth: 120 }}>
                     <Select
@@ -71,7 +72,7 @@ function AdminUsersData() {
         {
             field: 'approve',
             headerName: 'Approve Status',
-            width: 250,
+            width: 150,
             renderCell: (params) => (
                 <Checkbox
                     checked={params.value}
@@ -104,15 +105,37 @@ function AdminUsersData() {
             id,
             role: changed.role
         };
+        let check = false;
         try {
             const response = await ApproveAdminService(approveAdmin);
-            console.log(response);
-        } catch (e) { console.log(e); }
+            if (response.data.success === true) {
+                check = true;
+            }
+        } catch (e) {
+            console.log(e); toast.error('User approved status not updated', {
+                position: 'top-right',
+                autoClose: 3000, // Time in milliseconds for the notification to automatically close
+            });
+        }
         try {
             const response = await UpdateRoleService(roleChange);
+            if (response.data.success === true) {
+                check = true;
+            }
             console.log(response);
         } catch (e) { console.log(e); }
 
+        if (check === true) {
+            toast.success('Updated successfully', {
+                position: 'top-right',
+                autoClose: 3000, // Time in milliseconds for the notification to automatically close
+            });
+        } else {
+            toast.error('Oops try again later', {
+                position: 'top-right',
+                autoClose: 3000, // Time in milliseconds for the notification to automatically close
+            });
+        }
     };
 
     useEffect(() => {
@@ -127,6 +150,7 @@ function AdminUsersData() {
     }, []);
 
     useEffect(() => {
+        console.log(usersData);
         const rows = usersData.map((item) => {
             return {
                 save: (

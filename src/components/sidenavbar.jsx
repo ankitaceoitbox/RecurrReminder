@@ -47,6 +47,7 @@ import { EmailWhatsAppDetailsService } from '../services/emailWhatsappdetails.se
 import { EmailManualTestingService } from '../services/emailmanualtesting.service';
 import { WhatsAppManualTestingService } from '../services/whatsappmanualtesting.service';
 import { isValidEmail } from '../utility/validations';
+import { UserLogoutService } from '../services/userlogout.service';
 
 const drawerWidth = 250;
 
@@ -186,27 +187,6 @@ const ImageDialog = ({ open, onClose, setProfileImage }) => {
         </Dialog>
     );
 };
-
-// const UserProfile = ({ open, onClose, }) => {
-//     return (
-//         <Dialog open={open} onClose={() => { onClose(); }}>
-//             <DialogTitle>Change Image</DialogTitle>
-//             <DialogContent>
-
-
-//             </DialogContent>
-//             <DialogActions>
-//                 <Button color="primary"
-//                     onClick={onClose}
-//                 >
-//                     Close
-//                 </Button>
-//             </DialogActions>
-//         </Dialog>
-//     );
-// };
-
-
 
 const HolidaysDialog = ({ open, onClose }) => {
     const [showLoader, setShowLoader] = React.useState(false);
@@ -658,6 +638,16 @@ export default function SideNavBar() {
         }
     }
 
+    const userLogOut = async () => {
+        const response = await UserLogoutService();
+        if (response.data.success == true) {
+            toast.success("logged out");
+            localStorage.removeItem('isAuth');
+            loginSubject.next({ isAuth: false });
+            navigate("/login");
+        }
+    }
+
     React.useEffect(() => {
         const subscription = loginSubject.subscribe((data) => {
             if (data.isAuth == false || data.isAuth == true) {
@@ -715,21 +705,39 @@ export default function SideNavBar() {
                                             </>
                                         </Tooltip>
                                     </Typography>
+                                    {
+                                        isAuth == true &&
+                                        <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                                            onClick={() => {
+                                                userLogOut();
+                                            }}>
+                                            <Link to="/login" >
+                                                <Tooltip title="Logout" arrow placement="right">
+                                                    <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
+                                                        <LogoutIcon />
+                                                        <span>Logout</span>
+                                                    </div>
+                                                </Tooltip>
+                                            </Link>
+                                        </div>
+                                    }
+                                    {
+                                        isAdminAuth == true &&
+                                        <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                                            onClick={() => {
+                                                adminLogOut();
+                                            }}>
+                                            <Link to="/login" >
+                                                <Tooltip title="Logout" arrow placement="right">
+                                                    <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
+                                                        <LogoutIcon />
+                                                        <span>Logout</span>
+                                                    </div>
+                                                </Tooltip>
+                                            </Link>
+                                        </div>
+                                    }
 
-                                    <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                                        onClick={() => {
-                                            localStorage.removeItem('isAuth');
-                                            loginSubject.next({ isAuth: false });
-                                        }}>
-                                        <Link to="/login" >
-                                            <Tooltip title="Logout" arrow placement="right">
-                                                <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
-                                                    <LogoutIcon />
-                                                    <span>Logout</span>
-                                                </div>
-                                            </Tooltip>
-                                        </Link>
-                                    </div>
 
                                 </>
                                 : <></>
@@ -960,40 +968,6 @@ export default function SideNavBar() {
                                             </ListItem>
                                         </List>
                                     </Collapse>
-                                    {/* <ListItem
-                                        disablePadding
-                                        sx={{ display: 'block' }}
-                                        component={RouterLink}
-                                        to={'/login'}
-                                        onClick={() => {
-                                            localStorage.removeItem('isAuth');
-                                            loginSubject.next({ isAuth: false });
-                                        }}
-                                    >
-                                        <ListItemButton
-                                            sx={{
-                                                minHeight: 48,
-                                                justifyContent: open ? 'initial' : 'center',
-                                                px: 2.5,
-                                            }}
-                                        >
-                                            <ListItemIcon
-                                                sx={{
-                                                    minWidth: 0,
-                                                    mr: open ? 3 : 'auto',
-                                                    justifyContent: 'center',
-                                                }}
-                                            >
-                                                <Tooltip title="Logout" arrow placement="right">
-                                                    <LogoutIcon />
-                                                </Tooltip>
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                primary={<span style={{ fontFamily: "roboto" }}>LogOut</span>}
-                                                sx={{ opacity: open ? 1 : 0, color: "#333", marginLeft: "6px" }}
-                                            />
-                                        </ListItemButton>
-                                    </ListItem> */}
                                 </>
                                 :
                                 isAdminAuth == true ?
@@ -1026,44 +1000,6 @@ export default function SideNavBar() {
                                                         sx={{ opacity: open ? 1 : 0, color: "#333" }}
                                                     />
                                                 </ListItemButton>
-                                            </ListItem>
-                                        </List>
-                                        <List >
-                                            <ListItem
-                                                disablePadding sx={{ display: 'block' }}
-                                                component={RouterLink}
-                                            >
-                                                <Typography sx={{ marginLeft: "auto" }}>
-                                                    <ListItem
-                                                        disablePadding
-                                                        sx={{ display: 'block' }}
-                                                        component={RouterLink}
-                                                        onClick={() => {
-                                                            adminLogOut();
-                                                        }}
-                                                    >
-                                                        <ListItemButton
-                                                            sx={{
-                                                                minHeight: 48,
-                                                                justifyContent: open ? 'initial' : 'center',
-                                                                px: 2.5,
-                                                            }}
-                                                        >
-                                                            <ListItemIcon
-                                                                sx={{
-                                                                    minWidth: 0,
-                                                                    justifyContent: 'center',
-                                                                }}
-                                                            >
-                                                                <LogoutIcon />
-                                                            </ListItemIcon>
-                                                            <ListItemText
-                                                                primary="LogOut"
-                                                                sx={{ color: "#333", marginLeft: "26px" }}
-                                                            />
-                                                        </ListItemButton>
-                                                    </ListItem>
-                                                </Typography>
                                             </ListItem>
                                         </List>
                                     </>

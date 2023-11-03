@@ -18,6 +18,7 @@
       "logo": "get-logo",
       "userdata": "admin/users",
       "adminlogout": "admin/logout",
+      "userlogout": "logout",
       "emailWhatsAppDetails": "me"
     },
     "delete": {
