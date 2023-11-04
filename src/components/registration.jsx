@@ -1,4 +1,4 @@
-import { Avatar, Button, CssBaseline, Grid, TextField, Typography, Paper } from '@mui/material';
+import { Avatar, Button, CssBaseline, Grid, TextField, Typography, Paper, CircularProgress } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import * as React from 'react';
 import { UserRegister } from '../services/register.service';
@@ -6,8 +6,11 @@ import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import './sidenavbar.css';
+import { isValidEmail } from '../utility/validations';
 function RegistrationForm() {
     const navigate = useNavigate();
+    const [emailInvalid, setEmailInvalid] = React.useState(false);
+    const [showLoader, setShowLoader] = React.useState(false);
     const [formData, setFormData] = React.useState({
         firstName: '',
         lastName: '',
@@ -29,6 +32,7 @@ function RegistrationForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setShowLoader(true);
         try {
             const response = await UserRegister(formData);
             toast.success('User registered successfully.', {
@@ -43,6 +47,7 @@ function RegistrationForm() {
             });
             setError('Registration failed. Please try again.'); // Handle registration error
         }
+        setShowLoader(false);
     };
 
     return (
@@ -142,7 +147,16 @@ function RegistrationForm() {
                                                 name="email"
                                                 autoComplete="email"
                                                 value={formData.email}
-                                                onChange={handleInputChange}
+                                                onChange={(e) => {
+                                                    const response = isValidEmail(e.target.value);
+                                                    if (response === false) {
+                                                        setEmailInvalid(true);
+                                                    } else {
+                                                        setEmailInvalid(false);
+                                                    }
+                                                    handleInputChange(e);
+                                                }}
+                                                helperText={emailInvalid ? <span style={{ color: "red" }}>Invalid Email Id</span> : ''}
                                                 InputProps={{
                                                     inputProps: {
                                                         style: {
@@ -197,15 +211,22 @@ function RegistrationForm() {
                                             {error}
                                         </Typography>
                                     )}
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        sx={{ mt: 3, mb: 2 }}
-                                        style={{ background: "rgb(93 167 199)", color: "white", fontFamily: "roboto" }}
-                                    >
-                                        Sign Up
-                                    </Button>
+                                    {
+                                        showLoader === false ?
+                                            <Button
+                                                type="submit"
+                                                fullWidth
+                                                variant="contained"
+                                                sx={{ mt: 3, mb: 2 }}
+                                                style={{ background: "rgb(93 167 199)", color: "white", fontFamily: "roboto" }}
+                                            >
+                                                Sign Up
+                                            </Button>
+                                            :
+                                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                                <CircularProgress color="primary" size={50} thickness={4} />
+                                            </div>
+                                    }
                                     <Grid container justifyContent="flex-end">
                                         <Grid item>
                                             <Link href="#" variant="body2" to="/login" style={{ fontFamily: "roboto" }} >

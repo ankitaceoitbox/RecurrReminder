@@ -7,10 +7,12 @@ const api = `${URL}/${endPoints}`;
 
 export const UserRegister = (registerData) => {
     const finalData = {
-        name: registerData.firstName,
+        name: registerData.firstName + " " + registerData.lastName,
         email: registerData.email,
-        password: registerData.password
-    }
+        password: registerData.password,
+        contact: registerData.contactNo,
+        company: registerData.companyName
+    };
     return httpservice.post(api, finalData, {
         withCredentials: true
     });

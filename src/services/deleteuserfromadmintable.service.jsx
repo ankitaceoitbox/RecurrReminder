@@ -6,7 +6,6 @@ const endPoints = config.recurring.delete.admindelete;
 const api = `${URL}/${endPoints}`;
 
 export const RemoveUserFromAdminTable = (id) => {
-    console.log(id);
     return httpservice.delete(api, { id }, {
         withCredentials: true
     });
