@@ -1,0 +1,12 @@
+.centered-header {
+  font-size: 22px;
+}
+
+.centered-cell {
+  font-size: 18px;
+}
+
+.header-bg-color .MuiDataGrid-columnHeaders {
+  background: rgb(240, 245, 241);
+  color: black;
+}

@@ -1,0 +1,36 @@
+{
+  "recurring": {
+    "domainUrl": "/api/v1",
+    "post": {
+      "form": "form",
+      "login": "login",
+      "register": "register",
+      "logo": "upload-logo",
+      "forgetPassword": "forget-password",
+      "adminLogin": "admin/login",
+      "setupemail": "setup/email",
+      "setupwhatsapp": "setup/wa",
+      "whatsappmanualtesting": "check/wa",
+      "emailmanualtesting": "check/email"
+    },
+    "get": {
+      "forms": "forms",
+      "logo": "get-logo",
+      "userdata": "admin/users",
+      "userlogout": "logout",
+      "emailWhatsAppDetails": "me"
+    },
+    "delete": {
+      "form": "form",
+      "admindelete": "admin/delete"
+    },
+    "update": {},
+    "put": {
+      "updateForm": "form",
+      "addholidays": "holidays",
+      "verifyPassword": "verify-password",
+      "adminapprove": "admin/approve",
+      "adminrole": "admin/role"
+    }
+  }
+}
