@@ -17,12 +17,12 @@
       "forms": "forms",
       "logo": "get-logo",
       "userdata": "admin/users",
-      "adminlogout": "admin/logout",
       "userlogout": "logout",
       "emailWhatsAppDetails": "me"
     },
     "delete": {
-      "form": "form"
+      "form": "form",
+      "admindelete": "admin/delete"
     },
     "update": {},
     "put": {

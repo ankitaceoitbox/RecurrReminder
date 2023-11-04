@@ -629,21 +629,24 @@ export default function SideNavBar() {
     };
 
     const adminLogOut = async () => {
-        const response = await AdminLogoutService();
-        if (response.data.success == true) {
-            toast.success("logged out");
-            localStorage.removeItem('isAdminAuth');
-            loginSubject.next({ isAdminAuth: false });
-            navigate("/login");
-        }
+        // const response = await AdminLogoutService();
+        // if (response.data.success == true) {
+        //     toast.success("logged out");
+        //     localStorage.removeItem('isAdminAuth');
+        //     loginSubject.next({ isAdminAuth: false });
+        //     navigate("/login");
+        // }
     }
 
     const userLogOut = async () => {
         const response = await UserLogoutService();
+        console.log(response);
         if (response.data.success == true) {
             toast.success("logged out");
             localStorage.removeItem('isAuth');
+            localStorage.removeItem('isAdminAuth');
             loginSubject.next({ isAuth: false });
+            loginSubject.next({ isAdminAuth: false });
             navigate("/login");
         }
     }
@@ -682,7 +685,7 @@ export default function SideNavBar() {
                             <MenuIcon />
                         </IconButton>
                         {
-                            isAuth == true || isAdminAuth == true ?
+                            (isAuth == true || isAdminAuth == true) ?
                                 <>
                                     <Typography variant="h6" noWrap component="div">
                                         <Tooltip title="Edit" arrow>
@@ -706,7 +709,7 @@ export default function SideNavBar() {
                                         </Tooltip>
                                     </Typography>
                                     {
-                                        isAuth == true &&
+                                        (isAuth == true || isAdminAuth == true) &&
                                         <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
                                             onClick={() => {
                                                 userLogOut();
@@ -721,7 +724,7 @@ export default function SideNavBar() {
                                             </Link>
                                         </div>
                                     }
-                                    {
+                                    {/* {
                                         isAdminAuth == true &&
                                         <div style={{ marginLeft: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
                                             onClick={() => {
@@ -736,7 +739,7 @@ export default function SideNavBar() {
                                                 </Tooltip>
                                             </Link>
                                         </div>
-                                    }
+                                    } */}
 
 
                                 </>

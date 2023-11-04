@@ -1,5 +1,4 @@
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'; import SaveIcon from '@mui/icons-material/Save';
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
@@ -10,6 +9,7 @@ import './adminuserdata.css';
 import { ApproveAdminService } from '../services/adminapprove.service';
 import { UpdateRoleService } from '../services/adminrole.service';
 import { toast } from 'react-toastify';
+import { RemoveUserFromAdminTable } from '../services/deleteuserfromadmintable.service';
 
 function AdminUsersData() {
     const [usersData, setUsersData] = useState([]);
@@ -31,8 +31,8 @@ function AdminUsersData() {
     const columns = [
         {
             field: 'save',
-            headerName: 'Update',
-            width: 100,
+            headerName: 'Save/Delete',
+            width: 120,
             renderCell: (params) => params.value,
             headerClassName: 'centered-header',
             cellClassName: 'centered-cell',
@@ -138,6 +138,14 @@ function AdminUsersData() {
         }
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const response = await RemoveUserFromAdminTable(id);
+            console.log(response);
+        } catch (e) {
+        }
+    }
+
     useEffect(() => {
         loginSubject.next({
             isAdminAuth: true
@@ -154,9 +162,14 @@ function AdminUsersData() {
         const rows = usersData.map((item) => {
             return {
                 save: (
-                    <IconButton onClick={() => handleSave(item._id)} disabled={enabledRowId !== item._id}>
-                        <SaveIcon />
-                    </IconButton>
+                    <>
+                        <IconButton onClick={() => handleSave(item._id)} disabled={enabledRowId !== item._id}>
+                            <SaveIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDelete(item._id)}>
+                            <DeleteOutlineIcon />
+                        </IconButton>
+                    </>
                 ),
                 id: item._id,
                 name: item.name,
