@@ -141,8 +141,16 @@ function AdminUsersData() {
     const handleDelete = async (id) => {
         try {
             const response = await RemoveUserFromAdminTable(id);
-            console.log(response);
+            loginSubject.next({
+                isAdminAuth: true
+            });
+            (
+                async () => {
+                    await getAllUsersData();
+                }
+            )();
         } catch (e) {
+            console.log(e);
         }
     }
 
@@ -196,7 +204,6 @@ function AdminUsersData() {
                             rows={rows}
                             columns={columns}
                             pageSize={5}
-                            pageSizeOptions={[5, 10, 20, 50, 100, 150, 200, 500]}
                             className="header-bg-color"
                             style={{ fontFamily: "roboto" }}
                             slots={{
