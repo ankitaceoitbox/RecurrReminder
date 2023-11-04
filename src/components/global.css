@@ -17,3 +17,14 @@
     height: 90vh;
   }
 }
+
+
+.ql-editor{
+  min-height: 100px;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 0px;
+}
+
+

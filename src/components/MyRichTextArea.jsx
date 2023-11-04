@@ -1,37 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import styles
-
+import "./global.css"
 const MyRichTextArea = ({ onChange }) => {
   const [editorHtml, setEditorHtml] = useState("");
+  const quillRef = useRef(null);
+  useEffect(() => {
+    if (quillRef.current) {
+      quillRef.current.getEditor().on("text-change", () => {
+        const editorHtml = quillRef.current.getEditor().root.innerHTML;
+        setEditorHtml(editorHtml);
+        onChange(editorHtml);
+      });
+    }
+  }, [onChange]);
+
+
+
 
   const modules = {
     toolbar: [
-      [{ "header": "1" }, { "header": "2" }, { "header": "3" }, { "header": "4" }, { "header": "5" }, { "header": "6" }],
-      [{ "font": [] }],
-      ["bold", "italic"],
-      [{ "list": "ordered" }, { "list": "bullet" }],
-      ["link"],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'color': [] }, { 'background': [] }],     
+      [{ 'font': []}],
+      [{ 'align': [] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['link']
     ],
   };
-
-  const handleEditorChange = (value) => {
-    setEditorHtml(value);
-    onChange(value);
-  };
+  
 
 
+
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ]
+  
 
   return (
-    <div style={{ overflowY: "auto", resize: "both",maxWidth:"100%",minWidth:"100%",minHeight:"150px" }}>
-      <ReactQuill
-      style={{height:"200px"}}
-        value={editorHtml}
-        onChange={handleEditorChange}
-        modules={modules}
-        
-      />
-    
+    <div style={{ overflowY: "auto", maxWidth: "100%", minWidth: "100%", minHeight: "250px" }}>
+     
+      <div className="quill-toolbar">
+        {/* ReactQuill toolbar */}
+        <ReactQuill
+        theme="snow"
+          ref={quillRef}
+          value={editorHtml}
+          modules={modules}
+          formats={formats}
+        />
+      </div>
+   
     </div>
   );
 };
