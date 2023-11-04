@@ -1,4 +1,5 @@
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'; import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
@@ -172,10 +173,10 @@ function AdminUsersData() {
                 save: (
                     <>
                         <IconButton onClick={() => handleSave(item._id)} disabled={enabledRowId !== item._id}>
-                            <SaveIcon />
+                            <SaveIcon sx={{ color: enabledRowId === item._id ? "#308e07" : '' }} />
                         </IconButton>
                         <IconButton onClick={() => handleDelete(item._id)}>
-                            <DeleteOutlineIcon />
+                            <DeleteIcon sx={{ color: "#df4242" }} />
                         </IconButton>
                     </>
                 ),

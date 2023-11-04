@@ -631,7 +631,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     label={<LabelStyling labelName="Skip Holidays" />}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={12}>
+                            <Grid item xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={<Switch checked={isWAChecked}
                                         onChange={(e) => {
@@ -639,6 +639,15 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         }}
                                     />}
                                     label={<LabelStyling labelName="Activate WA" />}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={<Switch checked={isEmailChecked} onChange={(e) => {
+                                        setIsEmailChecked(e.target.checked)
+                                    }}
+                                    />}
+                                    label={<LabelStyling labelName="Activate Email" />}
                                 />
                             </Grid>
                             {isWAChecked && (
@@ -677,15 +686,6 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                     </Grid>
                                 </>
                             )}
-                            <Grid item xs={12} sm={12}>
-                                <FormControlLabel
-                                    control={<Switch checked={isEmailChecked} onChange={(e) => {
-                                        setIsEmailChecked(e.target.checked)
-                                    }}
-                                    />}
-                                    label={<LabelStyling labelName="Activate Email" />}
-                                />
-                            </Grid>
                             {isEmailChecked && (
                                 <>
                                     <Grid item xs={12} sm={6}>

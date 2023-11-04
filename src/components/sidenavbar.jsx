@@ -669,7 +669,7 @@ export default function SideNavBar() {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="fixed" open={open} sx={{ background: "#64acc8" }}>
+                <AppBar position="fixed" open={open} sx={{ background: "rgb(240, 245, 241)" }}>
                     <Toolbar style={{ width: '100%', display: 'flex', zIndex: "1111" }}>
                         <IconButton
                             color="inherit"
