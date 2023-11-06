@@ -266,6 +266,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
             sendMailDate: new Date(),
             endDate: endsOnObject,
         }
+        
         const res = await onHandleContactFormSubmit(formData);
         if (res) {
             setSubmitClicked(false);
