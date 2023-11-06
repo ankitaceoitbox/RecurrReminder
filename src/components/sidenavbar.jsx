@@ -669,7 +669,7 @@ export default function SideNavBar() {
         <>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="fixed" open={open} sx={{ background: "rgb(240, 245, 241)" }}>
+                <AppBar position="fixed" open={open} sx={{ background: "rgb(52, 52, 52)" }}>
                     <Toolbar style={{ width: '100%', display: 'flex', zIndex: "1111" }}>
                         <IconButton
                             color="inherit"
@@ -679,7 +679,7 @@ export default function SideNavBar() {
                             sx={{
                                 marginRight: 5,
                                 ...(open && { display: 'none' }),
-                                color: "black"
+                                color: "white"
                             }}
                         >
                             <MenuIcon />
@@ -716,7 +716,7 @@ export default function SideNavBar() {
                                             }}>
                                             <Link to="/login" >
                                                 <Tooltip title="Logout" arrow placement="right">
-                                                    <div style={{ display: "flex", justifyContent: "space-between", color: "#222" }}>
+                                                    <div style={{ display: "flex", justifyContent: "space-between", color: "white" }}>
                                                         <LogoutIcon />
                                                         <span>Logout</span>
                                                     </div>
@@ -749,7 +749,7 @@ export default function SideNavBar() {
                     {isAuth == true ? (
                         <Typography variant="h4" noWrap component="div" style={{
                             fontFamily: "roboto",
-                            color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
+                            color: "white", display: "flex", justifyContent: "center", marginTop: "-60px",
                             background: "transparent", zIndex: 0, padding: "5px 5px"
                         }}>
                             Tasks
