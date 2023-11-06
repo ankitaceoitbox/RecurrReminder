@@ -757,7 +757,7 @@ export default function SideNavBar() {
                     ) : null}
                     {isAdminAuth == true ? (
                         <Typography variant="h4" noWrap component="div" style={{
-                            color: "black", display: "flex", justifyContent: "center", marginTop: "-60px",
+                            color: "White", display: "flex", justifyContent: "center", marginTop: "-60px",
                             background: "transparent", zIndex: 0, padding: "5px 5px"
                         }}>
                             Company Details
