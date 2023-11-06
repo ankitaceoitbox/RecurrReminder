@@ -1,64 +1,28 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import styles
 import "./global.css"
-const MyRichTextArea = ({ onChange }) => {
-  const [editorHtml, setEditorHtml] = useState("");
-  const quillRef = useRef(null);
-  useEffect(() => {
-    if (quillRef.current) {
-      quillRef.current.getEditor().on("text-change", () => {
-        const editorHtml = quillRef.current.getEditor().root.innerHTML;
-        setEditorHtml(editorHtml);
-        onChange(editorHtml);
-      });
-    }
-  }, [onChange]);
+import React, { useState } from 'react';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { stateToHTML } from 'draft-js-export-html';
 
-
-
-
-  const modules = {
-    toolbar: [
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      [{ 'color': [] }, { 'background': [] }],     
-      [{ 'font': []}],
-      [{ 'align': [] }],
-      [{ 'header': [1, 2, 3, 4, 5, 6] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      ['link']
-    ],
+function RichTextEditor({ onChange }) {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const onEditorStateChange = (newEditorState) => {
+    setEditorState(newEditorState);
+    const contentState = newEditorState.getCurrentContent();
+    const html = stateToHTML(contentState);
+    onChange(html);
   };
-  
-
-
-
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ]
-  
 
   return (
-    <div style={{ overflowY: "auto", maxWidth: "100%", minWidth: "100%", minHeight: "250px" }}>
-     
-      <div className="quill-toolbar">
-        {/* ReactQuill toolbar */}
-        <ReactQuill
-        theme="snow"
-          ref={quillRef}
-          value={editorHtml}
-          modules={modules}
-          formats={formats}
-        />
-      </div>
+    <div>
    
+      <Editor
+        editorState={editorState}
+        onEditorStateChange={onEditorStateChange}
+      />
     </div>
   );
-};
+}
 
-export default MyRichTextArea;
+export default RichTextEditor;

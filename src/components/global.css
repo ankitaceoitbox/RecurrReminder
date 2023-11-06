@@ -28,3 +28,13 @@
 }
 
 
+.rdw-editor-main{
+  min-height: 200px;
+  border: 1px solid #F1F1F1;
+  padding: 6px 5px 0;
+  border-radius: 5px;
+}
+
+
+
+

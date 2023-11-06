@@ -369,6 +369,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
     const handleTextAreaChange = (value) => {
         setMailBodyHTML(value);
     };
+
     return (
         <div className='container'>
             <Box
@@ -767,6 +768,7 @@ function ContactForm({ onHandleContactFormSubmit, width, autoFillData, marginTop
                                         </textarea>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
+                                    <label style={{marginBottom:"18px"}}>Email Body</label>
                                         <MyRichTextArea onChange={handleTextAreaChange} />
                                     </Grid>
                                 </>
