@@ -3,7 +3,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
-import { Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Button, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import Loader from './loader';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import './adminuserdata.css';
@@ -18,6 +18,7 @@ function AdminUsersData() {
     const [rows, setRows] = useState([]);
     const [changesMade, setChangesMade] = useState(false);
     const [enabledRowId, setEnabledRowId] = useState(null); // To store the ID of the row for which the Save button should be enabled
+    const [columns, setColumns] = useState([]);
 
     const getAllUsersData = async (name, email) => {
         setLoader(true);
@@ -29,68 +30,6 @@ function AdminUsersData() {
         } catch (e) { }
         setLoader(false);
     }
-    const columns = [
-        {
-            field: 'save',
-            headerName: 'Save/Delete',
-            width: 120,
-            renderCell: (params) => params.value,
-            headerClassName: 'centered-header',
-            cellClassName: 'centered-cell',
-        },
-        { field: '_id', headerName: 'ID', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'name', headerName: 'Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
-        { field: 'email', headerName: 'Email', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'contact', headerName: 'Contact', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'company', headerName: 'Company Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        { field: 'reminderCount', headerName: 'Reminder Count', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
-        {
-            field: 'role',
-            headerName: 'Role',
-            width: 150,
-            renderCell: (params) => (
-                <FormControl variant="standard" sx={{ minWidth: 120 }}>
-                    <Select
-                        value={params.value}
-                        onChange={(e) => {
-                            setChangesMade(true);
-                            setEnabledRowId(params.row.id); // Enable Save button for this row
-                            const updatedData = usersData.map((item) => {
-                                return item._id === params.row.id ? { ...item, role: e.target.value } : item
-                            }
-                                // const updatedData = usersData.map(item => (item._id === id ? { ...item, role: e.target.value } : item));
-                            );
-                            setUsersData([...updatedData]);
-                        }}
-                    >
-                        <MenuItem value="user">User</MenuItem>
-                        <MenuItem value="admin">Admin</MenuItem>
-                    </Select>
-                </FormControl>
-            ),
-            cellClassName: 'centered-cell', headerClassName: 'centered-header'
-        },
-        {
-            field: 'approve',
-            headerName: 'Approve Status',
-            width: 150,
-            renderCell: (params) => (
-                <Checkbox
-                    checked={params.value}
-                    onChange={(e) => {
-                        setChangesMade(true);
-                        setEnabledRowId(params.row.id); // Enable Save button for this row
-                        const updatedData = usersData.map((item) => {
-                            return item._id === params.row.id ? { ...item, apprve: e.target.checked } : item
-                        }
-                        );
-                        setUsersData([...updatedData]);
-                    }}
-                />
-            ),
-            cellClassName: 'centered-cell', headerClassName: 'centered-header'
-        },
-    ];
 
     // Function to handle save action
     const handleSave = async (id) => {
@@ -139,6 +78,10 @@ function AdminUsersData() {
         }
     };
 
+    const refreshdata = async () => {
+        await getAllUsersData();
+    }
+
     const handleDelete = async (id) => {
         try {
             const response = await RemoveUserFromAdminTable(id);
@@ -167,7 +110,6 @@ function AdminUsersData() {
     }, []);
 
     useEffect(() => {
-        console.log(usersData);
         const rows = usersData.map((item) => {
             return {
                 save: (
@@ -193,8 +135,74 @@ function AdminUsersData() {
         setRows(rows);
     }, [usersData, changesMade]);
 
+    useEffect(() => {
+        const columns = [
+            {
+                field: 'save',
+                headerName: 'Save/Delete',
+                width: 120,
+                renderCell: (params) => params.value,
+                headerClassName: 'centered-header',
+                cellClassName: 'centered-cell',
+            },
+            { field: '_id', headerName: 'ID', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+            { field: 'name', headerName: 'Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header', fontSize: "5rem" },
+            { field: 'email', headerName: 'Email', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+            { field: 'contact', headerName: 'Contact', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+            { field: 'company', headerName: 'Company Name', width: 250, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+            { field: 'reminderCount', headerName: 'Reminder Count', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
+            {
+                field: 'role',
+                headerName: 'Role',
+                width: 150,
+                renderCell: (params) => (
+                    <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                        <Select
+                            value={params.value}
+                            onChange={(e) => {
+                                setChangesMade(true);
+                                setEnabledRowId(params.row.id); // Enable Save button for this row
+                                const updatedData = usersData.map((item) => {
+                                    return item._id === params.row.id ? { ...item, role: e.target.value } : item
+                                }
+                                );
+                                setUsersData([...updatedData]);
+                            }}
+                        >
+                            <MenuItem value="user">User</MenuItem>
+                            <MenuItem value="admin">Admin</MenuItem>
+                        </Select>
+                    </FormControl>
+                ),
+                cellClassName: 'centered-cell', headerClassName: 'centered-header'
+            },
+            {
+                field: 'approve',
+                headerName: 'Approve Status',
+                width: 150,
+                renderCell: (params) => (
+                    <Checkbox
+                        checked={params.value}
+                        onChange={(e) => {
+                            setChangesMade(true);
+                            setEnabledRowId(params.row.id); // Enable Save button for this row
+                            const updatedData = usersData.map((item) => {
+                                return item._id === params.row.id ? { ...item, apprve: e.target.checked } : item
+                            }
+                            );
+                            setUsersData([...updatedData]);
+                        }}
+                    />
+                ),
+                cellClassName: 'centered-cell', headerClassName: 'centered-header'
+            },
+        ];
+        setColumns(columns);
+    });
+
     return <>
         <div style={{ marginTop: "60px" }}>
+            <Button onClick={refreshdata}>Refresh</Button>
             <Grid container spacing={1} >
                 <Grid item xs={12} sm={11.5} md={11} sx={{
                     ml: "auto", mr: "auto", mt: "20px"

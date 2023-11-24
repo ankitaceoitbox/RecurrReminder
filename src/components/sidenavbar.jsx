@@ -1073,7 +1073,7 @@ export default function SideNavBar() {
                     </List>
                     <Divider />
                 </Drawer>
-            </Box >
+            </Box>
             {
                 isHolidayDialogOpen && (
                     <HolidaysDialog
