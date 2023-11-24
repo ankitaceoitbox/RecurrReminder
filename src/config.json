@@ -1,6 +1,6 @@
 {
   "recurring": {
-    "domainUrl": "https://reminder-r1v8.onrender.com/api/v1",
+    "domainUrl": "/api/v1",
     "post": {
       "form": "form",
       "login": "login",
