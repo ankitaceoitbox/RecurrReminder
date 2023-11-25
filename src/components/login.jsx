@@ -1,12 +1,11 @@
-import { Avatar, Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Avatar, Button, CircularProgress, Grid, Paper, TextField, Typography } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import * as React from 'react';
-import { UserAdminLogin, UserLogin } from '../services/login.service';
+import { UserAdminLogin } from '../services/login.service';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { Subject } from 'rxjs';
 import LockIcon from '@mui/icons-material/Lock'
-import { AdminLogin } from '../services/adminlogin.service';
 import './global.css';
 
 export const loginSubject = new Subject();
@@ -17,9 +16,6 @@ function LoginForm() {
         email: '',
         password: '',
     });
-    const [selectAdminOrUser, setSelectOrAdminUser] = React.useState("");
-
-    const [error, setError] = React.useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -63,7 +59,7 @@ function LoginForm() {
                 position: 'top-right',
                 autoClose: 2000, // Time in milliseconds for the notification to automatically close
             });
-            setError('Invalid email or password'); // Handle authentication error
+            console.log(error);
         }
         setShowLoader(false);
     };

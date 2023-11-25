@@ -1,13 +1,12 @@
 {
   "recurring": {
-    "domainUrl": "/api/v1",
+    "domainUrl": "https://task.ceoitbox.com",
     "post": {
       "form": "form",
       "login": "login",
       "register": "register",
       "logo": "upload-logo",
       "forgetPassword": "forget-password",
-      "adminLogin": "admin/login",
       "setupemail": "setup/email",
       "setupwhatsapp": "setup/wa",
       "whatsappmanualtesting": "check/wa",

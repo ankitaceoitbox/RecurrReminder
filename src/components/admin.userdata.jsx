@@ -3,14 +3,14 @@ import SaveIcon from '@mui/icons-material/Save';
 import React, { useEffect, useState } from 'react'
 import { loginSubject } from './login';
 import { AdminUsersDataService } from '../services/admin_userdata.service';
-import { Button, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import Loader from './loader';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import './adminuserdata.css';
+import { Button, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select } from '@mui/material';
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { ApproveAdminService } from '../services/adminapprove.service';
 import { UpdateRoleService } from '../services/adminrole.service';
 import { toast } from 'react-toastify';
 import { RemoveUserFromAdminTable } from '../services/deleteuserfromadmintable.service';
+import './adminuserdata.css';
+import Loader from './loader';
 
 function AdminUsersData() {
     const [usersData, setUsersData] = useState([]);
@@ -52,7 +52,7 @@ function AdminUsersData() {
                 check = true;
             }
         } catch (e) {
-            console.log(e); toast.error('User approved status not updated', {
+            toast.error('User approved status not updated', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close
             });
@@ -62,8 +62,7 @@ function AdminUsersData() {
             if (response.data.success === true) {
                 check = true;
             }
-            console.log(response);
-        } catch (e) { console.log(e); }
+        } catch (e) { }
 
         if (check === true) {
             toast.success('Updated successfully', {
@@ -84,7 +83,7 @@ function AdminUsersData() {
 
     const handleDelete = async (id) => {
         try {
-            const response = await RemoveUserFromAdminTable(id);
+            await RemoveUserFromAdminTable(id);
             loginSubject.next({
                 isAdminAuth: true
             });
@@ -94,8 +93,19 @@ function AdminUsersData() {
                 }
             )();
         } catch (e) {
-            console.log(e);
         }
+    }
+
+    function CustomToolbar() {
+        return (
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+                <GridToolbarDensitySelector />
+                <GridToolbarExport />
+                <Button onClick={refreshdata}>Refresh</Button>
+            </GridToolbarContainer>
+        )
     }
 
     useEffect(() => {
@@ -198,11 +208,10 @@ function AdminUsersData() {
             },
         ];
         setColumns(columns);
-    });
+    }, [usersData]);
 
     return <>
         <div style={{ marginTop: "60px" }}>
-            <Button onClick={refreshdata}>Refresh</Button>
             <Grid container spacing={1} >
                 <Grid item xs={12} sm={11.5} md={11} sx={{
                     ml: "auto", mr: "auto", mt: "20px"
@@ -216,7 +225,7 @@ function AdminUsersData() {
                             className="header-bg-color"
                             style={{ fontFamily: "roboto" }}
                             slots={{
-                                toolbar: GridToolbar,
+                                toolbar: CustomToolbar
                             }}
                             initialState={{
                                 columns: {

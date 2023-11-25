@@ -3,7 +3,6 @@ import AllFormData from '../components/allformdata'
 import { AllFormsDataService } from '../services/allContactFormData.service';
 import { toast } from 'react-toastify';
 import { DeleteFormData } from '../services/deleteformdata.service';
-import { UpdateSingleUserForm } from '../services/updateForm.service';
 
 function AllFormDataSmart() {
     const [allFormData, setAllFormData] = useState([]);
@@ -11,7 +10,6 @@ function AllFormDataSmart() {
     const handleContactFormAllData = async (show = true) => {
         try {
             const { data } = await AllFormsDataService();
-            console.log(data);
             const { success, forms } = data;
             if (success === true) {
                 setAllFormData(forms);
@@ -34,7 +32,7 @@ function AllFormDataSmart() {
     /** Delete data by id. */
     const deleteFormDataById = async (_id) => {
         const response = await DeleteFormData(_id);
-        if (response.data.success == true) {
+        if (response.data.success === true) {
             toast.success('Data deleted successfully.', {
                 position: 'top-right',
                 autoClose: 3000, // Time in milliseconds for the notification to automatically close

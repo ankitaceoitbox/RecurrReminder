@@ -311,7 +311,6 @@ function AllFormData({ allData, onDeleteFormDataById, onHandleUpdateForm, onLoad
         { field: 'endDate', headerName: 'End Date', width: 150, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
         { field: '_id', headerName: 'Unique Id', width: 100, cellClassName: 'centered-cell', headerClassName: 'centered-header' },
     ];
-    console.log(allFormData)
     const rows = allFormData.map((item, index) => {
         let lastReminder = "";
         if (item.lastReminder) {

@@ -98,6 +98,3 @@ export function getTimeFromDateString(date) {
 // Usage example with the provided date string
 // const dateString = "Sat Oct 28 2023 03:00:00 GMT+0530 (India Standard Time)";
 // const extractedTime = getTimeFromDateString(dateString);
-
-// console.log("Time in 24-hour format:", extractedTime.time24);
-// console.log("Time in 12-hour format:", extractedTime.time12);

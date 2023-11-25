@@ -59,7 +59,6 @@ const WeeksIcon = ({ initiallySelectedWeeks, onSelectedWeeksChange }) => {
         } else {
             setSelectedDays(prevSelectedDays => prevSelectedDays.filter(selectedDay => selectedDay !== day));
         }
-        // onSelectedWeeksChange(selectedDays);
     };
 
     useEffect(() => {
@@ -71,7 +70,6 @@ const WeeksIcon = ({ initiallySelectedWeeks, onSelectedWeeksChange }) => {
     }, []);
 
     useEffect(() => {
-        console.log(selectedDays);
         onSelectedWeeksChange(selectedDays);
     }, [selectedDays])
 

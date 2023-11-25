@@ -332,7 +332,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
             if (response.data.success == "true") {
                 toast.success(response.data.message);
             }
-        } catch (e) { console.log(e); toast.error("Wrong credentials"); }
+        } catch (e) { toast.error("Wrong credentials"); }
         setEmailTestingLoader(false);
     }
 
@@ -343,7 +343,7 @@ const EmailWhatsAppDialog = ({ open, onClose }) => {
             if (response.data.success == true) {
                 toast.success(response.data.message);
             }
-        } catch (e) { console.log(e); toast.error("Wrong credentials"); }
+        } catch (e) { toast.error("Wrong credentials"); }
         setWhatsAppTestingLoader(false);
     }
 
@@ -640,7 +640,6 @@ export default function SideNavBar() {
 
     const userLogOut = async () => {
         const response = await UserLogoutService();
-        console.log(response);
         if (response.data.success == true) {
             toast.success("logged out");
             localStorage.removeItem('isAuth');
