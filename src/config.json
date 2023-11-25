@@ -1,6 +1,6 @@
 {
   "recurring": {
-    "domainUrl": "https://task.ceoitbox.com",
+    "domainUrl": "https://task.ceoitbox.com/api/v1/",
     "post": {
       "form": "form",
       "login": "login",

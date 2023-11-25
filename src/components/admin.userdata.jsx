@@ -1,3 +1,4 @@
+import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import React, { useEffect, useState } from 'react'
@@ -103,7 +104,10 @@ function AdminUsersData() {
                 <GridToolbarFilterButton />
                 <GridToolbarDensitySelector />
                 <GridToolbarExport />
-                <Button onClick={refreshdata}>Refresh</Button>
+                <Button onClick={refreshdata}>
+                    <RefreshIcon size='small' />
+                    <span style={{ marginLeft: '6px' }}>Refresh</span>
+                </Button>
             </GridToolbarContainer>
         )
     }
